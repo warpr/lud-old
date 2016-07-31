@@ -1,0 +1,20 @@
+{
+  "name": "lûd",
+  "version": "0.0.1",
+  "description": "lûd - an opinionated browser based media player",
+  "main": "lib/lûd.js",
+  "scripts": {
+    "test": "bin/test"
+  },
+  "author": "Kuno Woudt <kuno@frob.nl>",
+  "license": "copyleft-next-0.3.1",
+  "repository": "https://gitlab.com/kuno/lud.git",
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "eslint": "^2.12.0",
+    "mocha": "^2.4.5"
+  },
+  "dependencies": {
+    "underscore.string": "^3.3.4"
+  }
+}
