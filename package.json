@@ -1,5 +1,5 @@
 {
-  "name": "lûd",
+  "name": "lud",
   "version": "0.0.1",
   "description": "lûd - an opinionated browser based media player",
   "main": "lib/lûd.js",
