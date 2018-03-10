@@ -3,6 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width">
+        <meta http-equiv="Accept-CH" content="Device-Memory">
         <title>Blueprint Starter Kit</title>
         <link href="https://unpkg.com/normalize.css@^4.1.1" rel="stylesheet" />
         <link href="https://unpkg.com/@blueprintjs/core@^1.11.0/dist/blueprint.css" rel="stylesheet" />
@@ -17,54 +18,17 @@
 
         <script src="https://unpkg.com/lunr/lunr.js"></script>
 
-        <nav class="pt-navbar pt-dark">
-            <div class="pt-navbar-group pt-align-left">
-                <div class="pt-navbar-heading">Blueprint</div>
-                <input class="pt-input" placeholder="Search files..." type="text" />
-            </div>
-            <div class="pt-navbar-group pt-align-right">
-                <button class="pt-button pt-minimal pt-icon-home">Home</button>
-                <button class="pt-button pt-minimal pt-icon-document">Files</button>
-                <span class="pt-navbar-divider"></span>
-                <button class="pt-button pt-minimal pt-icon-user"></button>
-                <button class="pt-button pt-minimal pt-icon-notifications"></button>
-                <button class="pt-button pt-minimal pt-icon-cog"></button>
-            </div>
-        </nav>
+        <div id="app">Loading...</div>
 
-        <div id="btn"></div>
-        <script>
-         const button = React.createElement(Blueprint.Core.Button, {
-             iconName: "predictive-analysis",
-             text: "CDN Blueprint is go!",
+        <script type="module">
+         import * as app from '/lud/app.js';
+         import * as db from '/lud/db.js';
+
+         app.start(document.querySelector("#app"));
+
+         db.loadIndex().then(idx => {
+             console.log('searching...', idx.search('*TKO*'));
          });
-         ReactDOM.render(button, document.querySelector("#btn"));
-        </script>
-        <script>
-         let idx = null;
-
-         function indexAll(db) {
-             idx = lunr(function () {
-                 this.ref('id');
-                 this.field('artist');
-                 this.field('title');
-                 this.field('disc');
-                 this.field('song');
-                 this.metadataWhitelist = ['position'];
-
-                 Object.keys(db.artists).forEach(id => {
-                     this.add({ id: id, name: db.artists[id] });
-                 }, this);
-             });
-
-             window.db = db;
-             window.idx = idx;
-             console.log(idx.search('*londo*'));
-         }
-
-         fetch('cache/index.json')
-             .then(response => response.json())
-             .then(indexAll)
         </script>
     </body>
 </html>

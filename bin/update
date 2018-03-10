@@ -126,7 +126,7 @@ function indexAlbum(&$db, $dir) {
     $release['credit'] = $credited;
 
     foreach ($artists as $key => $val) {
-        $db[$key] = $val;
+        $db['artists'][$key] = $val;
     }
 
     $media = parseMedia($metadata);
@@ -134,23 +134,28 @@ function indexAlbum(&$db, $dir) {
         $release['disc'] = $media;
     }
 
-    $db[$metadata['id']] = $release;
+    $db['releases'][$metadata['id']] = $release;
+
+    echo "Indexed " . $release['title'] . "\n";
 
     list($artists, $tracks) = parseTracks($metadata);
     foreach ($artists as $key => $val) {
-        $db[$key] = $val;
+        $db['artists'][$key] = $val;
     }
 
     foreach ($tracks as $key => $val) {
-        echo "Indexing song: " . $key . " -> " . $val['title'] . "\n";
-        $db[$key] = $val;
+        $db['tracks'][$key] = $val;
     }
 }
 
 function main($root) {
     global $cacheDir;
 
-    $db = [];
+    $db = [
+        "artists" => [],
+        "releases" => [],
+        "tracks" => [],
+    ];
 
     $dir = new RecursiveDirectoryIterator($root);
     $filter = new RecursiveCallbackFilterIterator($dir, isAlbumFolder);
@@ -161,13 +166,15 @@ function main($root) {
         $files[] = $info->getPath();
     }
 
-    $filename = $cacheDir . "/index.json";
+    foreach ($db as $key => $data) {
+        $filename = $cacheDir . "/$key.json";
 
-    file_put_contents(
-        $filename,
-        json_encode($db, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
+        file_put_contents(
+            $filename,
+            json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
 
-    echo "Index saved at " . $filename . "\n";
+        echo "$key index saved at " . $filename . "\n";
+    }
 }
 
 /**
