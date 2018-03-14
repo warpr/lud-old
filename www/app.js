@@ -8,11 +8,40 @@
 
 const e = React.createElement;
 
+class Search extends React.Component {
+    constructor (props) {
+        super(props);
+
+        this.state = { query: '' };
+        this.handleChange = this.handleChange.bind(this);
+    }
+
+    handleChange(event) {
+        const value = event.target.value;
+
+        this.setState({query: value});
+
+        PubSub.publish('search-query', value);
+    }
+
+    render() {
+        const attr = {
+            className: 'pt-input',
+            onChange: this.handleChange,
+            placeholder: "Search...",
+            type: 'text',
+            value: this.state.query,
+        };
+
+        return e('input', attr);
+    }
+}
+
 export function nav_bar() {
     return e('nav', {className: "pt-navbar pt-dark"}, [
         e('div', {className: "pt-navbar-group pt-align-left"},
           e('div', {className: "pt-navbar-heading"}, "Blueprint"),
-          e('input', {className: "pt-input", placeholder: "Search...", type: "text"})
+          e(Search)
          ),
         e('div', {className: "pt-navbar-group pt-align-right"}, [
             e('button', {className: "pt-button pt-minimal pt-icon-home"}, 'Home'),
@@ -43,28 +72,4 @@ export function start(app_div) {
     ReactDOM.render(app, app_div);
 }
 
-/*
-class Hello extends React.Component {
-  render() {
-    return <div>Hello {this.props.toWhat}</div>;
-  }
-}
-
-ReactDOM.render(
-  <Hello toWhat="World" />,
-  document.getElementById('root')
-);
-can be compiled to this code that does not use JSX:
-
-class Hello extends React.Component {
-  render() {
-    return React.createElement('div', null, `Hello ${this.props.toWhat}`);
-  }
-}
-
-ReactDOM.render(
-  React.createElement(Hello, {toWhat: 'World'}, null),
-  document.getElementById('root')
-);
-*/
 
