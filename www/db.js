@@ -6,6 +6,8 @@
  *   it under the terms of copyleft-next 0.3.1.  See copyleft-next-0.3.1.txt.
  */
 
+import * as misc from '/lud/misc.js';
+
 function combineCollections(collections) {
     // this attempts to not use too much extra memory by setting all values
     // to null after being copied over.  FIXME: this is probably premature
@@ -54,6 +56,8 @@ function initSearch(result) {
     const idx = result.index;
     const db = result.database;
 
+    misc.updateTitle(misc.controls.STOP);
+
     const token = PubSub.subscribe('search-query', (searchTerm, topic) => {
         const results = idx.query(function (q) {
             // exact matches should have the highest boost
@@ -67,6 +71,8 @@ function initSearch(result) {
         });
 
         const matches = results.map(r => db[r.ref]);
+        PubSub.publish('search-results', matches);
+
         console.log(results.length, 'matches:', _(matches)
             .map(m => {
                 if (m.title) {
@@ -85,8 +91,6 @@ function initSearch(result) {
 
 export function loadIndex() {
     let idx = null;
-
-    console.log("Device memory: ", navigator.deviceMemory);
 
     const indexes = ['/lud/cache/releases.json', '/lud/cache/artists.json', '/lud/cache/tracks.json'];
 

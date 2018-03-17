@@ -4,7 +4,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width">
         <meta http-equiv="Accept-CH" content="Device-Memory">
-        <title>Blueprint Starter Kit</title>
+        <title>[loading...] lûd</title>
         <link href="https://unpkg.com/normalize.css@^4.1.1" rel="stylesheet" />
         <link href="https://unpkg.com/@blueprintjs/core@^1.11.0/dist/blueprint.css" rel="stylesheet" />
     </head>
