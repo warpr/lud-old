@@ -35,7 +35,7 @@ function parseArtist($obj) {
 
     foreach ($obj['artist-credit'] as $credit) {
         $doc = [
-            'artist' => array_unique([$credit['artist']['name'], $credit['artist']['sort-name']]),
+            'names' => array_unique([$credit['artist']['name'], $credit['artist']['sort-name']]),
             'type' => 'artist'
         ];
 
@@ -96,6 +96,8 @@ function parseTracks($obj) {
             $song = [
                 'length' => $trk['length'],
                 'title' => $trk['title'],
+                'release' => $obj['id'],
+                'type' => 'track',
             ];
 
             if (!empty($trk['artist-credit'])) {
@@ -128,6 +130,8 @@ function indexAlbum(&$db, $dir) {
     foreach ($artists as $key => $val) {
         $db['artists'][$key] = $val;
     }
+
+    // FIXME: add album lenghth
 
     $media = parseMedia($metadata);
     if (!empty($media)) {

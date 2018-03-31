@@ -1,5 +1,5 @@
 
-lûd
+Lûd
 ====
 
 lûd is an opinionated browser based media player.

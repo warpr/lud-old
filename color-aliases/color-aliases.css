@@ -1,0 +1,35 @@
+:root {
+  --pt-dark-app-background-color: #293742;
+  --pt-intent-primary: #137cbd;
+  --pt-intent-success: #0f9960;
+  --pt-intent-warning: #d9822b;
+  --pt-intent-danger: #db3737;
+  --pt-app-background-color: #f5f8fa;
+  --pt-dark-app-background-color: #293742;
+  --pt-text-color: #182026;
+  --pt-text-color-muted: #5c7080;
+  --pt-text-color-disabled: rgba(92, 112, 128, 0.5);
+  --pt-heading-color: #182026;
+  --pt-link-color: #106ba3;
+  --pt-dark-text-color: #f5f8fa;
+  --pt-dark-text-color-muted: #bfccd6;
+  --pt-dark-text-color-disabled: rgba(191, 204, 214, 0.5);
+  --pt-dark-heading-color: #f5f8fa;
+  --pt-dark-link-color: #48aff0;
+  --pt-text-selection-color: rgba(125, 188, 255, 0.6);
+  --pt-icon-color: #5c7080;
+  --pt-icon-color-hover: #182026;
+  --pt-icon-color-disabled: rgba(92, 112, 128, 0.5);
+  --pt-icon-color-selected: #137cbd;
+  --pt-dark-icon-color: #bfccd6;
+  --pt-dark-icon-color-hover: #f5f8fa;
+  --pt-dark-icon-color-disabled: rgba(191, 204, 214, 0.5);
+  --pt-dark-icon-color-selected: #137cbd;
+  --pt-divider-black: rgba(16, 22, 26, 0.15);
+  --pt-dark-divider-black: rgba(16, 22, 26, 0.4);
+  --pt-dark-divider-white: rgba(255, 255, 255, 0.15);
+  --pt-code-text-color: #5c7080;
+  --pt-dark-code-text-color: #bfccd6;
+  --pt-code-background-color: rgba(255, 255, 255, 0.7);
+  --pt-dark-code-background-color: rgba(16, 22, 26, 0.3);
+}

@@ -1,0 +1,44 @@
+@import "node_modules/\@blueprintjs/core/lib/scss/variables";
+
+:root {
+    dashdash-pt-dark-app-background-color: $pt-dark-app-background-color;
+
+    dashdash-pt-intent-primary: $pt-intent-primary;
+    dashdash-pt-intent-success: $pt-intent-success;
+    dashdash-pt-intent-warning: $pt-intent-warning;
+    dashdash-pt-intent-danger: $pt-intent-danger;
+
+    dashdash-pt-app-background-color: $pt-app-background-color;
+    dashdash-pt-dark-app-background-color: $pt-dark-app-background-color;
+
+    dashdash-pt-text-color: $pt-text-color;
+    dashdash-pt-text-color-muted: $pt-text-color-muted;
+    dashdash-pt-text-color-disabled: $pt-text-color-disabled;
+    dashdash-pt-heading-color: $pt-heading-color;
+    dashdash-pt-link-color: $pt-link-color;
+    dashdash-pt-dark-text-color: $pt-dark-text-color;
+    dashdash-pt-dark-text-color-muted: $pt-dark-text-color-muted;
+    dashdash-pt-dark-text-color-disabled: $pt-dark-text-color-disabled;
+    dashdash-pt-dark-heading-color: $pt-dark-heading-color;
+    dashdash-pt-dark-link-color: $pt-dark-link-color;
+    // Default text selection color using #7dbcff
+    dashdash-pt-text-selection-color: $pt-text-selection-color;
+
+    dashdash-pt-icon-color: $pt-icon-color;
+    dashdash-pt-icon-color-hover: $pt-icon-color-hover;
+    dashdash-pt-icon-color-disabled: $pt-icon-color-disabled;
+    dashdash-pt-icon-color-selected: $pt-icon-color-selected;
+    dashdash-pt-dark-icon-color: $pt-dark-icon-color;
+    dashdash-pt-dark-icon-color-hover: $pt-dark-icon-color-hover;
+    dashdash-pt-dark-icon-color-disabled: $pt-dark-icon-color-disabled;
+    dashdash-pt-dark-icon-color-selected: $pt-dark-icon-color-selected;
+
+    dashdash-pt-divider-black: $pt-divider-black;
+    dashdash-pt-dark-divider-black: $pt-dark-divider-black;
+    dashdash-pt-dark-divider-white: $pt-dark-divider-white;
+
+    dashdash-pt-code-text-color: $pt-code-text-color;
+    dashdash-pt-dark-code-text-color: $pt-dark-code-text-color;
+    dashdash-pt-code-background-color: $pt-code-background-color;
+    dashdash-pt-dark-code-background-color: $pt-dark-code-background-color;
+}
