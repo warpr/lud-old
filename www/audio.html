@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Audio test</title>
+        <script>
+         const applicationId = '5DC02A2C';
+//         const disc = "http://192.168.100.25/lud/music/series/techpara/2009.we-love-techpara-70min-70songs/disc1.m4a";
+         const disc = "http://192.168.100.25/lud/music/artists/future-sound-of-london/1994.lifeforms/disc1.m4a";
+
+         function startCasting() {
+             const castContext = cast.framework.CastContext.getInstance();
+             const castSession = castContext.getCurrentSession();
+
+             console.log('castSession is', castSession);
+
+             const mediaInfo = new chrome.cast.media.MediaInfo(disc, "audio/mp4");
+             const request = new chrome.cast.media.LoadRequest(mediaInfo);
+             castSession.loadMedia(request).then(
+                 function() { console.log('Load succeed'); },
+                 function(errorCode) { console.log('Load Media error code: ', errorCode); }
+             );
+
+             const player = new cast.framework.RemotePlayer();
+             const playerController = new cast.framework.RemotePlayerController(player);
+         }
+
+         function initializeCastApi() {
+             const castContext = cast.framework.CastContext.getInstance();
+
+             const castOptions = {
+                 autoJoinPolicy: chrome.cast.AutoJoinPolicy.ORIGIN_SCOPED,
+                 receiverApplicationId: chrome.cast.media.DEFAULT_MEDIA_RECEIVER_APP_ID,
+             };
+
+             castContext.setOptions(castOptions);
+
+             castContext.addEventListener(
+                 cast.framework.CastContextEventType.SESSION_STATE_CHANGED,
+                 function(event) {
+                     switch (event.sessionState) {
+                         case cast.framework.SessionState.SESSION_STARTED:
+                             console.log('Session started');
+                             startCasting();
+                             break;
+                         case cast.framework.SessionState.SESSION_RESUMED:
+                             console.log('Session resumed');
+                             startCasting();
+                             break;
+                         case cast.framework.SessionState.SESSION_ENDED:
+                             console.log('Session ended');
+                             break;
+                         default:
+                             console.log('CastContext: CastSession disconnected');
+                             break;
+                     }
+                 }
+             );
+         }
+
+         window.__onGCastApiAvailable = function(isAvailable) {
+             if (isAvailable) {
+                 initializeCastApi();
+             }
+         };
+    </script>
+    <script src="https://www.gstatic.com/cv/js/sender/v1/cast_sender.js?loadCastFramework=1"></script>
+  </head>
+  <body>
+    <button is="google-cast-button"></button>
+
+    <hr />
+    <audio controls>
+      <source src="music/series/techpara/2009.we-love-techpara-70min-70songs/disc1.m4a" type="audio/mp4" />
+    </audio>
+  </body>
+</html>
