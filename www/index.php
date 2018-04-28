@@ -19,9 +19,9 @@
         <meta name="msapplication-config" content="/lud/icons/browserconfig.xml">
         <meta name="theme-color" content="#dedede">
 
-        <link href="https://unpkg.com/normalize.css@^7.0.0" rel="stylesheet" />
-        <link href="https://unpkg.com/@blueprintjs/core@^2.0.0/lib/css/blueprint.css" rel="stylesheet" />
-        <link href="https://unpkg.com/@blueprintjs/icons@^2.0.0/lib/css/blueprint-icons.css" rel="stylesheet" />
+        <link href="/lud/js/normalize.css/normalize.css" rel="stylesheet" />
+        <link href="/lud/js/@blueprintjs/core/lib/css/blueprint.css" rel="stylesheet" />
+        <link href="/lud/js/@blueprintjs/icons/lib/css/blueprint-icons.css" rel="stylesheet" />
         <link href="css/color-aliases.css" rel="stylesheet" />
 
         <style>
@@ -32,25 +32,26 @@
     </head>
     <body>
         <!-- React -->
-        <script crossorigin src="https://unpkg.com/react@16/umd/react.development.js"></script>
-        <script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+        <script src="/lud/js/react/umd/react.development.js"></script>
+        <script src="/lud/js/react-dom/umd/react-dom.development.js"></script>
 
         <!-- Blueprint -->
-        <script src="https://unpkg.com/classnames@^2.2"></script>
-        <script src="https://unpkg.com/dom4@^1.8"></script>
-        <script src="https://unpkg.com/react-transition-group@^2.2.1/dist/react-transition-group.js"></script>
+        <script src="/lud/js/classnames/index.js"></script>
+        <script src="/lud/js/dom4/build/dom4.max.js"></script>
+        <script src="/lud/js/react-transition-group/dist/react-transition-group.js"></script>
+
 <!--
-        <script src="https://unpkg.com/popper.js@^1.12.6/dist/umd/popper.js"></script>
-        <script src="https://unpkg.com/react-popper@~0.7.4/dist/react-popper.js"></script>
+        <script src="/lud/js/popper.js/dist/popper.js"></script>
+        <script src="/lud/js/react-popper/dist/react-popper.js"></script>
 -->
-        <script src="https://unpkg.com/@blueprintjs/core@^2.0.0"></script>
-        <script src="https://unpkg.com/@blueprintjs/icons@^2.0.0"></script>
+        <script src="/lud/js/@blueprintjs/core/dist/core.bundle.js"></script>
+        <script src="/lud/js/@blueprintjs/icons/dist/icons.bundle.js"></script>
 
         <!-- Lûd -->
-        <script src="https://cdn.jsdelivr.net/npm/lodash@4/lodash.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/immutable@3/dist/immutable.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/pubsub-js@1/src/pubsub.min.js"></script>
-        <script src="https://unpkg.com/lunr/lunr.js"></script>
+        <script src="/lud/js/lodash/lodash.js"></script>
+        <script src="/lud/js/immutable/dist/immutable.js"></script>
+        <script src="/lud/js/pubsub-js/src/pubsub.js"></script>
+        <script src="/lud/js/lunr/lunr.js"></script>
 
         <div id="app">Loading...</div>
 

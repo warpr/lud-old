@@ -15,6 +15,14 @@
     "mocha": "^2.4.5"
   },
   "dependencies": {
+    "@blueprintjs/core": "^2.2.1",
+    "immutable": "^3.8.2",
+    "lodash": "^4.17.10",
+    "lunr": "^2.1.6",
+    "pubsub-js": "^1.6.0",
+    "react": "^16.3.2",
+    "react-dom": "^16.3.2",
+    "react-transition-group": "^2.3.1",
     "underscore.string": "^3.3.4"
   }
 }
