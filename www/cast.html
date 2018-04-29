@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Audio test</title>
+        <script>
+          const applicationId = '5DC02A2C';
+//          const localIp = '192.168.100.25';
+          const localIp = '127.0.0.1';
+//         const disc = "http://" + localIp + "/lud/music/series/techpara/2009.we-love-techpara-70min-70songs/disc1.m4a";
+         const disc = "http://" + localIp + "/lud/music/artists/future-sound-of-london/1994.lifeforms/disc1.m4a";
+         const albumArt = "http://" + localIp + "/lud/music/artists/future-sound-of-london/1994.lifeforms/cover.jpg";
+
+         function startCasting() {
+             const castContext = cast.framework.CastContext.getInstance();
+             const castSession = castContext.getCurrentSession();
+
+             window.ctx = castContext;
+             window.ses = castSession;
+
+             const mediaInfo = new chrome.cast.media.MediaInfo(disc, "audio/mp4");
+
+             mediaInfo.metadata = new chrome.cast.media.MusicTrackMediaMetadata();
+             mediaInfo.metadata.albumArtist = "The Future Sound of London";
+             mediaInfo.metadata.albumName = "Lifeforms";
+             mediaInfo.metadata.artist = "The Future Sound of London";
+             mediaInfo.metadata.discNumber = 1;
+             mediaInfo.metadata.images = [
+                 new chrome.cast.Image(albumArt),
+             ];
+             mediaInfo.metadata.releaseDate = "1994-05-16";
+             mediaInfo.metadata.title = "Cascade";
+             mediaInfo.metadata.trackNumber = 1;
+
+//             setInterval(function () {
+//                 const d = new Date();
+//                 const title = "Cascade " + d.toISOString();
+//                 console.log('Changing title to', title);
+//                 mediaInfo.metadata.title = title;
+
+//                 const request = new chrome.cast.media.LoadRequest(mediaInfo);
+//                 castSession.loadMedia(request);
+//             }, 2000);
+
+             const request = new chrome.cast.media.LoadRequest(mediaInfo);
+             castSession.loadMedia(request).then(
+                 function() { console.log('Load succeed'); },
+                 function(errorCode) { console.log('Load Media error code: ', errorCode); }
+             );
+
+             const player = new cast.framework.RemotePlayer();
+             const playerController = new cast.framework.RemotePlayerController(player);
+
+         }
+
+         function initializeCastApi() {
+             const castContext = cast.framework.CastContext.getInstance();
+
+             const castOptions = {
+                 autoJoinPolicy: chrome.cast.AutoJoinPolicy.ORIGIN_SCOPED,
+                 receiverApplicationId: chrome.cast.media.DEFAULT_MEDIA_RECEIVER_APP_ID,
+             };
+
+             castContext.setOptions(castOptions);
+
+             castContext.addEventListener(
+                 cast.framework.CastContextEventType.SESSION_STATE_CHANGED,
+                 function(event) {
+                     switch (event.sessionState) {
+                         case cast.framework.SessionState.SESSION_STARTED:
+                             console.log('Session started');
+                             startCasting();
+                             break;
+                         case cast.framework.SessionState.SESSION_RESUMED:
+                             console.log('Session resumed');
+                             startCasting();
+                             break;
+                         case cast.framework.SessionState.SESSION_ENDED:
+                             console.log('Session ended');
+                             break;
+                         default:
+                             console.log('CastContext: CastSession disconnected');
+                             break;
+                     }
+                 }
+             );
+         }
+
+         window.__onGCastApiAvailable = function(isAvailable) {
+             if (isAvailable) {
+                 initializeCastApi();
+             }
+         };
+    </script>
+    <script src="https://www.gstatic.com/cv/js/sender/v1/cast_sender.js?loadCastFramework=1"></script>
+  </head>
+  <body>
+    <button is="google-cast-button"></button>
+  </body>
+</html>
