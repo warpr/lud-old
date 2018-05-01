@@ -9,6 +9,7 @@
 import { Album } from '/lud/album.js';
 import { MainMenu } from '/lud/main-menu.js';
 import { NowPlaying } from '/lud/now-playing.js';
+import { AudioDemo } from '/lud/audio-controls.js';
 import { SearchResults } from '/lud/search-results.js';
 
 const e = React.createElement;
@@ -25,6 +26,7 @@ export function start(app_div) {
     const app = e('div', {style: style}, [
         e(MainMenu, { key: "main-menu" }),
         e(NowPlaying, { key: "now-playing" }),
+        e(AudioDemo, { key: "audio-demo" }),
         e(Album, { key: "album" }),
         e(SearchResults, { key: "search-results" }),
     ]);

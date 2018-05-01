@@ -24,6 +24,8 @@
         <link href="/lud/js/@blueprintjs/icons/lib/css/blueprint-icons.css" rel="stylesheet" />
         <link href="css/color-aliases.css" rel="stylesheet" />
 
+        <link href="/lud/js/font-awesome/css/font-awesome.css" rel="stylesheet" />
+
         <style>
          body {
              background-color: var(--pt-dark-app-background-color);

@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@blueprintjs/core": "^2.2.1",
+    "font-awesome": "^4.7.0",
     "immutable": "^3.8.2",
     "lodash": "^4.17.10",
     "lunr": "^2.1.6",
