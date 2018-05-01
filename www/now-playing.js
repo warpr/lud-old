@@ -8,6 +8,73 @@
 
 const e = React.createElement;
 
+function broadcast(audioElement) {
+    const event = {
+        src: audioElement.src,
+        paused: audioElement.paused,
+        currentTime: audioElement.currentTime
+    };
+    PubSub.publish('now-playing', event);
+}
+
+function snapshot(audioElement) {
+    if (!audioElement) {
+        return;
+    }
+
+    const snapshot = {
+        src: audioElement.src,
+        currentTime: audioElement.currentTime,
+        paused: audioElement.paused,
+        volume: audioElement.volume,
+    };
+
+    window.localStorage.setItem('lud-now-playing', JSON.stringify(snapshot));
+}
+
+function throttleOnAnimationFrame(callback) {
+    let requestId = null;
+
+    return function() {
+        const context = this;
+        const args = arguments;
+
+        cancelAnimationFrame(requestId);
+
+        requestId = requestAnimationFrame(() => {
+            callback.apply(context, args);
+            requestId = null;
+        });
+    };
+}
+
+const tick = throttleOnAnimationFrame(event => {
+    snapshot(event.target);
+    broadcast(event.target);
+});
+
+function restore(audioElement) {
+    if (!audioElement) {
+        return false;
+    }
+
+    const data = window.localStorage.getItem('lud-now-playing');
+    if (!data) {
+        return false;
+    }
+
+    console.log('initializing audio element from localStorage');
+    const snapshot = JSON.parse(data);
+    audioElement.volume = snapshot.volume;
+    audioElement.src = snapshot.src;
+    audioElement.currentTime = snapshot.currentTime;
+    if (!snapshot.paused) {
+        audioElement.play();
+    }
+
+    return true;
+}
+
 export class AudioElement extends React.Component {
     constructor(props) {
         super(props);
@@ -21,48 +88,18 @@ export class AudioElement extends React.Component {
     }
 
     componentDidMount() {
-        const a = this.audioRef.current;
+        const audioElement = this.audioRef.current;
+        restore(audioElement);
 
-        const data = window.localStorage.getItem('lud-now-playing');
-        if (data) {
-            console.log('initializing audio element from localStorage');
-            const snapshot = JSON.parse(data);
-            a.volume = snapshot.volume;
-            a.src = snapshot.src;
-            a.currentTime = snapshot.currentTime;
-            if (!snapshot.paused) {
-                a.play();
-            }
-        } else {
-            console.log('initializing audio element props');
-            a.volume = 0;
-            a.src = this.props.src;
-            if (this.props.src) {
-                a.play();
-            }
-        }
-
-        this.interval = setInterval(() => {
-            if (this.audioRef.current) {
-                const a = this.audioRef.current;
-
-                const snapshot = {
-                    src: a.src,
-                    currentTime: a.currentTime,
-                    paused: a.paused,
-                    volume: a.volume,
-                };
-
-                console.log('snapshot', snapshot);
-
-                window.localStorage.setItem('lud-now-playing', JSON.stringify(snapshot));
-            }
-        }, 5000);
+        const playbackEvents = ['ended', 'pause', 'playing', 'progress', 'seeked', 'timeupdate', 'volumechange'];
+        playbackEvents.map(eventName => {
+            audioElement.addEventListener(eventName, tick, { passive: true });
+        });
 
         this.subscription = PubSub.subscribe('play-file', (topic, url) => {
             console.log('playing new file', url);
-            a.src = url;
-            a.play();
+            this.audioRef.current.src = url;
+            this.audioRef.current.play();
         });
     }
 

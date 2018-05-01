@@ -1,3 +1,11 @@
+/**
+ *   This file is part of lûd, an opinionated browser based media player.
+ *   Copyright (C) 2018  Kuno Woudt <kuno@frob.nl>
+ *
+ *   This program is free software: you can redistribute it and/or modify
+ *   it under the terms of copyleft-next 0.3.1.  See copyleft-next-0.3.1.txt.
+ */
+
 function framesToSeconds(str) {
     const parts = str.split(':');
     if (parts.length < 3) {
@@ -73,13 +81,15 @@ function parseCommand(command, args, track) {
         };
 
         return { start: start };
+    case "":
+        return {};
     default:
         console.log("Unrecognized command:", command, args);
         return {};
     }
 }
 
-function parseCue(cueStr) {
+export function parseCue(cueStr) {
     const lines = cueStr.split(/[\n|\r|\r\n]/).map(x => x.trim());
 
     const tracks = lines.reduce((memo, line) => {
@@ -103,13 +113,5 @@ function parseCue(cueStr) {
     // return lines;
     return tracks;
 }
-
-
-const fs = require('fs');
-const filename = 'www/music/artists/urd/2008.urd/disc1.cue';
-
-const cue = fs.readFileSync(filename).toString();
-
-console.log(parseCue(cue));
 
 

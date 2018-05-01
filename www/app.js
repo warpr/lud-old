@@ -6,6 +6,7 @@
  *   it under the terms of copyleft-next 0.3.1.  See copyleft-next-0.3.1.txt.
  */
 
+import { Album } from '/lud/album.js';
 import { MainMenu } from '/lud/main-menu.js';
 import { NowPlaying } from '/lud/now-playing.js';
 import { SearchResults } from '/lud/search-results.js';
@@ -24,15 +25,17 @@ export function start(app_div) {
     const app = e('div', {style: style}, [
         e(MainMenu, { key: "main-menu" }),
         e(NowPlaying, { key: "now-playing" }),
+        e(Album, { key: "album" }),
         e(SearchResults, { key: "search-results" }),
     ]);
 
     ReactDOM.render(app, app_div);
 
     setTimeout(() => {
-        const fsol1 = "http://127.0.0.1/lud/music/artists/future-sound-of-london/1994.lifeforms/disc1.m4a";
+        const fsol1 = "/lud/music/artists/future-sound-of-london/1994.lifeforms/disc1.m4a";
+        const fsol2 = "/lud/music/artists/future-sound-of-london/1994.lifeforms/disc2.m4a";
 
-//        PubSub.publish('play-file', fsol1);
+//        PubSub.publish('play-file', fsol2);
     }, 10000);
 
 }
