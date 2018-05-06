@@ -27,8 +27,8 @@ export function start(app_div) {
         e(MainMenu, { key: "main-menu" }),
         e(NowPlaying, { key: "now-playing" }),
         e(AudioDemo, { key: "audio-demo" }),
-        e(Album, { key: "album" }),
-        e(SearchResults, { key: "search-results" }),
+//        e(Album, { key: "album" }),
+//        e(SearchResults, { key: "search-results" }),
     ]);
 
     ReactDOM.render(app, app_div);
@@ -36,8 +36,9 @@ export function start(app_div) {
     setTimeout(() => {
         const fsol1 = "/lud/music/artists/future-sound-of-london/1994.lifeforms/disc1.m4a";
         const fsol2 = "/lud/music/artists/future-sound-of-london/1994.lifeforms/disc2.m4a";
+        const tony3 = "/lud/music/artists/tony-dize/2015.la-melodia-de-la-calle-3rd-season/disc1.m4a";
 
-//        PubSub.publish('play-file', fsol2);
+//        PubSub.publish('play-file', tony3);
     }, 10000);
 
 }

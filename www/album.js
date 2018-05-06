@@ -15,7 +15,7 @@ function artFilename(discFilename) {
     parts.pop();
     parts.push('cover.jpg');
     const ret = parts.join('/');
-    console.log('constructed cover art filename:', ret);
+    // console.log('constructed cover art filename:', ret);
     return ret;
 }
 
@@ -24,7 +24,7 @@ function cueFilename(discFilename) {
     parts.pop();
     parts.push('cue');
     const ret = parts.join('.');
-    console.log('constructed cue filename:', ret);
+    // console.log('constructed cue filename:', ret);
     return ret;
 }
 
@@ -39,7 +39,7 @@ export class Album extends React.Component {
     componentDidMount() {
         this.subscription = PubSub.subscribe('now-playing', (topic, event) => {
             if (this.state.audioFile != event.src) {
-                console.log('new file!', event.src);
+                // console.log('new file!', event.src);
                 const artFile = artFilename(event.src);
                 const cueFile = cueFilename(event.src);
 
@@ -53,7 +53,7 @@ export class Album extends React.Component {
                 );
             }
 
-            console.log('now-playing event', event);
+            // console.log('now-playing event', event);
         });
     }
 
@@ -64,7 +64,7 @@ export class Album extends React.Component {
     }
 
     render() {
-        console.log('rendering', this.state.cueData);
+        // console.log('rendering', this.state.cueData);
 
         if (this.state.artFile) {
             const style = {

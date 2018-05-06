@@ -63,7 +63,7 @@ function restore(audioElement) {
         return false;
     }
 
-    console.log('initializing audio element from localStorage');
+    // console.log('initializing audio element from localStorage');
     const snapshot = JSON.parse(data);
     audioElement.volume = snapshot.volume;
     audioElement.src = snapshot.src;
@@ -97,7 +97,7 @@ export class AudioElement extends React.Component {
         });
 
         this.subscription = PubSub.subscribe('play-file', (topic, url) => {
-            console.log('playing new file', url);
+            // console.log('playing new file', url);
             this.audioRef.current.src = url;
             this.audioRef.current.play();
         });
