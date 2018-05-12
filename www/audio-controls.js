@@ -82,24 +82,16 @@ function Numbers(props) {
 
 class Slider extends React.PureComponent {
 
-    /* =================================================================
-     * FIXME:  this component still needs a draggable position indicator
-     * ================================================================= */
-
     constructor(props) {
         super(props);
 
-        this.sliderClicked = this.sliderClicked.bind(this);
+        this.handleChange = this.handleChange.bind(this);
         this.sliderRef = React.createRef();
     }
 
-    sliderClicked(event) {
-        const rect = this.sliderRef.current.getBoundingClientRect();
-        const relativePosition = event.clientX - rect.x;
-
-        const value = relativePosition / rect.width;
-        this.props.onChange(this.props.control, this.props.max * value);
-    }
+    handleChange(event) {
+        this.props.onChange(this.props.control, event.target.value);
+   }
 
     render() {
         const colors = this.props.colors;
@@ -117,30 +109,18 @@ class Slider extends React.PureComponent {
             position: "relative",
         };
 
-        const sliderBackground = {
-            borderRadius: "4px",
-            marginTop: ((size - 8) / 2) + "px",
-            height: "8px",
-            width: "100%",
-            background: colors.slider,
-            overflow: "hidden",
-            position: "relative",
+        const inputAttributes = {
+            style: {
+                height: size + "px",
+                width: "100%",
+            },
+            type: "range",
+            max: this.props.max,
+            value: this.props.value,
+            onChange: this.handleChange,
         };
 
-        const pos = Math.floor(this.props.value / this.props.max * 100);
-
-        const sliderPlayed = {
-            position: "absolute",
-            top: 0,
-            left: 0,
-            height: "8px",
-            width: pos + "%",
-            background: colors.played,
-        };
-
-        return e('div', { style },
-                 e('div', { style: sliderBackground, ref: this.sliderRef, onClick: this.sliderClicked },
-                   e('div', { style: sliderPlayed })));
+        return e('div', { style }, e('input', inputAttributes));
     }
 }
 
@@ -250,7 +230,7 @@ function Control(props) {
     case "volume":
         Element = Slider;
         attr.value = props.volume;
-        attr.max = 1.0;
+        attr.max = 1000;
         attr.grow = 1;
         break;
     }
@@ -351,7 +331,7 @@ export class AudioControls extends React.PureComponent {
             duration: (2 * 60 * 60 * 1000),
             forceMobile: window.innerWidth < forceMobile,
             mute: false,
-            volume: 1.0, // 0 to 1, floating point
+            volume: 1000, // 0 to 1000
         };
     }
 

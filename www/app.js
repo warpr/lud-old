@@ -12,6 +12,10 @@ import { NowPlaying } from '/lud/now-playing.js';
 import { AudioDemo } from '/lud/audio-controls.js';
 import { SearchResults } from '/lud/search-results.js';
 
+window.lûd = {
+    verbose: true
+};
+
 const e = React.createElement;
 
 export function start(app_div) {
@@ -38,7 +42,7 @@ export function start(app_div) {
         const fsol2 = "/lud/music/artists/future-sound-of-london/1994.lifeforms/disc2.m4a";
         const tony3 = "/lud/music/artists/tony-dize/2015.la-melodia-de-la-calle-3rd-season/disc1.m4a";
 
-        PubSub.publish('play-file', tony3);
+//        PubSub.publish('play-file', tony3);
     }, 10000);
 
 }
