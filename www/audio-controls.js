@@ -14,7 +14,9 @@ const forceMobile = 560; // force mobile view if screen width < this value
 function throttleEvent(type, name) {
     var running = false;
     var func = function() {
-        if (running) { return; }
+        if (running) {
+            return;
+        }
         running = true;
         requestAnimationFrame(function() {
             window.dispatchEvent(new CustomEvent(name));
@@ -22,22 +24,19 @@ function throttleEvent(type, name) {
         });
     };
     window.addEventListener(type, func);
-};
+}
 
-throttleEvent("resize", "lûd-raf-resize");
+throttleEvent('resize', 'lûd-raf-resize');
 
 function formatTime(seconds) {
-    const parts = [
-        Math.floor(seconds / 60 % 60),
-        Math.floor(seconds % 60)
-    ];
+    const parts = [Math.floor((seconds / 60) % 60), Math.floor(seconds % 60)];
 
     const hours = Math.floor(seconds / 60 / 60);
     if (hours) {
         parts.unshift(hours);
     }
 
-    return parts.join(":").replace(/:(\d)\b/g, ":0$1");
+    return parts.join(':').replace(/:(\d)\b/g, ':0$1');
 }
 
 function Text(props) {
@@ -48,15 +47,15 @@ function Numbers(props) {
     const colors = props.colors;
 
     const style = {
-        background: "inherit",
-        padding: "0 5px",
+        background: 'inherit',
+        padding: '0 5px',
         margin: 0,
         border: 0,
-        minWidth: size + "px",
-        height: size + "px",
-        lineHeight: size + "px",
-        flex: "0 1 auto",
-        fontSize: "14px",
+        minWidth: size + 'px',
+        height: size + 'px',
+        lineHeight: size + 'px',
+        flex: '0 1 auto',
+        fontSize: '14px',
     };
 
     const children = [
@@ -64,22 +63,23 @@ function Numbers(props) {
             key: 'part1',
             text: formatTime(props.value[0]),
             color: colors.foreground,
-        })
+        }),
     ];
 
     if (props.value.length > 1) {
-        children.push(e(Text, {
-            key: 'part2',
-            text: " / " + formatTime(props.value[1]),
-            color: colors.subdued,
-        }));
+        children.push(
+            e(Text, {
+                key: 'part2',
+                text: ' / ' + formatTime(props.value[1]),
+                color: colors.subdued,
+            })
+        );
     }
 
     return e('div', { style }, children);
 }
 
 class Slider extends React.PureComponent {
-
     constructor(props) {
         super(props);
 
@@ -89,30 +89,30 @@ class Slider extends React.PureComponent {
 
     handleChange(event) {
         this.props.onChange(this.props.control, event.target.value);
-   }
+    }
 
     render() {
         const colors = this.props.colors;
 
         const style = {
-            padding: "0 5px",
+            padding: '0 5px',
             margin: 0,
             border: 0,
-            minWidth: (size * 2) + "px",
-            height: size + "px",
+            minWidth: size * 2 + 'px',
+            height: size + 'px',
             flexShrink: 0,
             flexGrow: this.props.grow,
-            flexBasis: "auto",
-            background: "inherit",
-            position: "relative",
+            flexBasis: 'auto',
+            background: 'inherit',
+            position: 'relative',
         };
 
         const inputAttributes = {
             style: {
-                height: size + "px",
-                width: "100%",
+                height: size + 'px',
+                width: '100%',
             },
-            type: "range",
+            type: 'range',
             max: this.props.max,
             value: this.props.value,
             onChange: this.handleChange,
@@ -131,17 +131,17 @@ class Button extends React.PureComponent {
 
     handleClick() {
         switch (this.props.control) {
-        case "pause":
-            return this.props.onChange('playing', false);
-        case "play":
-            return this.props.onChange('playing', true);
-        case "pausePlay":
-            return this.props.onChange('playing', !this.props.playing);
-        case "muteUnmute":
-            const isMuted = this.props.mute || this.props.volume == 0;
-            return this.props.onChange('mute', !isMuted);
-        default:
-            return this.props.onChange(this.props.control, true);
+            case 'pause':
+                return this.props.onChange('playing', false);
+            case 'play':
+                return this.props.onChange('playing', true);
+            case 'pausePlay':
+                return this.props.onChange('playing', !this.props.playing);
+            case 'muteUnmute':
+                const isMuted = this.props.mute || this.props.volume == 0;
+                return this.props.onChange('mute', !isMuted);
+            default:
+                return this.props.onChange(this.props.control, true);
         }
     }
 
@@ -151,39 +151,45 @@ class Button extends React.PureComponent {
             padding: 0,
             margin: 0,
             border: 0,
-            width: "32px",
-            height: size + "px",
-            background: "inherit",
+            width: '32px',
+            height: size + 'px',
+            background: 'inherit',
             color: this.props.selected
                 ? colors.selected
-                : (this.props.disabled ? colors.subdued : colors.foreground),
-            display: "block",
-            flex: "0 0 auto",
+                : this.props.disabled
+                    ? colors.subdued
+                    : colors.foreground,
+            display: 'block',
+            flex: '0 0 auto',
         };
 
-        const iconOptions = { className: "fa fa-fw fa-" + this.props.icon };
-        return e('button', { style, onClick: this.handleClick }, e('i', iconOptions));
+        const iconOptions = { className: 'fa fa-fw fa-' + this.props.icon };
+        return e(
+            'button',
+            { style, onClick: this.handleClick },
+            e('i', iconOptions)
+        );
     }
 }
 
 function Control(props) {
     const iconMap = {
-        prevAlbum: "fast-backward",
-        prevTrack: "backward",
-        pause: "pause",
-        play: "play",
-        nextTrack: "forward",
-        nextAlbum: "fast-forward",
+        prevAlbum: 'fast-backward',
+        prevTrack: 'backward',
+        pause: 'pause',
+        play: 'play',
+        nextTrack: 'forward',
+        nextAlbum: 'fast-forward',
         // (un)mute show the current state, not the state after pressing the button
-        mute: "volume-up",
-        unmute: "volume-off",
+        mute: 'volume-up',
+        unmute: 'volume-off',
     };
 
     const attr = {
         colors: props.colors,
         control: props.control,
         onChange: props.onChange,
-    }
+    };
 
     if (iconMap[props.control]) {
         attr.icon = iconMap[props.control];
@@ -192,48 +198,48 @@ function Control(props) {
     let Element = Button;
 
     switch (props.control) {
-    case "pause":
-        attr.disabled = !props.playing;
-        break;
-    case "play":
-        attr.disabled = props.playing;
-        break;
-    case "pausePlay":
-        attr.icon = props.playing ? iconMap.pause : iconMap.play;
-        attr.playing = props.playing;
-        break;
-    case "muteUnmute":
-        if (props.mute || props.volume == 0) {
-            attr.icon = iconMap.unmute;
-        } else {
-            attr.icon = iconMap.mute;
-        }
-        attr.mute = props.mute;
-        attr.volume = props.volume;
-        break;
-    case "configuration":
-        attr.icon = props.configuration;
-        break;
-    case "position":
-        Element = Numbers;
-        attr.value = [ props.position ];
-        break;
-    case "positionDuration":
-        Element = Numbers;
-        attr.value = [ props.position, props.duration ];
-        break;
-    case "currentTime":
-        Element = Slider;
-        attr.value = props.position;
-        attr.max = props.duration;
-        attr.grow = 6;
-        break;
-    case "volume":
-        Element = Slider;
-        attr.value = props.volume;
-        attr.max = 1000;
-        attr.grow = 1;
-        break;
+        case 'pause':
+            attr.disabled = !props.playing;
+            break;
+        case 'play':
+            attr.disabled = props.playing;
+            break;
+        case 'pausePlay':
+            attr.icon = props.playing ? iconMap.pause : iconMap.play;
+            attr.playing = props.playing;
+            break;
+        case 'muteUnmute':
+            if (props.mute || props.volume == 0) {
+                attr.icon = iconMap.unmute;
+            } else {
+                attr.icon = iconMap.mute;
+            }
+            attr.mute = props.mute;
+            attr.volume = props.volume;
+            break;
+        case 'configuration':
+            attr.icon = props.configuration;
+            break;
+        case 'position':
+            Element = Numbers;
+            attr.value = [props.position];
+            break;
+        case 'positionDuration':
+            Element = Numbers;
+            attr.value = [props.position, props.duration];
+            break;
+        case 'currentTime':
+            Element = Slider;
+            attr.value = props.position;
+            attr.max = props.duration;
+            attr.grow = 6;
+            break;
+        case 'volume':
+            Element = Slider;
+            attr.value = props.volume;
+            attr.max = 1000;
+            attr.grow = 1;
+            break;
     }
 
     return e(Element, attr);
@@ -243,28 +249,30 @@ function AudioControlsUI(props) {
     const colors = props.colors;
 
     const style = {
-        padding: "0 5px",
+        padding: '0 5px',
         margin: 0,
         border: 0,
-        width: "100%",
-        height: size + "px",
+        width: '100%',
+        height: size + 'px',
         background: colors.background,
-        display: "flex",
-        fontSize: "18px",
+        display: 'flex',
+        fontSize: '18px',
     };
 
-    const children = Array.from(props.controls).map(name => e(Control, {
-        colors: colors,
-        key: name,
-        control: name,
-        configuration: props.configuration,
-        position: props.position,
-        duration: props.duration,
-        playing: props.playing,
-        mute: props.mute,
-        volume: props.volume,
-        onChange: props.onChange,
-    }));
+    const children = Array.from(props.controls).map(name =>
+        e(Control, {
+            colors: colors,
+            key: name,
+            control: name,
+            configuration: props.configuration,
+            position: props.position,
+            duration: props.duration,
+            playing: props.playing,
+            mute: props.mute,
+            volume: props.volume,
+            onChange: props.onChange,
+        })
+    );
 
     return e('div', { style }, children);
 }
@@ -277,45 +285,45 @@ const buttonConfigurationOrder = {
 };
 
 buttonConfigurations.forcedMobile = new Set([
-    "prevTrack",
-    "pausePlay",
-    "nextTrack",
-    "currentTime",
-    "position",
+    'prevTrack',
+    'pausePlay',
+    'nextTrack',
+    'currentTime',
+    'position',
 ]);
 
 buttonConfigurations.mobile = new Set([
-    "prevTrack",
-    "pausePlay",
-    "nextTrack",
-    "currentTime",
-    "position",
-    "configuration",
+    'prevTrack',
+    'pausePlay',
+    'nextTrack',
+    'currentTime',
+    'position',
+    'configuration',
 ]);
 
 buttonConfigurations.tablet = new Set([
-    "prevTrack",
-    "pausePlay",
-    "nextTrack",
-    "currentTime",
-    "positionDuration",
-    "muteUnmute",
-    "volume",
-    "configuration",
+    'prevTrack',
+    'pausePlay',
+    'nextTrack',
+    'currentTime',
+    'positionDuration',
+    'muteUnmute',
+    'volume',
+    'configuration',
 ]);
 
 buttonConfigurations.desktop = new Set([
-    "prevAlbum",
-    "prevTrack",
-    "pause",
-    "play",
-    "nextTrack",
-    "nextAlbum",
-    "currentTime",
-    "positionDuration",
-    "muteUnmute",
-    "volume",
-    "configuration",
+    'prevAlbum',
+    'prevTrack',
+    'pause',
+    'play',
+    'nextTrack',
+    'nextAlbum',
+    'currentTime',
+    'positionDuration',
+    'muteUnmute',
+    'volume',
+    'configuration',
 ]);
 
 export class AudioControls extends React.PureComponent {
@@ -345,13 +353,13 @@ export class AudioControls extends React.PureComponent {
     }
 
     componentDidMount() {
-        window.addEventListener("lûd-raf-resize", this.handleResize);
+        window.addEventListener('lûd-raf-resize', this.handleResize);
 
         this._mounted = true;
     }
 
     componentWillUnmount() {
-        window.removeEventListener("lûd-raf-resize", this.handleResize);
+        window.removeEventListener('lûd-raf-resize', this.handleResize);
 
         this._mounted = false;
 
@@ -369,10 +377,11 @@ export class AudioControls extends React.PureComponent {
         const duration = this.props.glue.getDuration();
         const volume = this.props.glue.getVolume() * 1000; // 0 to 1000
 
-        if (position != this.state.position
-            || duration != this.state.duration
-            || volume != this.state.volume
-           ) {
+        if (
+            position != this.state.position ||
+            duration != this.state.duration ||
+            volume != this.state.volume
+        ) {
             this.setState({ position, duration, volume });
         }
     }
@@ -418,13 +427,19 @@ export class AudioControls extends React.PureComponent {
     render() {
         setTimeout(() => this.state.glue.connectControl(this), 0);
 
-        return e(AudioControlsUI, Object.assign({
-            controls: this.state.forceMobile
-                ? buttonConfigurations.forcedMobile
-                : buttonConfigurations[this.state.configuration],
-            onChange: this.handleChange,
-            colors: this.props.colors,
-        }, this.state));
+        return e(
+            AudioControlsUI,
+            Object.assign(
+                {
+                    controls: this.state.forceMobile
+                        ? buttonConfigurations.forcedMobile
+                        : buttonConfigurations[this.state.configuration],
+                    onChange: this.handleChange,
+                    colors: this.props.colors,
+                },
+                this.state
+            )
+        );
     }
 }
 
@@ -452,7 +467,7 @@ export class AudioDemo extends React.Component {
     render() {
         const style = {
             margin: 0,
-            padding: "10px 10px 0 10px",
+            padding: '10px 10px 0 10px',
             border: 0,
         };
 

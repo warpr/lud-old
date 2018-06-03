@@ -33,10 +33,20 @@ class AudioElementOutput {
             this.audioGlue.tick();
         });
 
-        this.playbackEvents = ['ended', 'pause', 'playing', 'progress', 'seeked', 'timeupdate', 'volumechange'];
+        this.playbackEvents = [
+            'ended',
+            'pause',
+            'playing',
+            'progress',
+            'seeked',
+            'timeupdate',
+            'volumechange',
+        ];
 
         this.playbackEvents.map(eventName => {
-            this.target.addEventListener(eventName, this.tick, { passive: true });
+            this.target.addEventListener(eventName, this.tick, {
+                passive: true,
+            });
         });
     }
 
@@ -93,7 +103,6 @@ class AudioElementOutput {
 }
 
 export class AudioGlue {
-
     constructor() {
         this.controls = new Set();
         this.outputs = [];
@@ -116,7 +125,10 @@ export class AudioGlue {
         if (something instanceof HTMLAudioElement) {
             this.outputs.push(new AudioElementOutput(this, something));
         } else {
-            console.log('ERROR: Could not connect to unfamiliar audio interface', something);
+            console.log(
+                'ERROR: Could not connect to unfamiliar audio interface',
+                something
+            );
         }
 
         this.tick();
@@ -124,12 +136,13 @@ export class AudioGlue {
 
     disconnectOutput(something) {
         // FIXME: untested
-        this.outputs.map(
-            (output, idx) => output.target === something ? idx : null
-        ).filter().map(idx => {
-            this.outputs[idx].disconnect();
-            this.outputs.splice(idx, 1)
-        });
+        this.outputs
+            .map((output, idx) => (output.target === something ? idx : null))
+            .filter()
+            .map(idx => {
+                this.outputs[idx].disconnect();
+                this.outputs.splice(idx, 1);
+            });
     }
 
     loadMedia(file, position) {

@@ -10,7 +10,7 @@ function broadcastAudioElement(audioElement) {
     const event = {
         src: audioElement.src,
         paused: audioElement.paused,
-        currentTime: audioElement.currentTime
+        currentTime: audioElement.currentTime,
     };
     PubSub.publish('now-playing', event);
 }
@@ -56,4 +56,4 @@ export const audioElement = {
     broadcast: broadcastAudioElement,
     restore: restoreAudioElement,
     snapshot: snapshotAudioElement,
-}
+};

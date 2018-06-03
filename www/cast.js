@@ -10,8 +10,14 @@ const applicationId = '5DC02A2C';
 const localIp = '192.168.100.25';
 
 //         const disc = "http://" + localIp + "/lud/music/series/techpara/2009.we-love-techpara-70min-70songs/disc1.m4a";
-const disc = "http://" + localIp + "/lud/music/artists/future-sound-of-london/1994.lifeforms/disc1.m4a";
-const albumArt = "http://" + localIp + "/lud/music/artists/future-sound-of-london/1994.lifeforms/cover.jpg";
+const disc =
+    'http://' +
+    localIp +
+    '/lud/music/artists/future-sound-of-london/1994.lifeforms/disc1.m4a';
+const albumArt =
+    'http://' +
+    localIp +
+    '/lud/music/artists/future-sound-of-london/1994.lifeforms/cover.jpg';
 
 /*
   NOTES
@@ -61,10 +67,14 @@ function startCasting() {
         const mediaSession = castSession.getMediaSession();
 
         console.log(
-            'currentTime?', mediaSession.getEstimatedTime(),
-            'of', player.duration,
-            'on', castSession.getCastDevice().friendlyName,
-            'volume', player.volumeLevel,
+            'currentTime?',
+            mediaSession.getEstimatedTime(),
+            'of',
+            player.duration,
+            'on',
+            castSession.getCastDevice().friendlyName,
+            'volume',
+            player.volumeLevel
         );
     }, 2000);
 
@@ -78,34 +88,36 @@ function startCasting() {
     window.rp = player;
     window.rpc = playerController;
 
-    const mediaInfo = new chrome.cast.media.MediaInfo(disc, "audio/mp4");
+    const mediaInfo = new chrome.cast.media.MediaInfo(disc, 'audio/mp4');
 
     mediaInfo.metadata = new chrome.cast.media.MusicTrackMediaMetadata();
-    mediaInfo.metadata.albumArtist = "The Future Sound of London";
-    mediaInfo.metadata.albumName = "Lifeforms";
-    mediaInfo.metadata.artist = "The Future Sound of London";
+    mediaInfo.metadata.albumArtist = 'The Future Sound of London';
+    mediaInfo.metadata.albumName = 'Lifeforms';
+    mediaInfo.metadata.artist = 'The Future Sound of London';
     mediaInfo.metadata.discNumber = 1;
-    mediaInfo.metadata.images = [
-        new chrome.cast.Image(albumArt),
-    ];
-    mediaInfo.metadata.releaseDate = "1994-05-16";
-    mediaInfo.metadata.title = "Lifeforms";
+    mediaInfo.metadata.images = [new chrome.cast.Image(albumArt)];
+    mediaInfo.metadata.releaseDate = '1994-05-16';
+    mediaInfo.metadata.title = 'Lifeforms';
     mediaInfo.metadata.trackNumber = 1;
 
-//             setInterval(function () {
-//                 const d = new Date();
-//                 const title = "Cascade " + d.toISOString();
-//                 console.log('Changing title to', title);
-//                 mediaInfo.metadata.title = title;
+    //             setInterval(function () {
+    //                 const d = new Date();
+    //                 const title = "Cascade " + d.toISOString();
+    //                 console.log('Changing title to', title);
+    //                 mediaInfo.metadata.title = title;
 
-//                 const request = new chrome.cast.media.LoadRequest(mediaInfo);
-//                 castSession.loadMedia(request);
-//             }, 2000);
+    //                 const request = new chrome.cast.media.LoadRequest(mediaInfo);
+    //                 castSession.loadMedia(request);
+    //             }, 2000);
 
     const request = new chrome.cast.media.LoadRequest(mediaInfo);
     castSession.loadMedia(request).then(
-        function() { console.log('Load succeed'); },
-        function(errorCode) { console.log('Load Media error code: ', errorCode); }
+        function() {
+            console.log('Load succeed');
+        },
+        function(errorCode) {
+            console.log('Load Media error code: ', errorCode);
+        }
     );
 }
 
@@ -123,24 +135,23 @@ function initializeCastApi() {
         cast.framework.CastContextEventType.SESSION_STATE_CHANGED,
         function(event) {
             switch (event.sessionState) {
-            case cast.framework.SessionState.SESSION_STARTED:
-                console.log('Session started');
-                startCasting();
-                break;
-            case cast.framework.SessionState.SESSION_RESUMED:
-                console.log('Session resumed');
-                startCasting();
-                break;
-            case cast.framework.SessionState.SESSION_ENDED:
-                console.log('Session ended');
-                break;
-            default:
-                console.log('CastContext: CastSession disconnected');
-                break;
+                case cast.framework.SessionState.SESSION_STARTED:
+                    console.log('Session started');
+                    startCasting();
+                    break;
+                case cast.framework.SessionState.SESSION_RESUMED:
+                    console.log('Session resumed');
+                    startCasting();
+                    break;
+                case cast.framework.SessionState.SESSION_ENDED:
+                    console.log('Session ended');
+                    break;
+                default:
+                    console.log('CastContext: CastSession disconnected');
+                    break;
             }
         }
     );
-
 }
 
 export function init() {

@@ -29,11 +29,15 @@ function cueFilename(discFilename) {
 }
 
 export class Album extends React.Component {
+    constructor(props) {
+        super(props);
 
-    constructor (props) {
-        super (props);
-
-        this.state = { artFile: null, cueFile: null, audioFile: null, cueData: null };
+        this.state = {
+            artFile: null,
+            cueFile: null,
+            audioFile: null,
+            cueData: null,
+        };
     }
 
     componentDidMount() {
@@ -43,14 +47,16 @@ export class Album extends React.Component {
                 const artFile = artFilename(event.src);
                 const cueFile = cueFilename(event.src);
 
-                this.setState({audioFile: event.src, artFile, cueFile });
+                this.setState({ audioFile: event.src, artFile, cueFile });
 
-                fetch(cueFile).then(
-                    response => response.text(),
-                ).then(
-                    body => this.setState({ cueData: parseCue(body) }),
-                    err => { console.log('error loading cue file', cueFile, err); }
-                );
+                fetch(cueFile)
+                    .then(response => response.text())
+                    .then(
+                        body => this.setState({ cueData: parseCue(body) }),
+                        err => {
+                            console.log('error loading cue file', cueFile, err);
+                        }
+                    );
             }
 
             // console.log('now-playing event', event);
@@ -68,15 +74,14 @@ export class Album extends React.Component {
 
         if (this.state.artFile) {
             const style = {
-                margin: "10px",
+                margin: '10px',
                 padding: 0,
                 border: 0,
-                maxWidth: "400px",
+                maxWidth: '400px',
             };
-            return e('img', {src: this.state.artFile, style });
+            return e('img', { src: this.state.artFile, style });
         }
 
         return null;
     }
 }
-

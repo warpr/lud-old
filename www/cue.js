@@ -18,7 +18,7 @@ function framesToSeconds(str) {
 
     // 75 frames per second.
 
-    return (minutes * 60) + seconds + (frames / 75);
+    return minutes * 60 + seconds + frames / 75;
 }
 
 function removeQuotes(str) {
@@ -35,57 +35,57 @@ function removeQuotes(str) {
 }
 
 function parseCommand(command, args, track) {
-    switch(command) {
-    case "REM":
-        if (args[0] == 'MUSICBRAINZ_ALBUM_ID' && args.length > 1) {
-            return { "mbid": args[1] };
-        }
+    switch (command) {
+        case 'REM':
+            if (args[0] == 'MUSICBRAINZ_ALBUM_ID' && args.length > 1) {
+                return { mbid: args[1] };
+            }
 
-        if (args[0] == 'COMMENT' && args.length > 1) {
-            args.shift();
-            const comments = track.comments ? track.comments : [];
-            comments.push(args.join(' '));
-            return { comments: comments };
-        }
+            if (args[0] == 'COMMENT' && args.length > 1) {
+                args.shift();
+                const comments = track.comments ? track.comments : [];
+                comments.push(args.join(' '));
+                return { comments: comments };
+            }
 
-        console.log("Skipping unrecognized REM line", command, args);
-        return {};
-    case "CATALOG":
-        return { "barcode": args.join(' ') };
-    case "TITLE":
-        return { "title": removeQuotes(args.join(' ')) };
-    case "PERFORMER":
-        return { "artist": removeQuotes(args.join(' ')) };
-    case "FILE":
-        const format = args.pop();
-        return {
-            "filename": removeQuotes(args.join(' ')),
-            "format": format
-        };
-    case "TRACK":
-        if (args.pop() != "AUDIO") {
-            console.log("WARNING: non-audio tracks are untested");
-        }
-        return { "pos": parseInt(args[0], 10) };
-    case "INDEX":
-        const startTime = args.pop();
-        const idx = args.pop();
-        if (parseInt(idx, 10) !== 1) {
-            console.log("WARNING: only INDEX 01 is supported");
+            console.log('Skipping unrecognized REM line', command, args);
             return {};
-        }
+        case 'CATALOG':
+            return { barcode: args.join(' ') };
+        case 'TITLE':
+            return { title: removeQuotes(args.join(' ')) };
+        case 'PERFORMER':
+            return { artist: removeQuotes(args.join(' ')) };
+        case 'FILE':
+            const format = args.pop();
+            return {
+                filename: removeQuotes(args.join(' ')),
+                format: format,
+            };
+        case 'TRACK':
+            if (args.pop() != 'AUDIO') {
+                console.log('WARNING: non-audio tracks are untested');
+            }
+            return { pos: parseInt(args[0], 10) };
+        case 'INDEX':
+            const startTime = args.pop();
+            const idx = args.pop();
+            if (parseInt(idx, 10) !== 1) {
+                console.log('WARNING: only INDEX 01 is supported');
+                return {};
+            }
 
-        const start = {
-            "minutes-seconds-frames": startTime,
-            "seconds": framesToSeconds(startTime),
-        };
+            const start = {
+                'minutes-seconds-frames': startTime,
+                seconds: framesToSeconds(startTime),
+            };
 
-        return { start: start };
-    case "":
-        return {};
-    default:
-        console.log("Unrecognized command:", command, args);
-        return {};
+            return { start: start };
+        case '':
+            return {};
+        default:
+            console.log('Unrecognized command:', command, args);
+            return {};
     }
 }
 
@@ -94,18 +94,20 @@ export function parseCue(cueStr) {
 
     const tracks = lines.reduce((memo, line) => {
         if (!memo.length) {
-            memo[0] = {}
+            memo[0] = {};
         }
 
         const parts = line.split(/ /);
 
         const command = parts.shift();
         if (command == 'TRACK') {
-            memo.push({})
+            memo.push({});
         }
 
-        Object.assign(memo[memo.length - 1],
-            parseCommand(command, parts, memo[memo.length - 1]));
+        Object.assign(
+            memo[memo.length - 1],
+            parseCommand(command, parts, memo[memo.length - 1])
+        );
 
         return memo;
     }, []);
@@ -113,5 +115,3 @@ export function parseCue(cueStr) {
     // return lines;
     return tracks;
 }
-
-

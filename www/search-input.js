@@ -9,28 +9,32 @@
 const e = React.createElement;
 
 export class SearchInput extends React.Component {
-    constructor (props) {
+    constructor(props) {
         super(props);
 
         this.state = { query: '' };
         this.handleChange = this.handleChange.bind(this);
 
-        this.search = _.debounce(value => {
-            PubSub.publish('search-query', value);
-        }, 300, { maxWait: 1000 });
+        this.search = _.debounce(
+            value => {
+                PubSub.publish('search-query', value);
+            },
+            300,
+            { maxWait: 1000 }
+        );
 
         setTimeout(() => {
-            const value = "calle";
+            const value = 'calle';
 
             PubSub.publish('search-query', value);
-            this.setState({query: value});
+            this.setState({ query: value });
         }, 1000);
     }
 
     handleChange(event) {
         const value = event.target.value;
 
-        this.setState({query: value});
+        this.setState({ query: value });
         this.search(value);
     }
 
@@ -38,7 +42,7 @@ export class SearchInput extends React.Component {
         const attr = {
             className: 'pt-input',
             onChange: this.handleChange,
-            placeholder: "Search...",
+            placeholder: 'Search...',
             type: 'text',
             value: this.state.query,
         };

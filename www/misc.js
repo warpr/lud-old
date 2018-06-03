@@ -7,21 +7,20 @@
  */
 
 export function updateTitle(str) {
-    if (str === "") {
-        window.document.title = "Lûd";
+    if (str === '') {
+        window.document.title = 'Lûd';
     } else {
-        window.document.title = str + " | Lûd";
+        window.document.title = str + ' | Lûd';
     }
 }
 
 export const controls = {
-    REWIND: "\u23e9",
-    FFWD: "\u23ea",
-    NEXT: "\u23ed",
-    PREV: "\u23ee",
-    PAUSE: "\u23f8",
-    STOP: "\u23f9",
-    PLAY: "\u25b6\ufe0f",
-    EJECT: "\u23cf\ufe0f",
-}
-
+    REWIND: '\u23e9',
+    FFWD: '\u23ea',
+    NEXT: '\u23ed',
+    PREV: '\u23ee',
+    PAUSE: '\u23f8',
+    STOP: '\u23f9',
+    PLAY: '\u25b6\ufe0f',
+    EJECT: '\u23cf\ufe0f',
+};
