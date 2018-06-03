@@ -14,11 +14,11 @@ function artistCredit(credit) {
     }, "");
 }
 
-function searchResultCard(id, title, body) {
+function searchResultCard(id, type, title, body) {
     const cardOptions = {
         elevation: Blueprint.Core.Card.ELEVATION_ONE,
         interactive: true,
-        onClick: e => console.log('card clicked', e),
+        onClick: e => PubSub.publish('play-mbid', {mbid: id, type: type}),
         className: "pt-dark",
     };
 
@@ -33,13 +33,14 @@ function searchResultCard(id, title, body) {
 }
 
 const cards = {
-    artist: record => searchResultCard(record.id, record.names.first(), ''),
+    artist: record => searchResultCard(record.id, record.type, record.names.first(), ''),
     release: record => searchResultCard(
         record.id,
+        record.type,
         record.title,
         'by ' + artistCredit(record.credit)
     ),
-    track: record => searchResultCard(record.id, record.title, [
+    track: record => searchResultCard(record.id, record.type, record.title, [
         'from ' + record.release.get('title'),
         e('br', {key: "newline"}),
         'by ' + artistCredit(record.credit)

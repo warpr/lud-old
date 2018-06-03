@@ -6,79 +6,15 @@
  *   it under the terms of copyleft-next 0.3.1.  See copyleft-next-0.3.1.txt.
  */
 
+import { AudioControls, blueprintTheme } from '/lud/audio-controls.js';
+
 const e = React.createElement;
-
-function broadcast(audioElement) {
-    const event = {
-        src: audioElement.src,
-        paused: audioElement.paused,
-        currentTime: audioElement.currentTime
-    };
-    PubSub.publish('now-playing', event);
-}
-
-function snapshot(audioElement) {
-    if (!audioElement) {
-        return;
-    }
-
-    const snapshot = {
-        src: audioElement.src,
-        currentTime: audioElement.currentTime,
-        paused: audioElement.paused,
-        volume: audioElement.volume,
-    };
-
-    window.localStorage.setItem('lud-now-playing', JSON.stringify(snapshot));
-}
-
-function throttleOnAnimationFrame(callback) {
-    let requestId = null;
-
-    return function() {
-        const context = this;
-        const args = arguments;
-
-        cancelAnimationFrame(requestId);
-
-        requestId = requestAnimationFrame(() => {
-            callback.apply(context, args);
-            requestId = null;
-        });
-    };
-}
-
-const tick = throttleOnAnimationFrame(event => {
-    snapshot(event.target);
-    broadcast(event.target);
-});
-
-function restore(audioElement) {
-    if (!audioElement) {
-        return false;
-    }
-
-    const data = window.localStorage.getItem('lud-now-playing');
-    if (!data) {
-        return false;
-    }
-
-    // console.log('initializing audio element from localStorage');
-    const snapshot = JSON.parse(data);
-    audioElement.volume = snapshot.volume;
-    audioElement.src = snapshot.src;
-    audioElement.currentTime = snapshot.currentTime;
-    if (!snapshot.paused) {
-        audioElement.play();
-    }
-
-    return true;
-}
 
 export class AudioElement extends React.Component {
     constructor(props) {
         super(props);
         this.audioRef = React.createRef();
+        this.glue = window.lûd.glue;
     }
 
     shouldComponentUpdate() {
@@ -89,28 +25,14 @@ export class AudioElement extends React.Component {
 
     componentDidMount() {
         const audioElement = this.audioRef.current;
-        restore(audioElement);
 
-        const playbackEvents = ['ended', 'pause', 'playing', 'progress', 'seeked', 'timeupdate', 'volumechange'];
-        playbackEvents.map(eventName => {
-            audioElement.addEventListener(eventName, tick, { passive: true });
-        });
-
-        this.subscription = PubSub.subscribe('play-file', (topic, url) => {
-            // console.log('playing new file', url);
-            this.audioRef.current.src = url;
-            this.audioRef.current.play();
-        });
+        this.glue.connectOutput(audioElement);
     }
 
     componentWillUnmount() {
-        if (this.interval) {
-            clearInterval(this.interval);
-        }
+        const audioElement = this.audioRef.current;
 
-        if (this.subscription) {
-            PubSub.unsubscribe(this.subscription);
-        }
+        this.glue.disconnectOutput(audioElement);
     }
 
     render() {
@@ -133,6 +55,14 @@ export class NowPlaying extends React.Component {
             border: 0,
         };
 
-        return e('div', { style }, e(AudioElement, {}));
+        return e('div', { style }, [
+            e(AudioElement, { key: 'audio-element'}),
+            e('p', { key: 'audio-demo-divider' }),
+            e(AudioControls, {
+                key: 'audio-controls',
+                colors: blueprintTheme,
+                glue: window.lûd.glue
+            }),
+        ]);
     }
 }

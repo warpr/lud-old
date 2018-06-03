@@ -52,6 +52,7 @@
         <!-- Lûd -->
         <script src="/lud/js/lodash/lodash.js"></script>
         <script src="/lud/js/immutable/dist/immutable.js"></script>
+        <script src="/lud/js/immutable-devtools/dist/index.js"></script>
         <script src="/lud/js/pubsub-js/src/pubsub.js"></script>
         <script src="/lud/js/lunr/lunr.js"></script>
 
@@ -59,10 +60,11 @@
 
         <script type="module">
          import * as app from '/lud/app.js';
-         import * as db from '/lud/db.js';
 
          app.start(document.querySelector("#app"));
-         db.loadIndex();
+
+         immutableDevTools(Immutable);
+
         </script>
     </body>
 </html>

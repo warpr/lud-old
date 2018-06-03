@@ -20,7 +20,7 @@ export class SearchInput extends React.Component {
         }, 300, { maxWait: 1000 });
 
         setTimeout(() => {
-            const value = "zorro";
+            const value = "calle";
 
             PubSub.publish('search-query', value);
             this.setState({query: value});

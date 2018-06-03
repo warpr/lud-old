@@ -101,7 +101,13 @@ function initSearch(result) {
 
     misc.updateTitle("");
 
-    const token = PubSub.subscribe('search-query', (topic, searchTerm) => {
+    console.log('search initialized');
+    window.searchKuno = result;
+
+    PubSub.subscribe('id-lookup', (topic, data) => {
+    });
+
+    PubSub.subscribe('search-query', (topic, searchTerm) => {
         const search = searchTerm.toLowerCase();
 
         const results = idx.query(function (q) {

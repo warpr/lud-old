@@ -26,9 +26,7 @@ function throttleEvent(type, name) {
 
 throttleEvent("resize", "lûd-raf-resize");
 
-function formatTime(milliseconds) {
-    const seconds = milliseconds / 1000;
-
+function formatTime(seconds) {
     const parts = [
         Math.floor(seconds / 60 % 60),
         Math.floor(seconds % 60)
@@ -202,6 +200,7 @@ function Control(props) {
         break;
     case "pausePlay":
         attr.icon = props.playing ? iconMap.pause : iconMap.play;
+        attr.playing = props.playing;
         break;
     case "muteUnmute":
         if (props.mute || props.volume == 0) {
@@ -209,6 +208,8 @@ function Control(props) {
         } else {
             attr.icon = iconMap.mute;
         }
+        attr.mute = props.mute;
+        attr.volume = props.volume;
         break;
     case "configuration":
         attr.icon = props.configuration;
@@ -321,26 +322,59 @@ export class AudioControls extends React.PureComponent {
     constructor(props) {
         super(props);
 
+        this._mounted = false;
         this.handleChange = this.handleChange.bind(this);
         this.handleResize = this.handleResize.bind(this);
 
         this.state = {
             configuration: 'desktop',
-            playing: true,
-            position: 408000, // in milli-seconds
-            duration: (2 * 60 * 60 * 1000),
             forceMobile: window.innerWidth < forceMobile,
-            mute: false,
-            volume: 1000, // 0 to 1000
+        };
+    }
+
+    static getDerivedStateFromProps(nextProps, prevState) {
+        return {
+            duration: nextProps.glue.getDuration(),
+            glue: nextProps.glue,
+            mute: nextProps.glue.isMute(),
+            playing: nextProps.glue.isPlaying(),
+            position: nextProps.glue.getCurrentTime(), // in milli-seconds
+            oldVolume: nextProps.glue.getVolume() * 1000, // 0 to 1000
+            volume: nextProps.glue.getVolume() * 1000, // 0 to 1000
         };
     }
 
     componentDidMount() {
         window.addEventListener("lûd-raf-resize", this.handleResize);
+
+        this._mounted = true;
     }
 
     componentWillUnmount() {
         window.removeEventListener("lûd-raf-resize", this.handleResize);
+
+        this._mounted = false;
+
+        if (this.state.glue) {
+            this.state.glue.disconnectControl(this);
+        }
+    }
+
+    tick() {
+        if (!this._mounted) {
+            return;
+        }
+
+        const position = this.props.glue.getCurrentTime();
+        const duration = this.props.glue.getDuration();
+        const volume = this.props.glue.getVolume() * 1000; // 0 to 1000
+
+        if (position != this.state.position
+            || duration != this.state.duration
+            || volume != this.state.volume
+           ) {
+            this.setState({ position, duration, volume });
+        }
     }
 
     handleResize(event) {
@@ -352,25 +386,38 @@ export class AudioControls extends React.PureComponent {
     }
 
     handleChange(field, value) {
-        switch (field) {
-        case 'currentTime':
-            field = 'position';
-        case 'playing':
-        case 'position':
-        case 'mute':
-        case 'volume':
-            const newState = {};
-            newState[field] = value;
-            this.setState(newState);
-            break;
-        case 'configuration':
+        const newState = {};
+
+        if (field == 'currentTime' || field == 'position') {
+            newState['position'] = value;
+            this.props.glue.setCurrentTime(value);
+        } else if (field == 'playing') {
+            newState['playing'] = value;
+            value ? this.props.glue.play() : this.props.glue.pause();
+        } else if (field == 'mute') {
+            newState['mute'] = value;
+
+            if (newState.mute) {
+                this.setState({ oldVolume: this.state.volume });
+                this.props.glue.setVolume(0);
+            } else {
+                this.setState({ volume: this.state.oldVolume });
+                this.props.glue.setVolume(this.state.oldVolume / 1000);
+            }
+        } else if (field == 'volume') {
+            newState['volume'] = value;
+            this.props.glue.setVolume(value / 1000);
+        } else if (field == 'configuration') {
             const nxt = buttonConfigurationOrder[this.state.configuration];
-            this.setState({ configuration: nxt });
-            break;
+            newState['configuration'] = nxt;
         }
+
+        this.setState(newState);
     }
 
     render() {
+        setTimeout(() => this.state.glue.connectControl(this), 0);
+
         return e(AudioControlsUI, Object.assign({
             controls: this.state.forceMobile
                 ? buttonConfigurations.forcedMobile
