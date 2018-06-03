@@ -37,7 +37,7 @@ export class AudioElement extends React.Component {
 
     render() {
         const attr = {
-            style: { width: "100%" },
+            style: { width: "100%", display: "none" },
             ref: this.audioRef,
             controls: true
         };
@@ -56,8 +56,7 @@ export class NowPlaying extends React.Component {
         };
 
         return e('div', { style }, [
-            e(AudioElement, { key: 'audio-element'}),
-            e('p', { key: 'audio-demo-divider' }),
+            e(AudioElement, { key: 'audio-element' }),
             e(AudioControls, {
                 key: 'audio-controls',
                 colors: blueprintTheme,

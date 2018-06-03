@@ -4,7 +4,9 @@
   "description": "lûd - an opinionated browser based media player",
   "main": "lib/lûd.js",
   "scripts": {
-    "test": "bin/test"
+    "test": "bin/test",
+    "precise-commits": "precise-commits",
+    "precommit": "npm run precise-commits"
   },
   "author": "Kuno Woudt <kuno@frob.nl>",
   "license": "copyleft-next-0.3.1",
@@ -12,8 +14,11 @@
   "devDependencies": {
     "chai": "^3.5.0",
     "eslint": "^2.12.0",
+    "husky": "^0.14.3",
     "immutable-devtools": "^0.1.3",
-    "mocha": "^2.5.3"
+    "mocha": "^2.5.3",
+    "precise-commits": "^1.0.2",
+    "prettier": "^1.13.4"
   },
   "dependencies": {
     "@blueprintjs/core": "^2.2.1",
