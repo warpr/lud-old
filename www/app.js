@@ -11,13 +11,15 @@ import { MainMenu } from '/lud/main-menu.js';
 import { NowPlaying } from '/lud/now-playing.js';
 import { SearchResults } from '/lud/search-results.js';
 import { AudioGlue } from '/lud/audio-glue.js';
-// import * as db from '/lud/db.js';
+import * as db from '/lud/db.js';
 
 // FIXME: should probably use a React context for this.  For now this will do.
 window.lûd = {
     verbose: true,
     glue: new AudioGlue(),
 };
+
+db.bootstrap(window.lûd);
 
 const e = React.createElement;
 
@@ -30,10 +32,10 @@ export function start(app_div) {
 
     Blueprint.Core.FocusStyleManager.onlyShowFocusOnTabs();
 
-    // db.loadIndex();
+    window.lûd.db.loadIndex();
 
     const app = e('div', { style: style }, [
-        // e(MainMenu, { key: "main-menu" }),
+        e(MainMenu, { key: 'main-menu' }),
         e(NowPlaying, { key: 'now-playing' }),
         // e(Album, { key: "album" }),
         // e(SearchResults, { key: "search-results" }),

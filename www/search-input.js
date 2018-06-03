@@ -16,9 +16,7 @@ export class SearchInput extends React.Component {
         this.handleChange = this.handleChange.bind(this);
 
         this.search = _.debounce(
-            value => {
-                PubSub.publish('search-query', value);
-            },
+            value => this.handleSearchResult(window.lûd.db.search(value)),
             300,
             { maxWait: 1000 }
         );
@@ -26,7 +24,8 @@ export class SearchInput extends React.Component {
         setTimeout(() => {
             const value = 'calle';
 
-            PubSub.publish('search-query', value);
+            this.handleSearchResult(window.lûd.db.search(value));
+
             this.setState({ query: value });
         }, 1000);
     }
@@ -36,6 +35,10 @@ export class SearchInput extends React.Component {
 
         this.setState({ query: value });
         this.search(value);
+    }
+
+    handleSearchResult(result) {
+        console.log('handleSearchResult', result);
     }
 
     render() {

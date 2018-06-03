@@ -109,21 +109,15 @@ function indexAll(dbs) {
     return { database: everything, index: idx };
 }
 
-function initSearch(result) {
-    const idx = result.index;
-    const db = result.database;
+function lookup(identifier) {
+    console.log('lookup', identifier);
+}
 
-    misc.updateTitle('');
+function search(searchTerm) {
+    const search = searchTerm.toLowerCase();
 
-    console.log('search initialized');
-    window.searchKuno = result;
-
-    PubSub.subscribe('id-lookup', (topic, data) => {});
-
-    PubSub.subscribe('search-query', (topic, searchTerm) => {
-        const search = searchTerm.toLowerCase();
-
-        const results = idx.query(function(q) {
+    return this.__index
+        .query(q => {
             // exact matches should have the highest boost
             q.term(search, { boost: 100 });
 
@@ -136,24 +130,49 @@ function initSearch(result) {
 
             // finally, try a fuzzy search, without any boost
             q.term(search, { boost: 1, usePipeline: false, editDistance: 1 });
-        });
-
-        const matches = results.map(r => {
+        })
+        .map(r => {
             // copy item id from the db key
-            const item = db[r.ref].set('id', r.ref);
+            const item = this.__database[r.ref].set('id', r.ref);
             if (item.get('release')) {
-                return item.set('release', db[item.get('release')]);
+                return item.set(
+                    'release',
+                    this.__database[item.get('release')]
+                );
             } else {
                 return item;
             }
         });
-        PubSub.publish('search-results', matches);
-    });
+}
+
+function initSearch(result) {
+    this.__index = result.index;
+    this.__database = result.database;
+    this.search = search.bind(this);
+    this.lookup = lookup.bind(this);
+
+    misc.updateTitle('');
+}
+
+function bootstrapSearch(searchTerm) {
+    console.log('search called before being initialized... not supported yet');
+}
+
+function bootstrapLookup(identifier) {
+    console.log('lookup called before being initialized... not supported yet');
+}
+
+export function bootstrap(obj) {
+    const instance = {};
+
+    instance.search = bootstrapSearch.bind(instance);
+    instance.lookup = bootstrapLookup.bind(instance);
+    instance.loadIndex = loadIndex.bind(instance);
+
+    obj.db = instance;
 }
 
 export function loadIndex() {
-    let idx = null;
-
     // FIXME: if deviceMemory < something, skip tracks?
     console.log('device memory:', navigator.deviceMemory);
 
@@ -166,5 +185,5 @@ export function loadIndex() {
     return Promise.all(indexes.map(i => fetch(i)))
         .then(values => Promise.all(values.map(r => r.json())))
         .then(indexAll)
-        .then(initSearch);
+        .then(result => initSearch.call(this, result));
 }
