@@ -38,7 +38,7 @@ export class SearchInput extends React.Component {
     }
 
     handleSearchResult(result) {
-        console.log('handleSearchResult', result);
+        window.lûd.searchResults(result);
     }
 
     render() {

@@ -18,7 +18,9 @@ function searchResultCard(id, type, title, body) {
     const cardOptions = {
         elevation: Blueprint.Core.Card.ELEVATION_ONE,
         interactive: true,
-        onClick: e => PubSub.publish('play-mbid', { mbid: id, type: type }),
+        onClick: e => {
+            console.log('card clicked, play-mbid', { mbid: id, type: type });
+        },
         className: 'pt-dark',
     };
 
@@ -62,18 +64,13 @@ export class SearchResults extends React.Component {
     }
 
     componentWillMount() {
-        this.subscription = PubSub.subscribe(
-            'search-results',
-            (topic, results) => {
-                this.setState({ results: results });
-            }
-        );
+        // FIXME: don't hardcode "window.lûd" here.
+        window.lûd.searchResults = results =>
+            this.setState({ results: results });
     }
 
     componentWillUnmount() {
-        if (this.subscription) {
-            PubSub.unsubscribe(this.subscription);
-        }
+        window.lûd.searchResults = () => {};
     }
 
     render() {
@@ -92,3 +89,8 @@ export class SearchResults extends React.Component {
         );
     }
 }
+
+SearchResults.bootstrap = obj => {
+    console.log('bootstrap', obj);
+    obj.searchResults = () => {};
+};

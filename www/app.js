@@ -20,6 +20,7 @@ window.lûd = {
 };
 
 db.bootstrap(window.lûd);
+SearchResults.bootstrap(window.lûd);
 
 const e = React.createElement;
 
@@ -38,7 +39,7 @@ export function start(app_div) {
         e(MainMenu, { key: 'main-menu' }),
         e(NowPlaying, { key: 'now-playing' }),
         // e(Album, { key: "album" }),
-        // e(SearchResults, { key: "search-results" }),
+        e(SearchResults, { key: 'search-results' }),
     ]);
 
     ReactDOM.render(app, app_div);
