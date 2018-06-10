@@ -8,8 +8,6 @@
 
 import * as misc from '/lud/misc.js';
 
-// FIXME: use immutable for artist names and artist credits.
-
 const Artist = Immutable.Record(
     {
         id: null,
@@ -19,11 +17,29 @@ const Artist = Immutable.Record(
     'Artist'
 );
 
+const ArtistCredit = Immutable.Record(
+    {
+        artist: '',
+        id: null,
+        joinphrase: '',
+    },
+    'ArtistCredit'
+);
+
+const Disc = Immutable.Record(
+    {
+        title: null,
+        filename: null,
+    },
+    'Disc'
+);
+
 const Release = Immutable.Record(
     {
         id: null,
         title: null,
         date: null,
+        discs: [],
         credit: [],
         type: 'release',
     },
@@ -35,12 +51,26 @@ const Track = Immutable.Record(
         id: null,
         title: null,
         length: null,
+        discNo: 1,
         release: null, // mbid
         credit: [],
         type: 'track',
     },
     'Track'
 );
+
+function reviver(key, value) {
+    if (key === 'discs') {
+        return value.map(Disc).toList();
+    }
+
+    if (key === 'credit') {
+        return value.map(ArtistCredit).toList();
+    }
+
+    const isIndexed = Immutable.Iterable.isIndexed(value);
+    return isIndexed ? value.toList() : value.toOrderedMap();
+}
 
 function combineCollections(collections) {
     // this attempts to not use too much extra memory by setting all values
@@ -53,13 +83,13 @@ function combineCollections(collections) {
         Object.keys(c).forEach(key => {
             switch (c[key]['type']) {
                 case 'artist':
-                    everything[key] = Artist(Immutable.fromJS(c[key]));
+                everything[key] = Artist(Immutable.fromJS(c[key], reviver));
                     break;
                 case 'release':
-                    everything[key] = Release(Immutable.fromJS(c[key]));
+                    everything[key] = Release(Immutable.fromJS(c[key], reviver));
                     break;
                 case 'track':
-                    everything[key] = Track(Immutable.fromJS(c[key]));
+                    everything[key] = Track(Immutable.fromJS(c[key], reviver));
                     break;
                 default:
                     console.log(
@@ -110,7 +140,12 @@ function indexAll(dbs) {
 }
 
 function lookup(identifier) {
-    console.log('lookup', identifier);
+    const item = this.__database[identifier];
+    if (!item) {
+        return null;
+    }
+
+    return item;
 }
 
 function search(searchTerm) {

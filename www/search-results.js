@@ -14,12 +14,25 @@ function artistCredit(credit) {
     }, '');
 }
 
-function searchResultCard(id, type, title, body) {
+function searchResultCard(mbid, type, title, body) {
     const cardOptions = {
         elevation: Blueprint.Core.Card.ELEVATION_ONE,
         interactive: true,
         onClick: e => {
-            console.log('card clicked, play-mbid', { mbid: id, type: type });
+            const item = window.lûd.db.lookup(mbid);
+            let disc = null;
+            if (item.has('discs')) {
+                disc = item.discs.get(0);
+            } else if (item.has('release')) {
+                const release = window.lûd.db.lookup(item.release);
+                disc = release.discs.get(item.discNo - 1);
+            } else {
+                console.log('no playable item found for', mbid);
+                return;
+            }
+
+            window.lûd.glue.loadMedia(disc.filename);
+            window.lûd.glue.play();
         },
         className: 'pt-dark',
     };
@@ -30,7 +43,7 @@ function searchResultCard(id, type, title, body) {
 
     return e(
         'div',
-        { key: id, style: style },
+        { key: mbid, style: style },
         e(Blueprint.Core.Card, cardOptions, [
             e('h5', { key: 'heading' }, title),
             e('p', { key: 'body' }, body),

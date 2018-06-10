@@ -1,34 +1,33 @@
 {
-  "name": "lud",
-  "version": "0.0.1",
-  "description": "lûd - an opinionated browser based media player",
-  "main": "lib/lûd.js",
-  "scripts": {
-    "test": "bin/test",
-    "precise-commits": "precise-commits",
-    "precommit": "npm run precise-commits"
-  },
-  "author": "Kuno Woudt <kuno@frob.nl>",
-  "license": "copyleft-next-0.3.1",
-  "repository": "https://gitlab.com/kuno/lud.git",
-  "devDependencies": {
-    "chai": "^4.1.2",
-    "husky": "^0.14.3",
-    "immutable-devtools": "^0.1.3",
-    "mocha": "^5.2.0",
-    "precise-commits": "^1.0.2",
-    "prettier": "^1.13.4"
-  },
-  "dependencies": {
-    "@blueprintjs/core": "^2.3.1",
-    "font-awesome": "^4.7.0",
-    "immutable": "^3.8.2",
-    "lodash": "^4.17.10",
-    "lunr": "^2.2.1",
-    "pubsub-js": "^1.6.0",
-    "react": "^16.4.0",
-    "react-dom": "^16.4.0",
-    "react-transition-group": "^2.3.1",
-    "underscore.string": "^3.3.4"
-  }
+    "name": "lud",
+    "version": "0.0.1",
+    "description": "lûd - an opinionated browser based media player",
+    "main": "lib/lûd.js",
+    "scripts": {
+        "test": "bin/test",
+        "precommit": "pretty-quick --staged"
+    },
+    "author": "Kuno Woudt <kuno@frob.nl>",
+    "license": "copyleft-next-0.3.1",
+    "repository": "https://gitlab.com/kuno/lud.git",
+    "devDependencies": {
+        "chai": "^4.1.2",
+        "husky": "^0.14.3",
+        "immutable-devtools": "^0.1.3",
+        "mocha": "^5.2.0",
+        "prettier": "^1.13.5",
+        "pretty-quick": "^1.6.0"
+    },
+    "dependencies": {
+        "@blueprintjs/core": "^2.3.1",
+        "font-awesome": "^4.7.0",
+        "immutable": "^3.8.2",
+        "lodash": "^4.17.10",
+        "lunr": "^2.2.1",
+        "pubsub-js": "^1.6.0",
+        "react": "^16.4.0",
+        "react-dom": "^16.4.0",
+        "react-transition-group": "^2.3.1",
+        "underscore.string": "^3.3.4"
+    }
 }

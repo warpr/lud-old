@@ -3,6 +3,14 @@
 
 $musicRoot = realpath(dirname(__FILE__) . '/../www/music/');
 $cacheDir = realpath(dirname(__FILE__) . '/../www/cache/');
+$webRoot = '/lud/music';
+
+function webUrl($filename) {
+    global $musicRoot;
+    global $webRoot;
+
+    return str_replace($musicRoot, $webRoot, $filename);
+}
 
 function isAlbumFolder($current, $key, $iterator) {
     // Skip hidden files and directories.
@@ -68,15 +76,34 @@ function parseRelease($obj) {
     return $summary;
 }
 
-function parseMedia($obj) {
+function parseMedia($obj, $dir) {
     if (empty($obj)) {
         return [];
     }
 
     $media = [];
+    $idx = 0;
     foreach ($obj['media'] as $medium) {
+        $item = [];
+
+        $idxStr = "" . ++$idx;
+        while(strlen($idxStr) < 5) {
+            $filename = $dir . "/disc" . $idxStr . ".m4a";
+            if (is_readable($filename)) {
+                $item['filename'] = $filename;
+                break;
+            }
+
+            $idxStr = "0" . $idxStr;
+        }
+
         if (!empty($medium['title'])) {
-            $media[] = $medium['title'];
+            $item['title'] = $medium['title'];
+        }
+
+        if (!empty($item['filename'])) {
+            $item['filename'] = webUrl($item['filename']);
+            $media[] = $item;
         }
     }
 
@@ -91,11 +118,14 @@ function parseTracks($obj) {
     }
 
     $allArtists = [];
+    $discNo = 0;
     foreach ($obj['media'] as $medium) {
+        $discNo++;
         foreach ($medium['tracks'] as $trk) {
             $song = [
                 'length' => $trk['length'],
                 'title' => $trk['title'],
+                'discNo' => $discNo,
                 'release' => $obj['id'],
                 'type' => 'track',
             ];
@@ -133,9 +163,9 @@ function indexAlbum(&$db, $dir) {
 
     // FIXME: add album lenghth
 
-    $media = parseMedia($metadata);
+    $media = parseMedia($metadata, $dir);
     if (!empty($media)) {
-        $release['disc'] = $media;
+        $release['discs'] = $media;
     }
 
     $db['releases'][$metadata['id']] = $release;
