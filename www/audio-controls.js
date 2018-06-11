@@ -4,12 +4,69 @@
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of copyleft-next 0.3.1.  See copyleft-next-0.3.1.txt.
+ *
+ *   @flow
  */
 
+import { AudioGlue } from '/lud/audio-glue.js';
+
+const React = window.React;
 const e = React.createElement;
 
 const size = 40; // control bar height
 const forceMobile = 560; // force mobile view if screen width < this value
+
+/*::
+type AudioEventNames = 'configuration'
+    | 'currentTime'
+    | 'mute'
+    | 'playing'
+    | 'position'
+    | 'volume';
+
+type AudioControlNames = 'prevAlbum'
+     | 'prevTrack'
+     | 'pause'
+     | 'pausePlay'
+     | 'nextTrack'
+     | 'nextAlbum'
+     | 'currentTime'
+     | 'position'
+     | 'positionDuration'
+     | 'muteUnmute'
+     | 'volume'
+     | 'configuration';
+
+type ColorTheme = {
+     background: string,
+     foreground: string,
+     subdued: string,
+     selected: string,
+     slider: string,
+     loaded: string,
+     played: string,
+}
+*/
+
+export const firefoxTheme = {
+    background: '#1c1f21',
+    foreground: '#ffffff',
+    subdued: '#929292',
+    selected: '#48a0f7',
+    slider: '#000000',
+    loaded: '#525354',
+    played: '#00b6f0',
+};
+
+export const blueprintTheme = {
+    background: window.Blueprint.Core.Colors.DARK_GRAY1,
+    foreground: window.Blueprint.Core.Colors.LIGHT_GRAY5,
+    subdued: window.Blueprint.Core.Colors.GRAY3,
+    selected: window.Blueprint.Core.Colors.BLUE5,
+    slider: window.Blueprint.Core.Colors.BLACK,
+    loaded: window.Blueprint.Core.Colors.DARK_GRAY5,
+    played: window.Blueprint.Core.Colors.BLUE5,
+};
 
 function throttleEvent(type, name) {
     var running = false;
@@ -83,7 +140,7 @@ class Slider extends React.PureComponent {
     constructor(props) {
         super(props);
 
-        this.handleChange = this.handleChange.bind(this);
+        this /*: any*/.handleChange = this.handleChange.bind(this);
         this.sliderRef = React.createRef();
     }
 
@@ -126,7 +183,7 @@ class Button extends React.PureComponent {
     constructor(props) {
         super(props);
 
-        this.handleClick = this.handleClick.bind(this);
+        this /* :any */.handleClick = this.handleClick.bind(this);
     }
 
     handleClick() {
@@ -172,7 +229,35 @@ class Button extends React.PureComponent {
     }
 }
 
-function Control(props) {
+/*::
+type ControlProps = {
+    colors: ColorTheme,
+    configuration: string,
+    control: AudioControlNames,
+    duration: string,
+    mute: boolean,
+    onChange: function,
+    playing: boolean,
+    position: string,
+    volume: number,
+}
+
+type ControlAttributes = {
+    colors: ColorTheme,
+    control: AudioControlNames,
+    onChange: function,
+    disabled?: boolean,
+    grow?: number,
+    icon?: string,
+    max?: any,
+    mute?: boolean,
+    volume?: any,
+    playing?: boolean,
+    value?: any,
+}
+*/
+
+function Control(props /* : ControlProps */) {
     const iconMap = {
         prevAlbum: 'fast-backward',
         prevTrack: 'backward',
@@ -183,9 +268,18 @@ function Control(props) {
         // (un)mute show the current state, not the state after pressing the button
         mute: 'volume-up',
         unmute: 'volume-off',
+
+        // these don't need/have icons in the iconMap
+        configuration: null,
+        currentTime: null,
+        muteUnmute: null,
+        pausePlay: null,
+        position: null,
+        positionDuration: null,
+        volume: null,
     };
 
-    const attr = {
+    const attr /* : ControlAttributes */ = {
         colors: props.colors,
         control: props.control,
         onChange: props.onChange,
@@ -326,13 +420,31 @@ buttonConfigurations.desktop = new Set([
     'configuration',
 ]);
 
+/*::
+type AudioControlsProps = {
+    glue: AudioGlue,
+}
+
+type AudioControlsState = {
+    configuration: string,
+    forceMobile: boolean,
+    duration: number,
+    glue: AudioGlue,
+    mute: boolean,
+    playing: boolean,
+    position: number,
+    oldVolume: number,
+    volume: number,
+}
+*/
+
 export class AudioControls extends React.PureComponent {
-    constructor(props) {
+    constructor(props /* : AudioControlsProps */) {
         super(props);
 
         this._mounted = false;
-        this.handleChange = this.handleChange.bind(this);
-        this.handleResize = this.handleResize.bind(this);
+        this /* :any */.handleChange = this.handleChange.bind(this);
+        this /* :any */.handleResize = this.handleResize.bind(this);
 
         this.state = {
             configuration: 'desktop',
@@ -340,7 +452,10 @@ export class AudioControls extends React.PureComponent {
         };
     }
 
-    static getDerivedStateFromProps(nextProps, prevState) {
+    static getDerivedStateFromProps(
+        nextProps /* : AudioControlsProps */,
+        prevState /* : AudioControlsState */
+    ) {
         return {
             duration: nextProps.glue.getDuration(),
             glue: nextProps.glue,
@@ -386,7 +501,7 @@ export class AudioControls extends React.PureComponent {
         }
     }
 
-    handleResize(event) {
+    handleResize() {
         if (window.innerWidth < forceMobile && !this.state.forceMobile) {
             this.setState({ forceMobile: true });
         } else if (window.innerWidth >= forceMobile && this.state.forceMobile) {
@@ -394,17 +509,17 @@ export class AudioControls extends React.PureComponent {
         }
     }
 
-    handleChange(field, value) {
+    handleChange(field /* : string */, value /* : string */) {
         const newState = {};
 
         if (field == 'currentTime' || field == 'position') {
-            newState['position'] = value;
+            newState.position = value;
             this.props.glue.setCurrentTime(value);
         } else if (field == 'playing') {
-            newState['playing'] = value;
+            newState.playing = value;
             value ? this.props.glue.play() : this.props.glue.pause();
         } else if (field == 'mute') {
-            newState['mute'] = value;
+            newState.mute = value;
 
             if (newState.mute) {
                 this.setState({ oldVolume: this.state.volume });
@@ -414,11 +529,11 @@ export class AudioControls extends React.PureComponent {
                 this.props.glue.setVolume(this.state.oldVolume / 1000);
             }
         } else if (field == 'volume') {
-            newState['volume'] = value;
-            this.props.glue.setVolume(value / 1000);
+            newState.volume = parseInt(value, 10);
+            this.props.glue.setVolume(newState.volume / 1000);
         } else if (field == 'configuration') {
             const nxt = buttonConfigurationOrder[this.state.configuration];
-            newState['configuration'] = nxt;
+            newState.configuration = nxt;
         }
 
         this.setState(newState);
@@ -442,26 +557,6 @@ export class AudioControls extends React.PureComponent {
         );
     }
 }
-
-export const firefoxTheme = {
-    background: '#1c1f21',
-    foreground: '#ffffff',
-    subdued: '#929292',
-    selected: '#48a0f7',
-    slider: '#000000',
-    loaded: '#525354',
-    played: '#00b6f0',
-};
-
-export const blueprintTheme = {
-    background: Blueprint.Core.Colors.DARK_GRAY1,
-    foreground: Blueprint.Core.Colors.LIGHT_GRAY5,
-    subdued: Blueprint.Core.Colors.GRAY3,
-    selected: Blueprint.Core.Colors.BLUE5,
-    slider: Blueprint.Core.Colors.BLACK,
-    loaded: Blueprint.Core.Colors.DARK_GRAY5,
-    played: Blueprint.Core.Colors.BLUE5,
-};
 
 export class AudioDemo extends React.Component {
     render() {

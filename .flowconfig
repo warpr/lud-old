@@ -1,0 +1,15 @@
+[ignore]
+./www/cache/
+./www/music/
+.*/annex/.*/\.git/
+
+[include]
+
+[libs]
+
+[lints]
+
+[options]
+module.name_mapper='^/lud/\(.*\)$' -> '<PROJECT_ROOT>/www/\1'
+
+[strict]

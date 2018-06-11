@@ -53,7 +53,6 @@
         <script src="/lud/js/lodash/lodash.js"></script>
         <script src="/lud/js/immutable/dist/immutable.js"></script>
         <script src="/lud/js/immutable-devtools/dist/index.js"></script>
-        <script src="/lud/js/pubsub-js/src/pubsub.js"></script>
         <script src="/lud/js/lunr/lunr.js"></script>
 
         <div id="app">Loading...</div>
@@ -64,7 +63,6 @@
          app.start(document.querySelector("#app"));
 
          immutableDevTools(Immutable);
-
         </script>
     </body>
 </html>

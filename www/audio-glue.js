@@ -81,6 +81,10 @@ class AudioElementOutput {
         return this.target.currentTime;
     }
 
+    getCurrentMedia() {
+        return this.target.src;
+    }
+
     setCurrentTime(position) {
         this.target.currentTime = position ? parseInt(position, 10) : 0;
     }
@@ -169,6 +173,11 @@ export class AudioGlue {
     getCurrentTime() {
         // just return the first one.
         return this.outputs.length ? this.outputs[0].getCurrentTime() : 0;
+    }
+
+    getCurrentMedia() {
+        // just return the first one.
+        return this.outputs.length ? this.outputs[0].getCurrentMedia() : 0;
     }
 
     setCurrentTime(position) {

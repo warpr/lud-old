@@ -12,7 +12,6 @@ function broadcastAudioElement(audioElement) {
         paused: audioElement.paused,
         currentTime: audioElement.currentTime,
     };
-    PubSub.publish('now-playing', event);
 }
 
 function snapshotAudioElement(audioElement) {

@@ -4,9 +4,11 @@
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of copyleft-next 0.3.1.  See copyleft-next-0.3.1.txt.
+ *
+ *   @flow
  */
 
-function framesToSeconds(str) {
+function framesToSeconds(str /* : string */) {
     const parts = str.split(':');
     if (parts.length < 3) {
         return null;
@@ -21,7 +23,7 @@ function framesToSeconds(str) {
     return minutes * 60 + seconds + frames / 75;
 }
 
-function removeQuotes(str) {
+function removeQuotes(str /* : string */) {
     if (str[0] != str[str.length - 1]) {
         // start and end quotes don't match
         return str;
@@ -71,8 +73,12 @@ function parseCommand(command, args, track) {
             const startTime = args.pop();
             const idx = args.pop();
             if (parseInt(idx, 10) !== 1) {
-                console.log('WARNING: only INDEX 01 is supported');
-                return {};
+                // INDEX 01 should take precedence, but some files don't have INDEX 01 on each
+                // track, fall back to any INDEX line in that case.
+                if (track.start) {
+                    console.log('WARNING: only INDEX 01 is supported');
+                    return {};
+                }
             }
 
             const start = {
@@ -89,7 +95,27 @@ function parseCommand(command, args, track) {
     }
 }
 
-export function parseCue(cueStr) {
+/*::
+export type CueTrackStart = {
+   'minutes-seconds-frames': string,
+   seconds?: any, // FIXME: should be number
+}
+
+export type CueRecord = {
+    artist?: string,
+    barcode?: string,
+    comments?: Array<string>,
+    filename?: string,
+    format?: string,
+    mbid: string,
+    pos: number,
+    start: CueTrackStart,
+    title: string,
+}
+
+*/
+
+export function parseCue(cueStr /* : string */) /* : Array<CueRecord> */ {
     const lines = cueStr.split(/[\n|\r|\r\n]/).map(x => x.trim());
 
     const tracks = lines.reduce((memo, line) => {
@@ -112,6 +138,5 @@ export function parseCue(cueStr) {
         return memo;
     }, []);
 
-    // return lines;
     return tracks;
 }

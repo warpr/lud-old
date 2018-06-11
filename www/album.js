@@ -4,10 +4,13 @@
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of copyleft-next 0.3.1.  See copyleft-next-0.3.1.txt.
+ *
+ *   @flow
  */
 
-import { parseCue } from '/lud/cue.js';
+import { parseCue /*:: type CueRecord */ } from '/lud/cue.js';
 
+const React = window.React;
 const e = React.createElement;
 
 function artFilename(discFilename) {
@@ -28,60 +31,127 @@ function cueFilename(discFilename) {
     return ret;
 }
 
-export class Album extends React.Component {
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            artFile: null,
-            cueFile: null,
-            audioFile: null,
-            cueData: null,
-        };
+function currentSong(
+    position /* ?: number */,
+    cueData /* : Array<CueRecord> */
+) {
+    if (!position && position !== 0) {
+        return null;
     }
 
-    componentDidMount() {
-        this.subscription = PubSub.subscribe('now-playing', (topic, event) => {
-            if (this.state.audioFile != event.src) {
-                // console.log('new file!', event.src);
-                const artFile = artFilename(event.src);
-                const cueFile = cueFilename(event.src);
-
-                this.setState({ audioFile: event.src, artFile, cueFile });
-
-                fetch(cueFile)
-                    .then(response => response.text())
-                    .then(
-                        body => this.setState({ cueData: parseCue(body) }),
-                        err => {
-                            console.log('error loading cue file', cueFile, err);
-                        }
-                    );
-            }
-
-            // console.log('now-playing event', event);
-        });
+    if (!cueData) {
+        return null;
     }
 
-    componentWillUnmount() {
-        if (this.subscription) {
-            PubSub.unsubscribe(this.subscription);
+    if (!cueData || !Array.isArray(cueData)) {
+        return null;
+    }
+
+    let song = null;
+    cueData.map(trk => {
+        if (trk.start && trk.start.seconds < position) {
+            song = trk;
         }
-    }
+    });
 
+    return song;
+}
+
+class Album extends React.Component {
     render() {
-        // console.log('rendering', this.state.cueData);
+        const song = currentSong(this.props.currentTime, this.props.cueData);
+        if (song) {
+            console.log('current song:', song.title);
+        }
 
-        if (this.state.artFile) {
+        if (this.props.artFile) {
             const style = {
                 margin: '10px',
                 padding: 0,
                 border: 0,
                 maxWidth: '400px',
             };
-            return e('img', { src: this.state.artFile, style });
+            return e('img', { src: this.props.artFile, style });
         }
 
         return null;
+    }
+}
+
+export class NowPlayingAlbum extends React.Component {
+    constructor(props /* : {} */) {
+        super(props);
+
+        this.glue = window.lûd.glue;
+
+        this /* : any */.handleFileChanged = this.handleFileChanged.bind(this);
+
+        this.state = {
+            artFile: null,
+            cueFile: null,
+            audioFile: null,
+            cueData: null,
+            currentTime: 0,
+        };
+    }
+
+    componentWillUnmount() {
+        this.glue.disconnectControl(this);
+    }
+
+    handleFileChanged(audioFile /* : string */) {
+        if (audioFile === '') {
+            this.setState({
+                audioFile: null,
+                artFile: null,
+                cueFile: null,
+                cueData: {},
+                currentTime: 0,
+            });
+            return;
+        }
+
+        console.log('new file!', audioFile);
+        const artFile = artFilename(audioFile);
+        const cueFile = cueFilename(audioFile);
+
+        this.setState({ audioFile, artFile, cueFile });
+
+        fetch(cueFile)
+            .then(response => response.text())
+            .then(
+                body => {
+                    this.setState({ cueData: parseCue(body) });
+                },
+                err => {
+                    console.log('error loading cue file', cueFile, err);
+                }
+            );
+    }
+
+    tick() {
+        const audioFile = this.glue.getCurrentMedia();
+        if (this.state.audioFile != audioFile) {
+            this.handleFileChanged(audioFile);
+        }
+
+        this.setState({ currentTime: this.glue.getCurrentTime() });
+    }
+
+    render() {
+        setTimeout(() => this.glue.connectControl(this), 0);
+
+        if (!this.state.audioFile) {
+            // FIXME: support empty state in Album component
+            return null;
+        }
+
+        return e(Album, {
+            artFile: this.state.artFile,
+            audioFile: this.state.audioFile,
+            cueData: this.state.cueData,
+            cueFile: this.state.cueFile,
+            currentTime: this.state.currentTime,
+        });
     }
 }
