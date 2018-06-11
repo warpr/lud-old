@@ -8,7 +8,10 @@
  *   @flow
  */
 
-import { parseCue /*:: type CueRecord */ } from '/lud/cue.js';
+/*::
+import { type CueRecord } from '/lud/cue.js';
+*/
+import { parseCue } from '/lud/cue.js';
 
 const React = window.React;
 const e = React.createElement;
@@ -82,11 +85,11 @@ export class NowPlayingAlbum extends React.Component {
     constructor(props /* : {} */) {
         super(props);
 
-        this.glue = window.lûd.glue;
+        const self /* :any */ = this;
 
-        this /* : any */.handleFileChanged = this.handleFileChanged.bind(this);
-
-        this.state = {
+        self.glue = window.lûd.glue;
+        self.handleFileChanged = this.handleFileChanged.bind(this);
+        self.state = {
             artFile: null,
             cueFile: null,
             audioFile: null,

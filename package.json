@@ -7,7 +7,7 @@
         "flow": "flow",
         "flow:watch": "flow-watch",
         "install-flow-types": "flow-typed install",
-        "precommit": "pretty-quick --staged; import-sort --write www/*.js",
+        "precommit": "import-sort --write www/*.js; pretty-quick --staged",
         "test": "bin/test"
     },
     "author": "Kuno Woudt <kuno@frob.nl>",

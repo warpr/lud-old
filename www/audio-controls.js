@@ -140,8 +140,9 @@ class Slider extends React.PureComponent {
     constructor(props) {
         super(props);
 
-        this /*: any*/.handleChange = this.handleChange.bind(this);
-        this.sliderRef = React.createRef();
+        const self /* :any */ = this;
+        self.handleChange = this.handleChange.bind(this);
+        self.sliderRef = React.createRef();
     }
 
     handleChange(event) {
@@ -183,7 +184,8 @@ class Button extends React.PureComponent {
     constructor(props) {
         super(props);
 
-        this /* :any */.handleClick = this.handleClick.bind(this);
+        const self /* :any */ = this;
+        self.handleClick = this.handleClick.bind(this);
     }
 
     handleClick() {
@@ -443,8 +445,10 @@ export class AudioControls extends React.PureComponent {
         super(props);
 
         this._mounted = false;
-        this /* :any */.handleChange = this.handleChange.bind(this);
-        this /* :any */.handleResize = this.handleResize.bind(this);
+
+        const self /* :any */ = this;
+        self.handleChange = this.handleChange.bind(this);
+        self.handleResize = this.handleResize.bind(this);
 
         this.state = {
             configuration: 'desktop',
