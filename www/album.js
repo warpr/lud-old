@@ -60,7 +60,7 @@ function currentSong(
     return song;
 }
 
-class Album extends React.Component {
+class CoverArt extends React.Component {
     render() {
         const song = currentSong(this.props.currentTime, this.props.cueData);
         if (song) {
@@ -72,7 +72,7 @@ class Album extends React.Component {
                 margin: '10px',
                 padding: 0,
                 border: 0,
-                maxWidth: '400px',
+                width: '100%',
             };
             return e('img', { src: this.props.artFile, style });
         }
@@ -81,7 +81,7 @@ class Album extends React.Component {
     }
 }
 
-export class NowPlayingAlbum extends React.Component {
+export class Album extends React.Component {
     constructor(props /* : {} */) {
         super(props);
 
@@ -103,7 +103,7 @@ export class NowPlayingAlbum extends React.Component {
     }
 
     handleFileChanged(audioFile /* : string */) {
-        if (audioFile === '') {
+        if (!audioFile) {
             this.setState({
                 audioFile: null,
                 artFile: null,
@@ -149,12 +149,16 @@ export class NowPlayingAlbum extends React.Component {
             return null;
         }
 
-        return e(Album, {
-            artFile: this.state.artFile,
-            audioFile: this.state.audioFile,
-            cueData: this.state.cueData,
-            cueFile: this.state.cueFile,
-            currentTime: this.state.currentTime,
-        });
+        return e(
+            'div',
+            { className: 'album' },
+            e(CoverArt, {
+                artFile: this.state.artFile,
+                audioFile: this.state.audioFile,
+                cueData: this.state.cueData,
+                cueFile: this.state.cueFile,
+                currentTime: this.state.currentTime,
+            })
+        );
     }
 }

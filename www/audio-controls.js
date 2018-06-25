@@ -14,7 +14,8 @@ const React = window.React;
 const e = React.createElement;
 
 const size = 40; // control bar height
-const forceMobile = 560; // force mobile view if screen width < this value
+const forceMobile = 600; // force mobile view if screen width < this value
+const forceTablet = 800; // force tablet view if screen width < this value
 
 /*::
 type AudioEventNames = 'configuration'
@@ -67,23 +68,6 @@ export const blueprintTheme = {
     loaded: window.Blueprint.Core.Colors.DARK_GRAY5,
     played: window.Blueprint.Core.Colors.BLUE5,
 };
-
-function throttleEvent(type, name) {
-    var running = false;
-    var func = function() {
-        if (running) {
-            return;
-        }
-        running = true;
-        requestAnimationFrame(function() {
-            window.dispatchEvent(new CustomEvent(name));
-            running = false;
-        });
-    };
-    window.addEventListener(type, func);
-}
-
-throttleEvent('resize', 'lûd-raf-resize');
 
 function formatTime(seconds) {
     const parts = [Math.floor((seconds / 60) % 60), Math.floor(seconds % 60)];
@@ -430,6 +414,7 @@ type AudioControlsProps = {
 type AudioControlsState = {
     configuration: string,
     forceMobile: boolean,
+    forceTablet: boolean,
     duration: number,
     glue: AudioGlue,
     mute: boolean,
@@ -453,6 +438,7 @@ export class AudioControls extends React.PureComponent {
         this.state = {
             configuration: 'desktop',
             forceMobile: window.innerWidth < forceMobile,
+            forceTablet: window.innerWidth < forceTablet,
         };
     }
 
@@ -511,6 +497,12 @@ export class AudioControls extends React.PureComponent {
         } else if (window.innerWidth >= forceMobile && this.state.forceMobile) {
             this.setState({ forceMobile: false });
         }
+
+        if (window.innerWidth < forceTablet && !this.state.forceTablet) {
+            this.setState({ forceTablet: true });
+        } else if (window.innerWidth >= forceTablet && this.state.forceTablet) {
+            this.setState({ forceTablet: false });
+        }
     }
 
     handleChange(field /* : string */, value /* : string */) {
@@ -536,7 +528,12 @@ export class AudioControls extends React.PureComponent {
             newState.volume = parseInt(value, 10);
             this.props.glue.setVolume(newState.volume / 1000);
         } else if (field == 'configuration') {
-            const nxt = buttonConfigurationOrder[this.state.configuration];
+            let nxt = buttonConfigurationOrder[this.state.configuration];
+            // force cycle through mobile + tablet if there is no space to show desktop configuration
+            if (this.state.forceTablet && nxt === 'desktop') {
+                nxt = buttonConfigurationOrder['desktop'];
+            }
+
             newState.configuration = nxt;
         }
 
@@ -546,13 +543,29 @@ export class AudioControls extends React.PureComponent {
     render() {
         setTimeout(() => this.state.glue.connectControl(this), 0);
 
+        let configuration = buttonConfigurations[this.state.configuration];
+        if (this.state.forceMobile) {
+            configuration = buttonConfigurations.forcedMobile;
+        } else if (this.state.forceTablet) {
+            configuration = buttonConfigurations.tablet;
+        }
+
+        console.log(
+            'render controls',
+            window.innerWidth,
+            'mobile',
+            this.state.forceMobile,
+            'tablet',
+            this.state.forceTablet,
+            'selected configuration',
+            configuration
+        );
+
         return e(
             AudioControlsUI,
             Object.assign(
                 {
-                    controls: this.state.forceMobile
-                        ? buttonConfigurations.forcedMobile
-                        : buttonConfigurations[this.state.configuration],
+                    controls: configuration,
                     onChange: this.handleChange,
                     colors: this.props.colors,
                 },

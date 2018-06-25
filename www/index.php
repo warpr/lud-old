@@ -2,7 +2,7 @@
 <html>
     <head>
         <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta http-equiv="Accept-CH" content="Device-Memory">
         <title>Loading... | Lûd</title>
 
@@ -23,6 +23,7 @@
         <link href="/lud/js/@blueprintjs/core/lib/css/blueprint.css" rel="stylesheet" />
         <link href="/lud/js/@blueprintjs/icons/lib/css/blueprint-icons.css" rel="stylesheet" />
         <link href="css/color-aliases.css" rel="stylesheet" />
+        <link href="css/layout.css" rel="stylesheet" />
 
         <link href="/lud/js/font-awesome/css/font-awesome.css" rel="stylesheet" />
 
@@ -46,6 +47,7 @@
         <script src="/lud/js/popper.js/dist/popper.js"></script>
         <script src="/lud/js/react-popper/dist/react-popper.js"></script>
 -->
+
         <script src="/lud/js/@blueprintjs/core/dist/core.bundle.js"></script>
         <script src="/lud/js/@blueprintjs/icons/dist/icons.bundle.js"></script>
 
