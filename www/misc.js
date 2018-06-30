@@ -8,12 +8,19 @@
  *   @flow
  */
 
+const React = window.React;
+const _ = window._;
+
 export function updateTitle(str /* : string */) {
     if (str === '') {
         window.document.title = 'Lûd';
     } else {
         window.document.title = str + ' | Lûd';
     }
+}
+
+export function keys(arr /*: React.Node[] */) /*: React.Node[] */ {
+    return arr.map(element => React.cloneElement(element, { key: _.uniqueId() }));
 }
 
 export const controls = {

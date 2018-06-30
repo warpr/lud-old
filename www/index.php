@@ -19,18 +19,17 @@
         <meta name="msapplication-config" content="/lud/icons/browserconfig.xml">
         <meta name="theme-color" content="#dedede">
 
-        <link href="/lud/js/normalize.css/normalize.css" rel="stylesheet" />
-        <link href="/lud/js/@blueprintjs/core/lib/css/blueprint.css" rel="stylesheet" />
-        <link href="/lud/js/@blueprintjs/icons/lib/css/blueprint-icons.css" rel="stylesheet" />
-        <link href="css/color-aliases.css" rel="stylesheet" />
+        <!-- Material UI -->
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+
+     <!--
         <link href="css/layout.css" rel="stylesheet" />
+     -->
 
         <link href="/lud/js/font-awesome/css/font-awesome.css" rel="stylesheet" />
 
         <style>
-         body {
-             background-color: var(--pt-dark-app-background-color);
-         }
         </style>
     </head>
     <body>
@@ -38,19 +37,12 @@
         <script src="/lud/js/react/umd/react.development.js"></script>
         <script src="/lud/js/react-dom/umd/react-dom.development.js"></script>
 
-        <!-- Blueprint -->
-        <script src="/lud/js/classnames/index.js"></script>
-        <script src="/lud/js/dom4/build/dom4.max.js"></script>
-        <script src="/lud/js/react-transition-group/dist/react-transition-group.js"></script>
-
-<!--
-        <script src="/lud/js/popper.js/dist/popper.js"></script>
-        <script src="/lud/js/react-popper/dist/react-popper.js"></script>
+        <!-- Material UI -->
+        <script src="/lud/js/@material-ui/core/umd/material-ui.development.js"></script>
+     <!--
+     https://unpkg.com/@material-ui/core/umd/
+     https://unpkg.com/@material-ui/icons/umd/
 -->
-
-        <script src="/lud/js/@blueprintjs/core/dist/core.bundle.js"></script>
-        <script src="/lud/js/@blueprintjs/icons/dist/icons.bundle.js"></script>
-
         <!-- Lûd -->
         <script src="/lud/js/lodash/lodash.js"></script>
         <script src="/lud/js/immutable/dist/immutable.js"></script>
@@ -61,6 +53,7 @@
 
         <script type="module">
          import * as app from '/lud/app.js';
+//         import Button from '@material-ui/core/Button';
 
          app.start(document.querySelector("#app"));
 

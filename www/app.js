@@ -6,13 +6,15 @@
  *   it under the terms of copyleft-next 0.3.1.  See copyleft-next-0.3.1.txt.
  */
 
-import { Album } from '/lud/album.js';
+// import { Album } from '/lud/album.js';
 import { AudioGlue } from '/lud/audio-glue.js';
 import * as db from '/lud/db.js';
-import { Library } from '/lud/library.js';
+// import { Library } from '/lud/library.js';
 import { MainMenu } from '/lud/main-menu.js';
-import { NowPlaying } from '/lud/now-playing.js';
-import { SearchResults } from '/lud/search-results.js';
+// import { NowPlaying } from '/lud/now-playing.js';
+// import { SearchResults } from '/lud/search-results.js';
+
+const M = window['material-ui'];
 
 // FIXME: should probably use a React context for this.  For now this will do.
 window.lûd = {
@@ -21,7 +23,7 @@ window.lûd = {
 };
 
 db.bootstrap(window.lûd);
-SearchResults.bootstrap(window.lûd);
+// SearchResults.bootstrap(window.lûd);
 
 function throttleEvent(type, name) {
     var running = false;
@@ -49,28 +51,31 @@ export function start(app_div) {
         border: 0,
     };
 
-    Blueprint.Core.FocusStyleManager.onlyShowFocusOnTabs();
-
     window.lûd.db.loadIndex();
 
-    const app = e('div', { id: 'layout', style: style }, [
-        e('div', { key: 'header', className: 'header' }, [
-            e(MainMenu, { key: 'main-menu' }),
-            e(NowPlaying, { key: 'now-playing' }),
-        ]),
-        e(Album, { key: 'now-playing-album' }),
-        e(
-            'div',
-            { key: 'playlist', className: 'playlist' },
-            e('span', {}, 'playlist')
-        ),
-        e(
-            'div',
-            { key: 'search-results', className: 'search-results' },
-            e(SearchResults)
-        ),
-        //        e(Library, { key: 'library' })
+    const app = e(React.Fragment, {}, [
+        e(M.CssBaseline, { key: 'css-baseline' }),
+        e(MainMenu, { key: 'main-menu' }),
     ]);
+
+    // const app = e('div', { id: 'layout', style: style }, [
+    //     e('div', { key: 'header', className: 'header' }, [
+    //         e(MainMenu, { key: 'main-menu' }),
+    //         e(NowPlaying, { key: 'now-playing' }),
+    //     ]),
+    //     e(Album, { key: 'now-playing-album' }),
+    //     e(
+    //         'div',
+    //         { key: 'playlist', className: 'playlist' },
+    //         e('span', {}, 'playlist')
+    //     ),
+    //     e(
+    //         'div',
+    //         { key: 'search-results', className: 'search-results' },
+    //         e(SearchResults)
+    //     ),
+    //     //        e(Library, { key: 'library' })
+    // ]);
 
     ReactDOM.render(app, app_div);
 }

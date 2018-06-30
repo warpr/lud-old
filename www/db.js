@@ -83,10 +83,12 @@ function combineCollections(collections) {
         Object.keys(c).forEach(key => {
             switch (c[key]['type']) {
                 case 'artist':
-                everything[key] = Artist(Immutable.fromJS(c[key], reviver));
+                    everything[key] = Artist(Immutable.fromJS(c[key], reviver));
                     break;
                 case 'release':
-                    everything[key] = Release(Immutable.fromJS(c[key], reviver));
+                    everything[key] = Release(
+                        Immutable.fromJS(c[key], reviver)
+                    );
                     break;
                 case 'track':
                     everything[key] = Track(Immutable.fromJS(c[key], reviver));
