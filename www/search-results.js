@@ -15,6 +15,7 @@ function artistCredit(credit) {
 }
 
 function searchResultCard(mbid, type, title, body) {
+    /*
     const cardOptions = {
         elevation: Blueprint.Core.Card.ELEVATION_ONE,
         interactive: true,
@@ -49,6 +50,8 @@ function searchResultCard(mbid, type, title, body) {
             e('p', { key: 'body' }, body),
         ])
     );
+    */
+    return e('h3', {}, 'search result card goes here');
 }
 
 const cards = {

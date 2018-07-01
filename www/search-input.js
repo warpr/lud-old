@@ -6,7 +6,10 @@
  *   it under the terms of copyleft-next 0.3.1.  See copyleft-next-0.3.1.txt.
  */
 
+const React = window.React;
 const e = React.createElement;
+const M = window['material-ui'];
+const _ = window._;
 
 export class SearchInput extends React.Component {
     constructor(props) {
@@ -30,7 +33,7 @@ export class SearchInput extends React.Component {
         }, 1000);
     }
 
-    handleChange(event) {
+    handleChange(event /*: SyntheticEvent<HTMLInputElement>*/) {
         const value = event.target.value;
 
         this.setState({ query: value });
@@ -43,13 +46,14 @@ export class SearchInput extends React.Component {
 
     render() {
         const attr = {
-            className: 'pt-input',
+            style: this.props.style,
+            autoFocus: true,
             onChange: this.handleChange,
             placeholder: 'Search...',
             type: 'text',
             value: this.state.query,
         };
 
-        return e('input', attr);
+        return e(M.TextField, attr);
     }
 }
