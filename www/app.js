@@ -50,6 +50,7 @@ class Sections extends React.Component {
             'div',
             { style: { width: '100%' } },
             keys([
+                e(SearchResults),
                 e(
                     M.ExpansionPanel,
                     {},

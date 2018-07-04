@@ -19,6 +19,10 @@ export function updateTitle(str /* : string */) {
     }
 }
 
+/*
+ * Silence React's warning about missing keys, this is only for prototyping,
+ * don't use in production code.
+ */
 export function keys(arr /*: React.Node[] */) /*: React.Node[] */ {
     return arr.map(element =>
         React.cloneElement(element, { key: _.uniqueId() })
