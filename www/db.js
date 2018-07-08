@@ -4,9 +4,14 @@
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of copyleft-next 0.3.1.  See copyleft-next-0.3.1.txt.
+ *
+ *   @flow
  */
 
 import * as misc from '/lud/misc.js';
+
+const Immutable = window.Immutable;
+const lunr = window.lunr;
 
 const Artist = Immutable.Record(
     {
@@ -199,7 +204,7 @@ function bootstrapLookup(identifier) {
     console.log('lookup called before being initialized... not supported yet');
 }
 
-export function bootstrap(obj) {
+export function bootstrap(obj /*: any */) {
     const instance = {};
 
     instance.search = bootstrapSearch.bind(instance);
@@ -211,7 +216,7 @@ export function bootstrap(obj) {
 
 export function loadIndex() {
     // FIXME: if deviceMemory < something, skip tracks?
-    console.log('device memory:', navigator.deviceMemory);
+    console.log('device memory:', window.navigator.deviceMemory);
 
     const indexes = [
         '/lud/cache/releases.json',

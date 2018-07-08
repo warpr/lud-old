@@ -23,10 +23,6 @@
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500">
         <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 
-     <!--
-        <link href="css/layout.css" rel="stylesheet" />
-     -->
-
         <link href="/lud/js/font-awesome/css/font-awesome.css" rel="stylesheet" />
 
         <style>
@@ -39,10 +35,7 @@
 
         <!-- Material UI -->
         <script src="/lud/js/@material-ui/core/umd/material-ui.development.js"></script>
-     <!--
-     https://unpkg.com/@material-ui/core/umd/
-     https://unpkg.com/@material-ui/icons/umd/
--->
+
         <!-- Lûd -->
         <script src="/lud/js/lodash/lodash.js"></script>
         <script src="/lud/js/immutable/dist/immutable.js"></script>
@@ -53,7 +46,6 @@
 
         <script type="module">
          import * as app from '/lud/app.js';
-//         import Button from '@material-ui/core/Button';
 
          app.start(document.querySelector("#app"));
 

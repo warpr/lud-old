@@ -59,16 +59,6 @@ export const firefoxTheme = {
     played: '#00b6f0',
 };
 
-export const blueprintTheme = {
-    background: window.Blueprint.Core.Colors.DARK_GRAY1,
-    foreground: window.Blueprint.Core.Colors.LIGHT_GRAY5,
-    subdued: window.Blueprint.Core.Colors.GRAY3,
-    selected: window.Blueprint.Core.Colors.BLUE5,
-    slider: window.Blueprint.Core.Colors.BLACK,
-    loaded: window.Blueprint.Core.Colors.DARK_GRAY5,
-    played: window.Blueprint.Core.Colors.BLUE5,
-};
-
 function formatTime(seconds) {
     const parts = [Math.floor((seconds / 60) % 60), Math.floor(seconds % 60)];
 
@@ -431,9 +421,8 @@ export class AudioControls extends React.PureComponent {
 
         this._mounted = false;
 
-        const self /* :any */ = this;
-        self.handleChange = this.handleChange.bind(this);
-        self.handleResize = this.handleResize.bind(this);
+        this.handleChange = this.handleChange.bind(this);
+        this.handleResize = this.handleResize.bind(this);
 
         this.state = {
             configuration: 'desktop',
@@ -491,6 +480,7 @@ export class AudioControls extends React.PureComponent {
         }
     }
 
+    /*:: handleResize: () => void */
     handleResize() {
         if (window.innerWidth < forceMobile && !this.state.forceMobile) {
             this.setState({ forceMobile: true });
@@ -505,6 +495,7 @@ export class AudioControls extends React.PureComponent {
         }
     }
 
+    /*:: handleChange: () => void */
     handleChange(field /* : string */, value /* : string */) {
         const newState = {};
 
@@ -585,8 +576,6 @@ export class AudioDemo extends React.Component {
 
         return e('div', { style }, [
             e(AudioControls, { key: 'firefox', colors: firefoxTheme }),
-            e('p', { key: 'audio-demo-divider' }),
-            e(AudioControls, { key: 'blueprint', colors: blueprintTheme }),
         ]);
     }
 }

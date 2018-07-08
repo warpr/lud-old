@@ -4,14 +4,17 @@
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of copyleft-next 0.3.1.  See copyleft-next-0.3.1.txt.
+ *
+ *   @flow
  */
 
-import { AudioControls, blueprintTheme } from '/lud/audio-controls.js';
+import { AudioControls, firefoxTheme } from '/lud/audio-controls.js';
 
+const React = window.React;
 const e = React.createElement;
 
 export class AudioElement extends React.Component {
-    constructor(props) {
+    constructor(props /*: {} */) {
         super(props);
         this.audioRef = React.createRef();
         this.glue = window.lûd.glue;
@@ -58,7 +61,7 @@ export class NowPlaying extends React.Component {
             e(AudioElement, { key: 'audio-element' }),
             e(AudioControls, {
                 key: 'audio-controls',
-                colors: blueprintTheme,
+                colors: firefoxTheme,
                 glue: window.lûd.glue,
             }),
         ]);

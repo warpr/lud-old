@@ -4,9 +4,15 @@
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of copyleft-next 0.3.1.  See copyleft-next-0.3.1.txt.
+ *
+ *   @flow
  */
 
+const React = window.React;
 const e = React.createElement;
+const M = window['material-ui'];
+
+import { keys } from '/lud/misc.js';
 
 function artistCredit(credit) {
     return credit.reduce((memo, val) => {
@@ -14,44 +20,39 @@ function artistCredit(credit) {
     }, '');
 }
 
+function searchResultClicked(mbid) {
+    console.log('searchResultClicked', mbid);
+
+    const item = window.lûd.db.lookup(mbid);
+    let disc = null;
+    if (item.has('discs')) {
+        disc = item.discs.get(0);
+    } else if (item.has('release')) {
+        const release = window.lûd.db.lookup(item.release);
+        disc = release.discs.get(item.discNo - 1);
+    } else {
+        console.log('no playable item found for', mbid);
+        return;
+    }
+
+    window.lûd.glue.loadMedia(disc.filename);
+    window.lûd.glue.play();
+}
+
 function searchResultCard(mbid, type, title, body) {
-    /*
-    const cardOptions = {
-        elevation: Blueprint.Core.Card.ELEVATION_ONE,
-        interactive: true,
-        onClick: e => {
-            const item = window.lûd.db.lookup(mbid);
-            let disc = null;
-            if (item.has('discs')) {
-                disc = item.discs.get(0);
-            } else if (item.has('release')) {
-                const release = window.lûd.db.lookup(item.release);
-                disc = release.discs.get(item.discNo - 1);
-            } else {
-                console.log('no playable item found for', mbid);
-                return;
-            }
-
-            window.lûd.glue.loadMedia(disc.filename);
-            window.lûd.glue.play();
-        },
-        className: 'pt-dark',
-    };
-
-    const style = {
-        margin: '10px',
-    };
-
     return e(
-        'div',
-        { key: mbid, style: style },
-        e(Blueprint.Core.Card, cardOptions, [
-            e('h5', { key: 'heading' }, title),
-            e('p', { key: 'body' }, body),
+        M.ListItem,
+        { button: true, key: mbid, onClick: e => searchResultClicked(mbid) },
+        keys([
+            e(M.ListItemAvatar, {}, e(M.Avatar, {}, e(M.Icon, {}, 'folder'))),
+            e(M.ListItemText, { primary: title, secondary: body }),
+            e(
+                M.ListItemSecondaryAction,
+                {},
+                e(M.IconButton, {}, e(M.Icon, {}, 'delete'))
+            ),
         ])
     );
-    */
-    return e('h3', {}, 'search result card goes here');
 }
 
 const cards = {
@@ -66,47 +67,64 @@ const cards = {
         ),
     track: record =>
         searchResultCard(record.id, record.type, record.title, [
-            'from ' + record.release.get('title'),
-            e('br', { key: 'newline' }),
-            'by ' + artistCredit(record.credit),
+            'from ',
+            record.release.get('title'),
+            ' by ',
+            artistCredit(record.credit),
         ]),
 };
 
 export class SearchResults extends React.Component {
-    constructor(props) {
+    constructor(props /*: {} */) {
         super(props);
 
-        this.state = { results: [] };
+        this.state = { results: [], expanded: false };
+        this.handleChange = this.handleChange.bind(this);
     }
 
     componentWillMount() {
         // FIXME: don't hardcode "window.lûd" here.
         window.lûd.searchResults = results =>
-            this.setState({ results: results });
+            this.setState({ expanded: true, results: results });
     }
 
     componentWillUnmount() {
         window.lûd.searchResults = () => {};
     }
 
-    render() {
-        const style = {
-            margin: 0,
-            padding: 0,
-            border: 0,
-        };
+    /*:: handleChange: () => void */
+    handleChange(event /*: SyntheticEvent<HTMLElement>*/) {
+        console.log('handleChange', event, 'old expanded', this.state.expanded);
+        this.setState({ expanded: !this.state.expanded });
+    }
 
+    render() {
         return e(
-            'div',
-            { style },
-            this.state.results.map(r => {
-                return cards[r.type](r);
-            })
+            M.ExpansionPanel,
+            {
+                expanded: this.state.expanded,
+                onChange: this.handleChange,
+            },
+            keys([
+                e(
+                    M.ExpansionPanelSummary,
+                    { expandIcon: e(M.Icon, {}, 'expand_more') },
+                    e(M.Typography, {}, 'Search results')
+                ),
+                e(
+                    M.ExpansionPanelDetails,
+                    {},
+                    e(
+                        M.Grid,
+                        { item: true, xs: 12, md: 6 },
+                        e(
+                            M.List,
+                            { dense: false },
+                            this.state.results.map(r => cards[r.type](r))
+                        )
+                    )
+                ),
+            ])
         );
     }
 }
-
-SearchResults.bootstrap = obj => {
-    console.log('bootstrap', obj);
-    obj.searchResults = () => {};
-};
