@@ -9,6 +9,7 @@
  */
 
 import { AudioControls, firefoxTheme } from '/lud/audio-controls.js';
+import { MediaControls } from '/lud/media-controls.js';
 
 const React = window.React;
 const e = React.createElement;
@@ -62,6 +63,10 @@ export class NowPlaying extends React.Component {
             e(AudioControls, {
                 key: 'audio-controls',
                 colors: firefoxTheme,
+                glue: window.lûd.glue,
+            }),
+            e(MediaControls, {
+                key: 'media-controls',
                 glue: window.lûd.glue,
             }),
         ]);
