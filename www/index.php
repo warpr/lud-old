@@ -27,6 +27,13 @@
         <link href="/lud/js/font-awesome/css/font-awesome.css" rel="stylesheet" />
 
         <link rel="stylesheet" href="/lud/media-controls.css" />
+        <style>
+         div#app {
+             min-height: 100vh;
+             position: relative;
+             border: 1px dashed yellow;
+         }
+        </style>
     </head>
     <body>
         <!-- React -->

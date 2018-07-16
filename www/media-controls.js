@@ -136,6 +136,9 @@ class MediaControlsBase extends React.PureComponent {
         const iconAttr = { style: { height: 38, width: 38 } };
         const coverArt = 'https://via.placeholder.com/256x256.png';
 
+        // FIXME: Add a heart button to indicate liking a song/album
+        // See: https://material-ui.com/demos/selection-controls/
+
         console.log('theme set');
         window.t = theme;
 

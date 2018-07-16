@@ -19,6 +19,7 @@ import * as db from '/lud/db.js';
 import { MainMenu } from '/lud/main-menu.js';
 import { keys } from '/lud/misc.js';
 import { NowPlaying } from '/lud/now-playing.js';
+import { PlayPauseFab } from '/lud/play-pause-fab.js';
 import { SearchResults } from '/lud/search-results.js';
 
 // FIXME: should probably use a React context for this.  For now this will do.
@@ -48,6 +49,9 @@ throttleEvent('resize', 'lûd-raf-resize');
 
 class Sections extends React.Component {
     render() {
+        // FIXME: use vertical stepper for tracklist (for now?)
+        // https://material-ui.com/demos/steppers/
+
         return e(
             'div',
             { style: { width: '100%' } },
@@ -138,6 +142,7 @@ export function start(app_div /* : HTMLElement */) {
         e(MainMenu, { key: 'main-menu' }),
         e(NowPlaying, { key: 'now-playing' }),
         e(Sections, { key: 'sections' }),
+        e(PlayPauseFab, { key: 'play-pause' }),
     ]);
 
     window.ReactDOM.render(app, app_div);
