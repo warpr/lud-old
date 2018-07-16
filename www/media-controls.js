@@ -14,6 +14,49 @@ import { keys } from '/lud/misc.js';
 const React = window.React;
 const e = React.createElement;
 const M = window['material-ui'];
+const { MDCSlider } = window.mdc.slider;
+
+class Slider extends React.PureComponent {
+    render() {
+        setTimeout(() => {
+            const slider = new MDCSlider(document.querySelector('.mdc-slider'));
+            slider.value = 25;
+            slider.listen('MDCSlider:change', () =>
+                console.log(`Value changed to ${slider.value}`)
+            );
+
+            window.s = slider;
+        }, 500);
+
+        return e(
+            'div',
+            { className: 'mdc-slider', tabIndex: 0, role: 'slider' },
+            keys([
+                e(
+                    'div',
+                    { className: 'mdc-slider__track-container' },
+                    e('div', { className: 'mdc-slider__track' })
+                ),
+                e(
+                    'div',
+                    { className: 'mdc-slider__thumb-container' },
+                    keys([
+                        e(
+                            'svg',
+                            {
+                                className: 'mdc-slider__thumb',
+                                width: 21,
+                                height: 21,
+                            },
+                            e('circle', { cx: 10.5, cy: 10.5, r: 7.875 })
+                        ),
+                        e('div', { className: 'mdc-slider__focus-ring' }),
+                    ])
+                ),
+            ])
+        );
+    }
+}
 
 /*::
 type MediaControlsProps = {
@@ -88,25 +131,111 @@ class MediaControlsBase extends React.PureComponent {
         }
     }
 
-    render () {
+    render() {
         const { theme } = this.props;
         const iconAttr = { style: { height: 38, width: 38 } };
-        const coverArt = "https://via.placeholder.com/256x256.png";
+        const coverArt = 'https://via.placeholder.com/256x256.png';
 
-        return e(M.Card, { style: { display: "flex", justifyContent: "space-between" }}, keys([
-            e('div', { style: { display: "flex", flexDirection: "column" }}, keys([
-                e(M.CardContent, { style: { flex: "1 0 auto" }}, keys([
-                    e(M.Typography, { variant: "headline" }, "Live From Space"),
-                    e(M.Typography, { variant: "subheading", color: "textSecondary" }, "Mac Miller")
-                ])),
-                e('div', { style: { display: "flex", alignItems: "center", paddingLeft: theme.spacing.unit, paddingBottom: theme.spacing.unit }}, keys([
-                    e(M.IconButton, {}, e(M.Icon, iconAttr, "skip_previous")),
-                    e(M.IconButton, {}, e(M.Icon, iconAttr, "play_arrow")),
-                    e(M.IconButton, {}, e(M.Icon, iconAttr, "skip_next")),
-                ])),
-            ])),
-            e(M.CardMedia, { image: coverArt, style: { height: 151, width: 151 }, title: "Live From Space Album Cover" }, [])
-        ]));
+        console.log('theme set');
+        window.t = theme;
+
+        return e(
+            M.Card,
+            {
+                style: {
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    marginTop: theme.spacing.unit,
+                    marginBottom: theme.spacing.unit,
+                },
+            },
+            keys([
+                e(
+                    'div',
+                    {
+                        style: {
+                            display: 'flex',
+                            flexGrow: 2,
+                            flexDirection: 'column',
+                        },
+                    },
+                    keys([
+                        e(
+                            M.CardContent,
+                            { style: { flex: '1 0 auto' } },
+                            keys([
+                                e(
+                                    M.Typography,
+                                    { variant: 'headline' },
+                                    'Live From Space'
+                                ),
+                                e(
+                                    M.Typography,
+                                    {
+                                        variant: 'subheading',
+                                        color: 'textSecondary',
+                                    },
+                                    'Mac Miller'
+                                ),
+                                e(Slider, {}),
+                            ])
+                        ),
+                        e(
+                            'div',
+                            {
+                                style: {
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    paddingLeft: theme.spacing.unit,
+                                    paddingBottom: theme.spacing.unit,
+                                },
+                            },
+                            keys([
+                                e(
+                                    M.IconButton,
+                                    {},
+                                    e(M.Icon, iconAttr, 'skip_previous')
+                                ),
+                                e(
+                                    M.IconButton,
+                                    {},
+                                    e(M.Icon, iconAttr, 'replay_30')
+                                ),
+                                e(
+                                    M.IconButton,
+                                    {},
+                                    e(M.Icon, iconAttr, 'pause')
+                                ),
+                                e(
+                                    M.IconButton,
+                                    {},
+                                    e(M.Icon, iconAttr, 'play_arrow')
+                                ),
+                                e(
+                                    M.IconButton,
+                                    {},
+                                    e(M.Icon, iconAttr, 'forward_30')
+                                ),
+                                e(
+                                    M.IconButton,
+                                    {},
+                                    e(M.Icon, iconAttr, 'skip_next')
+                                ),
+                            ])
+                        ),
+                    ])
+                ),
+                e(
+                    M.CardMedia,
+                    {
+                        image: coverArt,
+                        style: { height: 256, width: 256 },
+                        title: 'Live From Space Album Cover',
+                    },
+                    []
+                ),
+            ])
+        );
     }
 }
 

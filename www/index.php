@@ -20,13 +20,13 @@
         <meta name="theme-color" content="#dedede">
 
         <!-- Material UI -->
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500">
-        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500" />
+        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+        <link rel="stylesheet" href="/lud/js/@material/slider/dist/mdc.slider.css" />
 
         <link href="/lud/js/font-awesome/css/font-awesome.css" rel="stylesheet" />
 
-        <style>
-        </style>
+        <link rel="stylesheet" href="/lud/media-controls.css" />
     </head>
     <body>
         <!-- React -->
@@ -35,6 +35,7 @@
 
         <!-- Material UI -->
         <script src="/lud/js/@material-ui/core/umd/material-ui.development.js"></script>
+        <script src="/lud/js/@material/slider/dist/mdc.slider.js"></script>
 
         <!-- Lûd -->
         <script src="/lud/js/lodash/lodash.js"></script>
