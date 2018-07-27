@@ -541,17 +541,6 @@ export class AudioControls extends React.PureComponent {
             configuration = buttonConfigurations.tablet;
         }
 
-        console.log(
-            'render controls',
-            window.innerWidth,
-            'mobile',
-            this.state.forceMobile,
-            'tablet',
-            this.state.forceTablet,
-            'selected configuration',
-            configuration
-        );
-
         return e(
             AudioControlsUI,
             Object.assign(

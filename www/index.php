@@ -31,7 +31,6 @@
          div#app {
              min-height: 100vh;
              position: relative;
-             border: 1px dashed yellow;
          }
         </style>
     </head>
@@ -40,14 +39,19 @@
         <script src="/lud/js/react/umd/react.development.js"></script>
         <script src="/lud/js/react-dom/umd/react-dom.development.js"></script>
 
+        <!-- Styled Components -->
+        <script src="/lud/js/styled-components/dist/styled-components.js"></script>
+
         <!-- Material UI -->
         <script src="/lud/js/@material-ui/core/umd/material-ui.development.js"></script>
         <script src="/lud/js/@material/slider/dist/mdc.slider.js"></script>
 
-        <!-- Lûd -->
-        <script src="/lud/js/lodash/lodash.js"></script>
+        <!-- Immutable -->
         <script src="/lud/js/immutable/dist/immutable.js"></script>
         <script src="/lud/js/immutable-devtools/dist/index.js"></script>
+
+        <!-- Lûd -->
+        <script src="/lud/js/lodash/lodash.js"></script>
         <script src="/lud/js/lunr/lunr.js"></script>
 
         <div id="app">Loading...</div>

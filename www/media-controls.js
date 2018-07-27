@@ -12,21 +12,82 @@ import { AudioGlue } from '/lud/audio-glue.js';
 import { keys } from '/lud/misc.js';
 
 const React = window.React;
+const styled = window.styled.default;
 const e = React.createElement;
 const M = window['material-ui'];
 const { MDCSlider } = window.mdc.slider;
 
-class Slider extends React.PureComponent {
-    render() {
-        setTimeout(() => {
-            const slider = new MDCSlider(document.querySelector('.mdc-slider'));
-            slider.value = 25;
-            slider.listen('MDCSlider:change', () =>
-                console.log(`Value changed to ${slider.value}`)
-            );
+/*::
+type SliderProps = {
+    glue: AudioGlue,
+    position: number,
+    duration: number,
+}
 
-            window.s = slider;
-        }, 500);
+type SliderState = {
+    value: number,
+}
+*/
+
+class Slider extends React.PureComponent {
+    constructor(props /* : SliderProps */) {
+        super(props);
+
+        this._mounted = false;
+        this.state = { value: 0 };
+        this.handleChange = this.handleChange.bind(this);
+    }
+
+    static getDerivedStateFromProps(
+        nextProps /* : SliderProps */,
+        prevState /* : SliderState */
+    ) {
+        const newValue = nextProps.position / nextProps.duration * 100;
+        console.log('new props, new value', newValue);
+        return { value: newValue };
+    }
+
+    componentDidMount() {
+        this._mounted = true;
+
+        // FIXME: use refs
+        console.log("mounted, getting new slider set up");
+        this.slider = new MDCSlider(document.querySelector('.mdc-slider'));
+        this.slider.value = this.state.value;
+        this.slider.listen('MDCSlider:change', this.handleChange);
+    }
+
+    componentWillUnmount() {
+        this._mounted = false;
+
+        console.log('unmounted');
+        if (this.slider) {
+            this.slider.unlisten('MDCSlider:change', this.handleChange);
+            this.slider = null;
+        }
+
+        if (this.state.glue) {
+            this.state.glue.disconnectControl(this);
+        }
+    }
+
+    /*:: handleChange: () => void */
+    handleChange() {
+        //this.props.glue.setCurrentTime(value);
+        console.log('Value changed to', this.slider.value)
+    }
+
+    shouldUpdate() {
+        return false;
+    }
+
+    render() {
+        if (this.slider) {
+            console.log('rerender, new value is', this.state.value);
+            this.slider.value = this.state.value;
+        } else {
+            console.log('no slider render');
+        }
 
         return e(
             'div',
@@ -57,6 +118,35 @@ class Slider extends React.PureComponent {
         );
     }
 }
+
+const StyledCard = styled(M.Card)`
+    display: flex;
+    justify-content: space-between;
+    margin-top: ${props => props.theme.spacing.unit + "px" };
+    margin-bottom: ${props => props.theme.spacing.unit + "px" };
+`;
+
+const StyledCardContent = styled(M.CardContent)`
+    flex: 1 0 auto;
+`;
+
+const StyledLeftColumn = styled.div`
+    display: flex;
+    flex-grow: 2;
+    flex-direction: column;
+`;
+
+const StyledControls = styled.div`
+    display: flex;
+    align-items: center;
+    padding-left: ${props => props.theme.spacing.unit};
+    padding-bottom: ${props => props.theme.spacing.unit};
+`;
+
+const StyledCardMedia = styled(M.CardMedia)`
+    height: 256px;
+    width: 256px;
+`;
 
 /*::
 type MediaControlsProps = {
@@ -127,118 +217,41 @@ class MediaControlsBase extends React.PureComponent {
             duration != this.state.duration ||
             volume != this.state.volume
         ) {
+            console.log('media controls tick', position, duration);
             this.setState({ position, duration, volume });
         }
     }
 
     render() {
+        setTimeout(() => this.state.glue.connectControl(this), 0);
+
         const { theme } = this.props;
         const iconAttr = { style: { height: 38, width: 38 } };
         const coverArt = 'https://via.placeholder.com/256x256.png';
 
+        const title = 'Live From Space';
+        const artist = 'Mac Miller';
+        const coverTooltip = title + ' Album Cover';
+
         // FIXME: Add a heart button to indicate liking a song/album
         // See: https://material-ui.com/demos/selection-controls/
 
-        console.log('theme set');
-        window.t = theme;
+        const slider = e(Slider, { glue: this.props.glue, position: this.state.position, duration: this.state.duration });
 
-        return e(
-            M.Card,
-            {
-                style: {
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    marginTop: theme.spacing.unit,
-                    marginBottom: theme.spacing.unit,
-                },
-            },
-            keys([
-                e(
-                    'div',
-                    {
-                        style: {
-                            display: 'flex',
-                            flexGrow: 2,
-                            flexDirection: 'column',
-                        },
-                    },
-                    keys([
-                        e(
-                            M.CardContent,
-                            { style: { flex: '1 0 auto' } },
-                            keys([
-                                e(
-                                    M.Typography,
-                                    { variant: 'headline' },
-                                    'Live From Space'
-                                ),
-                                e(
-                                    M.Typography,
-                                    {
-                                        variant: 'subheading',
-                                        color: 'textSecondary',
-                                    },
-                                    'Mac Miller'
-                                ),
-                                e(Slider, {}),
-                            ])
-                        ),
-                        e(
-                            'div',
-                            {
-                                style: {
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    paddingLeft: theme.spacing.unit,
-                                    paddingBottom: theme.spacing.unit,
-                                },
-                            },
-                            keys([
-                                e(
-                                    M.IconButton,
-                                    {},
-                                    e(M.Icon, iconAttr, 'skip_previous')
-                                ),
-                                e(
-                                    M.IconButton,
-                                    {},
-                                    e(M.Icon, iconAttr, 'replay_30')
-                                ),
-                                e(
-                                    M.IconButton,
-                                    {},
-                                    e(M.Icon, iconAttr, 'pause')
-                                ),
-                                e(
-                                    M.IconButton,
-                                    {},
-                                    e(M.Icon, iconAttr, 'play_arrow')
-                                ),
-                                e(
-                                    M.IconButton,
-                                    {},
-                                    e(M.Icon, iconAttr, 'forward_30')
-                                ),
-                                e(
-                                    M.IconButton,
-                                    {},
-                                    e(M.Icon, iconAttr, 'skip_next')
-                                ),
-                            ])
-                        ),
-                    ])
-                ),
-                e(
-                    M.CardMedia,
-                    {
-                        image: coverArt,
-                        style: { height: 256, width: 256 },
-                        title: 'Live From Space Album Cover',
-                    },
-                    []
-                ),
-            ])
-        );
+        return e(StyledCard, { theme },
+                 e(StyledLeftColumn, { theme },
+                   e(StyledCardContent, { theme },
+                     e(M.Typography, { variant: 'headline' }, title),
+                     e(M.Typography, { variant: 'subheading', color: 'textSecondary' }, artist),
+                     slider),
+                   e(StyledControls, { theme },
+                     e(M.IconButton, {}, e(M.Icon, iconAttr, 'skip_previous')),
+                     e(M.IconButton, {}, e(M.Icon, iconAttr, 'replay_30')),
+                     e(M.IconButton, {}, e(M.Icon, iconAttr, 'pause')),
+                     e(M.IconButton, {}, e(M.Icon, iconAttr, 'play_arrow')),
+                     e(M.IconButton, {}, e(M.Icon, iconAttr, 'forward_30')),
+                     e(M.IconButton, {}, e(M.Icon, iconAttr, 'skip_next')))),
+                 e(StyledCardMedia, {theme, image: coverArt, title: coverTooltip}));
     }
 }
 
