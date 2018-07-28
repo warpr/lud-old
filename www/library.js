@@ -37,11 +37,7 @@ export class Library extends React.Component {
         ];
         //        };
 
-        return e(
-            'div',
-            { className: 'library' },
-            e(Blueprint.Core.Tree, { contents: tree })
-        );
+        return e('div', { className: 'library' }, e(Blueprint.Core.Tree, { contents: tree }));
     }
 }
 

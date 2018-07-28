@@ -129,10 +129,7 @@ export class AudioGlue {
         if (something instanceof HTMLAudioElement) {
             this.outputs.push(new AudioElementOutput(this, something));
         } else {
-            console.log(
-                'ERROR: Could not connect to unfamiliar audio interface',
-                something
-            );
+            console.log('ERROR: Could not connect to unfamiliar audio interface', something);
         }
 
         this.tick();

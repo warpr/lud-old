@@ -130,10 +130,7 @@ export function parseCue(cueStr /* : string */) /* : Array<CueRecord> */ {
             memo.push({});
         }
 
-        Object.assign(
-            memo[memo.length - 1],
-            parseCommand(command, parts, memo[memo.length - 1])
-        );
+        Object.assign(memo[memo.length - 1], parseCommand(command, parts, memo[memo.length - 1]));
 
         return memo;
     }, []);

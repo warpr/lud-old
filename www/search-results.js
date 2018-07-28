@@ -46,25 +46,15 @@ function searchResultCard(mbid, type, title, body) {
         keys([
             e(M.ListItemAvatar, {}, e(M.Avatar, {}, e(M.Icon, {}, 'folder'))),
             e(M.ListItemText, { primary: title, secondary: body }),
-            e(
-                M.ListItemSecondaryAction,
-                {},
-                e(M.IconButton, {}, e(M.Icon, {}, 'delete'))
-            ),
+            e(M.ListItemSecondaryAction, {}, e(M.IconButton, {}, e(M.Icon, {}, 'delete'))),
         ])
     );
 }
 
 const cards = {
-    artist: record =>
-        searchResultCard(record.id, record.type, record.names.first(), ''),
+    artist: record => searchResultCard(record.id, record.type, record.names.first(), ''),
     release: record =>
-        searchResultCard(
-            record.id,
-            record.type,
-            record.title,
-            'by ' + artistCredit(record.credit)
-        ),
+        searchResultCard(record.id, record.type, record.title, 'by ' + artistCredit(record.credit)),
     track: record =>
         searchResultCard(record.id, record.type, record.title, [
             'from ',
@@ -84,8 +74,7 @@ export class SearchResults extends React.Component {
 
     componentWillMount() {
         // FIXME: don't hardcode "window.lûd" here.
-        window.lûd.searchResults = results =>
-            this.setState({ expanded: true, results: results });
+        window.lûd.searchResults = results => this.setState({ expanded: true, results: results });
     }
 
     componentWillUnmount() {
@@ -117,11 +106,7 @@ export class SearchResults extends React.Component {
                     e(
                         M.Grid,
                         { item: true, xs: 12, md: 6 },
-                        e(
-                            M.List,
-                            { dense: false },
-                            this.state.results.map(r => cards[r.type](r))
-                        )
+                        e(M.List, { dense: false }, this.state.results.map(r => cards[r.type](r)))
                     )
                 ),
             ])

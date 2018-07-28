@@ -91,9 +91,7 @@ function combineCollections(collections) {
                     everything[key] = Artist(Immutable.fromJS(c[key], reviver));
                     break;
                 case 'release':
-                    everything[key] = Release(
-                        Immutable.fromJS(c[key], reviver)
-                    );
+                    everything[key] = Release(Immutable.fromJS(c[key], reviver));
                     break;
                 case 'track':
                     everything[key] = Track(Immutable.fromJS(c[key], reviver));
@@ -177,10 +175,7 @@ function search(searchTerm) {
             // copy item id from the db key
             const item = this.__database[r.ref].set('id', r.ref);
             if (item.get('release')) {
-                return item.set(
-                    'release',
-                    this.__database[item.get('release')]
-                );
+                return item.set('release', this.__database[item.get('release')]);
             } else {
                 return item;
             }

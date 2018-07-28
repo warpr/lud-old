@@ -34,10 +34,7 @@ function cueFilename(discFilename) {
     return ret;
 }
 
-function currentSong(
-    position /* ?: number */,
-    cueData /* : Array<CueRecord> */
-) {
+function currentSong(position /* ?: number */, cueData /* : Array<CueRecord> */) {
     if (!position && position !== 0) {
         return null;
     }

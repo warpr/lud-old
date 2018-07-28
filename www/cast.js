@@ -11,13 +11,9 @@ const localIp = '192.168.100.25';
 
 //         const disc = "http://" + localIp + "/lud/music/series/techpara/2009.we-love-techpara-70min-70songs/disc1.m4a";
 const disc =
-    'http://' +
-    localIp +
-    '/lud/music/artists/future-sound-of-london/1994.lifeforms/disc1.m4a';
+    'http://' + localIp + '/lud/music/artists/future-sound-of-london/1994.lifeforms/disc1.m4a';
 const albumArt =
-    'http://' +
-    localIp +
-    '/lud/music/artists/future-sound-of-london/1994.lifeforms/cover.jpg';
+    'http://' + localIp + '/lud/music/artists/future-sound-of-london/1994.lifeforms/cover.jpg';
 
 /*
   NOTES
@@ -47,9 +43,8 @@ function startCasting() {
     //     });
     // });
 
-    playerController.addEventListener(
-        cast.framework.RemotePlayerEventType.ANY_CHANGE,
-        event => console.log('remotePlayer event', event)
+    playerController.addEventListener(cast.framework.RemotePlayerEventType.ANY_CHANGE, event =>
+        console.log('remotePlayer event', event)
     );
 
     /** seeking:

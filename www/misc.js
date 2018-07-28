@@ -24,9 +24,7 @@ export function updateTitle(str /* : string */) {
  * don't use in production code.
  */
 export function keys(arr /*: React.Node[] */) /*: React.Node[] */ {
-    return arr.map(element =>
-        React.cloneElement(element, { key: _.uniqueId() })
-    );
+    return arr.map(element => React.cloneElement(element, { key: _.uniqueId() }));
 }
 
 export const controls = {

@@ -29,38 +29,36 @@ type SliderState = {
 }
 */
 
-class Slider extends React.PureComponent {
+class Slider extends React.Component {
     constructor(props /* : SliderProps */) {
         super(props);
 
         this._mounted = false;
+        this._sliderRef = React.createRef();
         this.state = { value: 0 };
         this.handleChange = this.handleChange.bind(this);
+        this.handleInput = this.handleInput.bind(this);
     }
 
-    static getDerivedStateFromProps(
-        nextProps /* : SliderProps */,
-        prevState /* : SliderState */
-    ) {
-        const newValue = nextProps.position / nextProps.duration * 100;
-        console.log('new props, new value', newValue);
+    static getDerivedStateFromProps(nextProps /* : SliderProps */, prevState /* : SliderState */) {
+        const newValue = (nextProps.position / nextProps.duration) * 100;
         return { value: newValue };
     }
 
     componentDidMount() {
         this._mounted = true;
+        this._dragging = false;
 
-        // FIXME: use refs
-        console.log("mounted, getting new slider set up");
-        this.slider = new MDCSlider(document.querySelector('.mdc-slider'));
+        this.slider = new MDCSlider(this._sliderRef.current);
         this.slider.value = this.state.value;
         this.slider.listen('MDCSlider:change', this.handleChange);
+        this.slider.listen('MDCSlider:input', this.handleInput);
     }
 
     componentWillUnmount() {
         this._mounted = false;
+        this._dragging = false;
 
-        console.log('unmounted');
         if (this.slider) {
             this.slider.unlisten('MDCSlider:change', this.handleChange);
             this.slider = null;
@@ -73,48 +71,48 @@ class Slider extends React.PureComponent {
 
     /*:: handleChange: () => void */
     handleChange() {
-        //this.props.glue.setCurrentTime(value);
-        console.log('Value changed to', this.slider.value)
+        this._dragging = false;
+
+        const newTime = this.props.duration * (this.slider.value / 100);
+        this.props.glue.setCurrentTime(newTime);
     }
 
-    shouldUpdate() {
+    /*:: handleInput: () => void */
+    handleInput() {
+        this._dragging = true;
+    }
+
+    shouldComponentUpdate(nextProps /* : SliderProps */, nextState /* : SliderState */) {
+        if (this.slider && !this._dragging && this.state.value != nextState.value) {
+            this.slider.value = nextState.value;
+        }
+
         return false;
     }
 
     render() {
         if (this.slider) {
-            console.log('rerender, new value is', this.state.value);
             this.slider.value = this.state.value;
-        } else {
-            console.log('no slider render');
         }
 
         return e(
             'div',
-            { className: 'mdc-slider', tabIndex: 0, role: 'slider' },
-            keys([
+            { ref: this._sliderRef, className: 'mdc-slider', tabIndex: 0, role: 'slider' },
+            e(
+                'div',
+                { className: 'mdc-slider__track-container' },
+                e('div', { className: 'mdc-slider__track' })
+            ),
+            e(
+                'div',
+                { className: 'mdc-slider__thumb-container' },
                 e(
-                    'div',
-                    { className: 'mdc-slider__track-container' },
-                    e('div', { className: 'mdc-slider__track' })
+                    'svg',
+                    { className: 'mdc-slider__thumb', width: 21, height: 21 },
+                    e('circle', { cx: 10.5, cy: 10.5, r: 7.875 })
                 ),
-                e(
-                    'div',
-                    { className: 'mdc-slider__thumb-container' },
-                    keys([
-                        e(
-                            'svg',
-                            {
-                                className: 'mdc-slider__thumb',
-                                width: 21,
-                                height: 21,
-                            },
-                            e('circle', { cx: 10.5, cy: 10.5, r: 7.875 })
-                        ),
-                        e('div', { className: 'mdc-slider__focus-ring' }),
-                    ])
-                ),
-            ])
+                e('div', { className: 'mdc-slider__focus-ring' })
+            )
         );
     }
 }
@@ -122,8 +120,8 @@ class Slider extends React.PureComponent {
 const StyledCard = styled(M.Card)`
     display: flex;
     justify-content: space-between;
-    margin-top: ${props => props.theme.spacing.unit + "px" };
-    margin-bottom: ${props => props.theme.spacing.unit + "px" };
+    margin-top: ${props => props.theme.spacing.unit + 'px'};
+    margin-bottom: ${props => props.theme.spacing.unit + 'px'};
 `;
 
 const StyledCardContent = styled(M.CardContent)`
@@ -217,7 +215,6 @@ class MediaControlsBase extends React.PureComponent {
             duration != this.state.duration ||
             volume != this.state.volume
         ) {
-            console.log('media controls tick', position, duration);
             this.setState({ position, duration, volume });
         }
     }
@@ -236,22 +233,38 @@ class MediaControlsBase extends React.PureComponent {
         // FIXME: Add a heart button to indicate liking a song/album
         // See: https://material-ui.com/demos/selection-controls/
 
-        const slider = e(Slider, { glue: this.props.glue, position: this.state.position, duration: this.state.duration });
+        const slider = e(Slider, {
+            glue: this.props.glue,
+            position: this.state.position,
+            duration: this.state.duration,
+        });
 
-        return e(StyledCard, { theme },
-                 e(StyledLeftColumn, { theme },
-                   e(StyledCardContent, { theme },
-                     e(M.Typography, { variant: 'headline' }, title),
-                     e(M.Typography, { variant: 'subheading', color: 'textSecondary' }, artist),
-                     slider),
-                   e(StyledControls, { theme },
-                     e(M.IconButton, {}, e(M.Icon, iconAttr, 'skip_previous')),
-                     e(M.IconButton, {}, e(M.Icon, iconAttr, 'replay_30')),
-                     e(M.IconButton, {}, e(M.Icon, iconAttr, 'pause')),
-                     e(M.IconButton, {}, e(M.Icon, iconAttr, 'play_arrow')),
-                     e(M.IconButton, {}, e(M.Icon, iconAttr, 'forward_30')),
-                     e(M.IconButton, {}, e(M.Icon, iconAttr, 'skip_next')))),
-                 e(StyledCardMedia, {theme, image: coverArt, title: coverTooltip}));
+        return e(
+            StyledCard,
+            { theme },
+            e(
+                StyledLeftColumn,
+                { theme },
+                e(
+                    StyledCardContent,
+                    { theme },
+                    e(M.Typography, { variant: 'headline' }, title),
+                    e(M.Typography, { variant: 'subheading', color: 'textSecondary' }, artist),
+                    slider
+                ),
+                e(
+                    StyledControls,
+                    { theme },
+                    e(M.IconButton, {}, e(M.Icon, iconAttr, 'skip_previous')),
+                    e(M.IconButton, {}, e(M.Icon, iconAttr, 'replay_30')),
+                    e(M.IconButton, {}, e(M.Icon, iconAttr, 'pause')),
+                    e(M.IconButton, {}, e(M.Icon, iconAttr, 'play_arrow')),
+                    e(M.IconButton, {}, e(M.Icon, iconAttr, 'forward_30')),
+                    e(M.IconButton, {}, e(M.Icon, iconAttr, 'skip_next'))
+                )
+            ),
+            e(StyledCardMedia, { theme, image: coverArt, title: coverTooltip })
+        );
     }
 }
 

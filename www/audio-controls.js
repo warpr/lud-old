@@ -197,11 +197,7 @@ class Button extends React.PureComponent {
         };
 
         const iconOptions = { className: 'fa fa-fw fa-' + this.props.icon };
-        return e(
-            'button',
-            { style, onClick: this.handleClick },
-            e('i', iconOptions)
-        );
+        return e('button', { style, onClick: this.handleClick }, e('i', iconOptions));
     }
 }
 
@@ -563,8 +559,6 @@ export class AudioDemo extends React.Component {
             border: 0,
         };
 
-        return e('div', { style }, [
-            e(AudioControls, { key: 'firefox', colors: firefoxTheme }),
-        ]);
+        return e('div', { style }, [e(AudioControls, { key: 'firefox', colors: firefoxTheme })]);
     }
 }
