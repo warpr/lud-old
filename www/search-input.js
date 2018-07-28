@@ -30,7 +30,7 @@ export class SearchInput extends React.Component {
             this.handleSearchResult(window.lûd.db.search(value));
 
             this.setState({ query: value });
-        }, 1000);
+        }, 5000);
     }
 
     handleChange(event /*: SyntheticEvent<HTMLInputElement>*/) {

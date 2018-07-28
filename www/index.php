@@ -35,6 +35,9 @@
         </style>
     </head>
     <body>
+        <!-- Mobile Console -->
+        <script src="/lud/hnl.mobileConsole.js"></script>
+
         <!-- React -->
         <script src="/lud/js/react/umd/react.development.js"></script>
         <script src="/lud/js/react-dom/umd/react-dom.development.js"></script>
@@ -59,9 +62,21 @@
         <script type="module">
          import * as app from '/lud/app.js';
 
-         app.start(document.querySelector("#app"));
+         const ua = navigator.userAgent.toLowerCase();
+         const isAndroid = ua.indexOf("android") > -1;
 
-         immutableDevTools(Immutable);
+         if (isAndroid) {
+             mobileConsole.init();
+
+             setTimeout(() => {
+                 app.start(document.querySelector("#app"));
+                 mobileConsole.toggle();
+             }, 1000);
+         } else {
+             app.start(document.querySelector("#app"));
+             immutableDevTools(Immutable);
+         }
+
         </script>
     </body>
 </html>
