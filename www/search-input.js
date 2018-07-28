@@ -24,13 +24,13 @@ export class SearchInput extends React.Component {
             { maxWait: 1000 }
         );
 
-        setTimeout(() => {
-            const value = 'calle';
+        window.lûd.db.ready.then(_ => {
+            const value = 'vit';
 
             this.handleSearchResult(window.lûd.db.search(value));
 
             this.setState({ query: value });
-        }, 5000);
+        });
     }
 
     handleChange(event /*: SyntheticEvent<HTMLInputElement>*/) {

@@ -13,7 +13,7 @@ import * as misc from '/lud/misc.js';
 const Immutable = window.Immutable;
 const lunr = window.lunr;
 
-const Artist = Immutable.Record(
+export const Artist = Immutable.Record(
     {
         id: null,
         names: [], // list of artist names, first is primary, rest are search hints
@@ -22,7 +22,7 @@ const Artist = Immutable.Record(
     'Artist'
 );
 
-const ArtistCredit = Immutable.Record(
+export const ArtistCredit = Immutable.Record(
     {
         artist: '',
         id: null,
@@ -31,7 +31,7 @@ const ArtistCredit = Immutable.Record(
     'ArtistCredit'
 );
 
-const Disc = Immutable.Record(
+export const Disc = Immutable.Record(
     {
         title: null,
         filename: null,
@@ -39,7 +39,7 @@ const Disc = Immutable.Record(
     'Disc'
 );
 
-const Release = Immutable.Record(
+export const Release = Immutable.Record(
     {
         id: null,
         title: null,
@@ -51,9 +51,10 @@ const Release = Immutable.Record(
     'Release'
 );
 
-const Track = Immutable.Record(
+export const Track = Immutable.Record(
     {
         id: null,
+        pos: null,
         title: null,
         length: null,
         discNo: 1,
@@ -192,11 +193,13 @@ function initSearch(result) {
 }
 
 function bootstrapSearch(searchTerm) {
-    console.log('search called before being initialized... not supported yet');
+    console.log('WARNING: search called before being initialized...');
+    return [];
 }
 
 function bootstrapLookup(identifier) {
-    console.log('lookup called before being initialized... not supported yet');
+    console.log('lookup called before being initialized...');
+    return null;
 }
 
 export function bootstrap(obj /*: any */) {
@@ -205,6 +208,10 @@ export function bootstrap(obj /*: any */) {
     instance.search = bootstrapSearch.bind(instance);
     instance.lookup = bootstrapLookup.bind(instance);
     instance.loadIndex = loadIndex.bind(instance);
+    instance.ready = new Promise((resolve, reject) => {
+        instance.__resolveReady = resolve;
+        instance.__rejectReady = reject;
+    });
 
     obj.db = instance;
 }
@@ -222,5 +229,7 @@ export function loadIndex() {
     return Promise.all(indexes.map(i => fetch(i)))
         .then(values => Promise.all(values.map(r => r.json())))
         .then(indexAll)
-        .then(result => initSearch.call(this, result));
+        .then(result => initSearch.call(this, result))
+        .then(_ => this.__resolveReady(this))
+        .catch(err => this.__rejectReady(err));
 }

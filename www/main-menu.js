@@ -12,40 +12,55 @@ import { keys } from '/lud/misc.js';
 import { SearchInput } from '/lud/search-input.js';
 
 const React = window.React;
+const styled = window.styled.default;
 const e = React.createElement;
 const M = window['material-ui'];
 
-export function MainMenu() {
-    return e(
-        'div',
-        { style: { flexGrow: true } },
-        e(
-            M.AppBar,
-            { position: 'static' },
+const StyledContainer = styled.div`
+    flex-grow: true;
+`;
+
+const StyledMenuButton = styled(M.IconButton)`
+    margin-left: -12px;
+    margin-right: 20px;
+`;
+
+const StyledTitle = styled(M.Typography)`
+    flex: 1;
+`;
+
+export class MainMenu extends React.PureComponent {
+    constructor(props /* : {} */) {
+        super(props);
+
+        this.handleMenuClick = this.handleMenuClick.bind(this);
+    }
+
+    /*:: handleMenuClick: () => void */
+    handleMenuClick() {
+        // temporary hard refresh for Android debugging
+        window.location.reload(true);
+    }
+
+    render() {
+        return e(
+            StyledContainer,
+            {},
             e(
-                M.Toolbar,
-                {},
-                keys([
+                M.AppBar,
+                { position: 'static' },
+                e(
+                    M.Toolbar,
+                    {},
                     e(
-                        M.IconButton,
-                        {
-                            color: 'inherit',
-                            style: { marginLeft: -12, marginRight: 20 },
-                        },
+                        StyledMenuButton,
+                        { color: 'inherit', onClick: this.handleMenuClick },
                         e(M.Icon, {}, 'menu')
                     ),
-                    e(
-                        M.Typography,
-                        {
-                            variant: 'title',
-                            color: 'inherit',
-                            style: { flex: 1 },
-                        },
-                        'Lûd'
-                    ),
-                    e(SearchInput, { style: { flex: 2 } }),
-                ])
+                    e(StyledTitle, { variant: 'title', color: 'inherit' }, 'Lûd'),
+                    e(SearchInput, { style: { flex: 2 } })
+                )
             )
-        )
-    );
+        );
+    }
 }

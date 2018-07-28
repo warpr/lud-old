@@ -222,9 +222,10 @@ class MediaControlsBase extends React.PureComponent {
     render() {
         setTimeout(() => this.state.glue.connectControl(this), 0);
 
+        const { metadata } = this.state.glue;
         const { theme } = this.props;
         const iconAttr = { style: { height: 38, width: 38 } };
-        const coverArt = 'https://via.placeholder.com/256x256.png';
+        const coverArt = metadata.coverArt;
 
         const title = 'Live From Space';
         const artist = 'Mac Miller';

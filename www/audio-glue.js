@@ -4,9 +4,17 @@
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of copyleft-next 0.3.1.  See copyleft-next-0.3.1.txt.
+ *
+ *   @flow
  */
 
-// import { audioElement as audioState } from '/lud/audio-state.js';
+import { AudioMetadata } from '/lud/audio-metadata.js';
+
+/*::
+interface AudioControl {
+    tick(): void;
+}
+*/
 
 function throttleOnAnimationFrame(callback) {
     let requestId = null;
@@ -15,7 +23,9 @@ function throttleOnAnimationFrame(callback) {
         const context = this;
         const args = arguments;
 
-        cancelAnimationFrame(requestId);
+        if (requestId) {
+            cancelAnimationFrame(requestId);
+        }
 
         requestId = requestAnimationFrame(() => {
             callback.apply(context, args);
@@ -25,6 +35,13 @@ function throttleOnAnimationFrame(callback) {
 }
 
 class AudioElementOutput {
+    /*::
+      audioGlue: AudioGlue
+      target: HTMLAudioElement
+      tick: Function
+      playbackEvents: Array<string>
+     */
+
     constructor(audioGlue, audioElement) {
         this.audioGlue = audioGlue;
         this.target = audioElement;
@@ -85,7 +102,7 @@ class AudioElementOutput {
         return this.target.src;
     }
 
-    setCurrentTime(position) {
+    setCurrentTime(position /*: ?number */) {
         this.target.currentTime = position ? parseInt(position, 10) : 0;
     }
 
@@ -101,18 +118,25 @@ class AudioElementOutput {
         return this.target.volume === 0;
     }
 
-    setVolume(volume) {
+    setVolume(volume /*: number */) {
         this.target.volume = volume;
     }
 }
 
 export class AudioGlue {
+    /*::
+      controls: Set<AudioControl>
+      outputs: Array<AudioElementOutput>
+      metadata: AudioMetadata
+    */
+
     constructor() {
         this.controls = new Set();
         this.outputs = [];
+        this.metadata = new AudioMetadata();
     }
 
-    connectControl(something) {
+    connectControl(something /*: AudioControl */) {
         if (this.controls.has(something)) {
             return;
         }
@@ -121,11 +145,11 @@ export class AudioGlue {
         this.tick();
     }
 
-    disconnectControl(something) {
+    disconnectControl(something /*: AudioControl */) {
         this.controls.delete(something);
     }
 
-    connectOutput(something) {
+    connectOutput(something /*: HTMLAudioElement */) {
         if (something instanceof HTMLAudioElement) {
             this.outputs.push(new AudioElementOutput(this, something));
         } else {
@@ -135,22 +159,35 @@ export class AudioGlue {
         this.tick();
     }
 
-    disconnectOutput(something) {
+    disconnectOutput(something /*: HTMLAudioElement */) {
         // FIXME: untested
         this.outputs
             .map((output, idx) => (output.target === something ? idx : null))
-            .filter()
-            .map(idx => {
+            .filter(item => !!item)
+            .map((_, idx) => {
                 this.outputs[idx].disconnect();
                 this.outputs.splice(idx, 1);
             });
     }
 
-    loadMedia(file, position) {
+    loadMedia(file /*: string */, position /*: ?number */) {
         this.outputs.map(output => output.loadMedia(file, position));
+        this.metadata = new AudioMetadata(file, position);
     }
 
-    play() {
+    play(trackNo /*: number */) {
+        if (trackNo === 1) {
+            this.resume();
+            return;
+        }
+
+        this.metadata.getTrackStartPosition(trackNo).then(position => {
+            this.setCurrentTime(position);
+            this.resume();
+        });
+    }
+
+    resume() {
         this.outputs.map(output => output.play());
     }
 
@@ -177,8 +214,9 @@ export class AudioGlue {
         return this.outputs.length ? this.outputs[0].getCurrentMedia() : 0;
     }
 
-    setCurrentTime(position) {
+    setCurrentTime(position /*: number */) {
         this.outputs.map(output => output.setCurrentTime(position));
+        this.metadata.setPosition(position);
     }
 
     getDuration() {
@@ -196,7 +234,7 @@ export class AudioGlue {
         return this.outputs.length ? this.outputs[0].isMute() : false;
     }
 
-    setVolume(volume) {
+    setVolume(volume /*: number */) {
         this.outputs.map(output => output.setVolume(volume));
     }
 

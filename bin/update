@@ -121,8 +121,11 @@ function parseTracks($obj) {
     $discNo = 0;
     foreach ($obj['media'] as $medium) {
         $discNo++;
+        $trackNo = 0;
         foreach ($medium['tracks'] as $trk) {
+            $trackNo++;
             $song = [
+                'pos' => $trackNo,
                 'length' => $trk['length'],
                 'title' => $trk['title'],
                 'discNo' => $discNo,

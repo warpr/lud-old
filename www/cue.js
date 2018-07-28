@@ -81,12 +81,12 @@ function parseCommand(command, args, track) {
                 }
             }
 
-            const start = {
-                'minutes-seconds-frames': startTime,
-                seconds: framesToSeconds(startTime),
-            };
+            const seconds = framesToSeconds(startTime);
+            if (seconds === null) {
+                return { start: null };
+            }
 
-            return { start: start };
+            return { start: { 'minutes-seconds-frames': startTime, seconds } };
         case '':
             return {};
         default:
@@ -98,18 +98,18 @@ function parseCommand(command, args, track) {
 /*::
 export type CueTrackStart = {
    'minutes-seconds-frames': string,
-   seconds?: any, // FIXME: should be number
+   seconds: number,
 }
 
 export type CueRecord = {
-    artist?: string,
-    barcode?: string,
-    comments?: Array<string>,
-    filename?: string,
-    format?: string,
+    artist: ?string,
+    barcode: ?string,
+    comments: ?Array<string>,
+    filename: ?string,
+    format: ?string,
     mbid: string,
     pos: number,
-    start: CueTrackStart,
+    start: ?CueTrackStart,
     title: string,
 }
 
@@ -136,4 +136,23 @@ export function parseCue(cueStr /* : string */) /* : Array<CueRecord> */ {
     }, []);
 
     return tracks;
+}
+
+export function indexCue(records /* : Array<CueRecord> */) /* : Array<number> */ {
+    let error = false;
+
+    if (records.length < 2) {
+        return [];
+    }
+
+    const ret = records.slice(1).map((item, pos) => {
+        if (item.start) {
+            return item.start.seconds;
+        } else {
+            error = true;
+            return 0;
+        }
+    });
+
+    return error ? [] : ret;
 }

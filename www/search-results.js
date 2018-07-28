@@ -8,11 +8,12 @@
  *   @flow
  */
 
+import { Artist, Release, Track } from '/lud/db.js';
+import { keys } from '/lud/misc.js';
+
 const React = window.React;
 const e = React.createElement;
 const M = window['material-ui'];
-
-import { keys } from '/lud/misc.js';
 
 function artistCredit(credit) {
     return credit.reduce((memo, val) => {
@@ -21,22 +22,24 @@ function artistCredit(credit) {
 }
 
 function searchResultClicked(mbid) {
-    console.log('searchResultClicked', mbid);
-
     const item = window.lûd.db.lookup(mbid);
+    console.log('search result item', item);
+
     let disc = null;
+    let track = 1;
     if (item.has('discs')) {
         disc = item.discs.get(0);
     } else if (item.has('release')) {
         const release = window.lûd.db.lookup(item.release);
         disc = release.discs.get(item.discNo - 1);
+        track = item.pos;
     } else {
         console.log('no playable item found for', mbid);
         return;
     }
 
     window.lûd.glue.loadMedia(disc.filename);
-    window.lûd.glue.play();
+    window.lûd.glue.play(track);
 }
 
 function searchResultCard(mbid, type, title, body) {
@@ -64,6 +67,14 @@ const cards = {
         ]),
 };
 
+/*::
+type SearchResult = Artist|Release|Track;
+
+type SearchResultsState = {
+    expanded: boolean,
+    results: Array<SearchResult>,
+};
+*/
 export class SearchResults extends React.Component {
     constructor(props /*: {} */) {
         super(props);
