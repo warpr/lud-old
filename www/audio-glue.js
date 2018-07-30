@@ -175,8 +175,25 @@ export class AudioGlue {
         this.metadata = new AudioMetadata(file, position);
     }
 
+    prev() {
+        this.play(this.metadata.currentSong.trackNo - 1);
+    }
+
+    next() {
+        this.play(this.metadata.currentSong.trackNo + 1);
+    }
+
+    rewind(seconds /*: number */) {
+        this.setCurrentTime(this.getCurrentTime() - seconds);
+    }
+
+    ffwd(seconds /*: number */) {
+        this.setCurrentTime(this.getCurrentTime() + seconds);
+    }
+
     play(trackNo /*: number */) {
         if (trackNo === 1) {
+            this.setCurrentTime(0);
             this.resume();
             return;
         }
@@ -239,6 +256,8 @@ export class AudioGlue {
     }
 
     tick() {
+        this.metadata.setPosition(this.getCurrentTime());
+
         for (let control of this.controls) {
             control.tick();
         }

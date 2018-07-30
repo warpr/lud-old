@@ -170,8 +170,14 @@ class MediaControlsBase extends React.PureComponent {
         super(props);
 
         this._mounted = false;
-
         this.state = {};
+
+        this.handlePrev = this.handlePrev.bind(this);
+        this.handleRewind = this.handleRewind.bind(this);
+        this.handlePause = this.handlePause.bind(this);
+        this.handlePlay = this.handlePlay.bind(this);
+        this.handleFfwd = this.handleFfwd.bind(this);
+        this.handleNext = this.handleNext.bind(this);
     }
 
     static getDerivedStateFromProps(
@@ -201,6 +207,36 @@ class MediaControlsBase extends React.PureComponent {
         }
     }
 
+    /*:: handlePrev: () => void */
+    handlePrev() {
+        this.props.glue.prev();
+    }
+
+    /*:: handleRewind: () => void */
+    handleRewind() {
+        this.props.glue.rewind(30);
+    }
+
+    /*:: handlePause: () => void */
+    handlePause() {
+        this.props.glue.pause();
+    }
+
+    /*:: handlePlay: () => void */
+    handlePlay() {
+        this.props.glue.resume();
+    }
+
+    /*:: handleFfwd: () => void */
+    handleFfwd() {
+        this.props.glue.ffwd(30);
+    }
+
+    /*:: handleNext: () => void */
+    handleNext() {
+        this.props.glue.next();
+    }
+
     tick() {
         if (!this._mounted) {
             return;
@@ -222,13 +258,13 @@ class MediaControlsBase extends React.PureComponent {
     render() {
         setTimeout(() => this.state.glue.connectControl(this), 0);
 
-        const { metadata } = this.state.glue;
+        const { currentSong } = this.state.glue.metadata;
         const { theme } = this.props;
         const iconAttr = { style: { height: 38, width: 38 } };
-        const coverArt = metadata.coverArt;
+        const coverArt = currentSong.coverArt;
 
-        const title = 'Live From Space';
-        const artist = 'Mac Miller';
+        const title = currentSong.trackTitle;
+        const artist = currentSong.getTrackArtistName();
         const coverTooltip = title + ' Album Cover';
 
         // FIXME: Add a heart button to indicate liking a song/album
@@ -256,12 +292,28 @@ class MediaControlsBase extends React.PureComponent {
                 e(
                     StyledControls,
                     { theme },
-                    e(M.IconButton, {}, e(M.Icon, iconAttr, 'skip_previous')),
-                    e(M.IconButton, {}, e(M.Icon, iconAttr, 'replay_30')),
-                    e(M.IconButton, {}, e(M.Icon, iconAttr, 'pause')),
-                    e(M.IconButton, {}, e(M.Icon, iconAttr, 'play_arrow')),
-                    e(M.IconButton, {}, e(M.Icon, iconAttr, 'forward_30')),
-                    e(M.IconButton, {}, e(M.Icon, iconAttr, 'skip_next'))
+                    e(
+                        M.IconButton,
+                        { onClick: this.handlePrev },
+                        e(M.Icon, iconAttr, 'skip_previous')
+                    ),
+                    e(
+                        M.IconButton,
+                        { onClick: this.handleRewind },
+                        e(M.Icon, iconAttr, 'replay_30')
+                    ),
+                    e(M.IconButton, { onClick: this.handlePause }, e(M.Icon, iconAttr, 'pause')),
+                    e(
+                        M.IconButton,
+                        { onClick: this.handlePlay },
+                        e(M.Icon, iconAttr, 'play_arrow')
+                    ),
+                    e(
+                        M.IconButton,
+                        { onClick: this.handleFfwd },
+                        e(M.Icon, iconAttr, 'forward_30')
+                    ),
+                    e(M.IconButton, { onClick: this.handleNext }, e(M.Icon, iconAttr, 'skip_next'))
                 )
             ),
             e(StyledCardMedia, { theme, image: coverArt, title: coverTooltip })
