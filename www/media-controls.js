@@ -137,8 +137,12 @@ const StyledLeftColumn = styled.div`
 const StyledControls = styled.div`
     display: flex;
     align-items: center;
-    padding-left: ${props => props.theme.spacing.unit};
-    padding-bottom: ${props => props.theme.spacing.unit};
+    padding-left: ${props => props.theme.spacing.unit + 'px'};
+    padding-bottom: ${props => props.theme.spacing.unit + 'px'};
+`;
+
+const StyledIconButton = styled(M.IconButton)`
+    margin: ${props => props.theme.spacing.unit + 'px'};
 `;
 
 const StyledCardMedia = styled(M.CardMedia)`
@@ -293,27 +297,35 @@ class MediaControlsBase extends React.PureComponent {
                     StyledControls,
                     { theme },
                     e(
-                        M.IconButton,
-                        { onClick: this.handlePrev },
+                        StyledIconButton,
+                        { theme, onClick: this.handlePrev },
                         e(M.Icon, iconAttr, 'skip_previous')
                     ),
                     e(
-                        M.IconButton,
-                        { onClick: this.handleRewind },
+                        StyledIconButton,
+                        { theme, onClick: this.handleRewind },
                         e(M.Icon, iconAttr, 'replay_30')
                     ),
-                    e(M.IconButton, { onClick: this.handlePause }, e(M.Icon, iconAttr, 'pause')),
                     e(
-                        M.IconButton,
-                        { onClick: this.handlePlay },
+                        StyledIconButton,
+                        { theme, onClick: this.handlePause },
+                        e(M.Icon, iconAttr, 'pause')
+                    ),
+                    e(
+                        StyledIconButton,
+                        { theme, onClick: this.handlePlay },
                         e(M.Icon, iconAttr, 'play_arrow')
                     ),
                     e(
-                        M.IconButton,
-                        { onClick: this.handleFfwd },
+                        StyledIconButton,
+                        { theme, onClick: this.handleFfwd },
                         e(M.Icon, iconAttr, 'forward_30')
                     ),
-                    e(M.IconButton, { onClick: this.handleNext }, e(M.Icon, iconAttr, 'skip_next'))
+                    e(
+                        StyledIconButton,
+                        { theme, onClick: this.handleNext },
+                        e(M.Icon, iconAttr, 'skip_next')
+                    )
                 )
             ),
             e(StyledCardMedia, { theme, image: coverArt, title: coverTooltip })
