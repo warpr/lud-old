@@ -32,6 +32,11 @@
              min-height: 100vh;
              position: relative;
          }
+
+         :root {
+             --connected-color:     #fff;
+             --disconnected-color:  #fff;
+         }
         </style>
     </head>
     <body>
@@ -78,6 +83,7 @@
          }
 
         </script>
+        <script src="https://www.gstatic.com/cv/js/sender/v1/cast_sender.js?loadCastFramework=1"></script>
     </body>
 </html>
 

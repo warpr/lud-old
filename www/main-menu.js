@@ -8,7 +8,7 @@
  *   @flow
  */
 
-import { keys } from '/lud/misc.js';
+import { CastButton } from '/lud/chromecast.js';
 import { SearchInput } from '/lud/search-input.js';
 
 const React = window.React;
@@ -58,7 +58,8 @@ export class MainMenu extends React.PureComponent {
                         e(M.Icon, {}, 'menu')
                     ),
                     e(StyledTitle, { variant: 'title', color: 'inherit' }, 'Lûd'),
-                    e(SearchInput, { style: { flex: 2 } })
+                    e(SearchInput, { style: { flex: 2 } }),
+                    e(CastButton, {})
                 )
             )
         );

@@ -7,7 +7,8 @@
  */
 
 const applicationId = '5DC02A2C';
-const localIp = '192.168.100.25';
+// const localIp = '192.168.100.25';
+const localIp = '192.168.100.26';
 
 //         const disc = "http://" + localIp + "/lud/music/series/techpara/2009.we-love-techpara-70min-70songs/disc1.m4a";
 const disc =
@@ -117,6 +118,7 @@ function startCasting() {
 }
 
 function initializeCastApi() {
+    console.log('initialize cast api', cast);
     const castContext = cast.framework.CastContext.getInstance();
 
     const castOptions = {
@@ -151,8 +153,11 @@ function initializeCastApi() {
 
 export function init() {
     window.__onGCastApiAvailable = function(isAvailable) {
+        console.log('cast is available?', isAvailable);
         if (isAvailable) {
-            initializeCastApi();
+            setTimeout(() => {
+                initializeCastApi();
+            }, 2000);
         }
     };
 }
