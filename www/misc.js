@@ -8,12 +8,47 @@
  *   @flow
  */
 
+const React = window.React;
+const _ = window._;
+
+export function absoluteUri(href /* : string */) /* : string */ {
+    const link = document.createElement('a');
+    link.href = href;
+    return link.href;
+}
+
 export function updateTitle(str /* : string */) {
     if (str === '') {
         window.document.title = 'Lûd';
     } else {
         window.document.title = str + ' | Lûd';
     }
+}
+
+export function throttleOnAnimationFrame(callback /* : Function */) {
+    let requestId = null;
+
+    return function() {
+        const context = this;
+        const args = arguments;
+
+        if (requestId) {
+            cancelAnimationFrame(requestId);
+        }
+
+        requestId = requestAnimationFrame(() => {
+            callback.apply(context, args);
+            requestId = null;
+        });
+    };
+}
+
+/*
+ * Silence React's warning about missing keys, this is only for prototyping,
+ * don't use in production code.
+ */
+export function keys(arr /*: React.Node[] */) /*: React.Node[] */ {
+    return arr.map(element => React.cloneElement(element, { key: _.uniqueId() }));
 }
 
 export const controls = {

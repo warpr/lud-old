@@ -19,42 +19,47 @@
         <meta name="msapplication-config" content="/lud/icons/browserconfig.xml">
         <meta name="theme-color" content="#dedede">
 
-        <link href="/lud/js/normalize.css/normalize.css" rel="stylesheet" />
-        <link href="/lud/js/@blueprintjs/core/lib/css/blueprint.css" rel="stylesheet" />
-        <link href="/lud/js/@blueprintjs/icons/lib/css/blueprint-icons.css" rel="stylesheet" />
-        <link href="css/color-aliases.css" rel="stylesheet" />
-        <link href="css/layout.css" rel="stylesheet" />
+        <!-- Material UI -->
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500" />
+        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+        <link rel="stylesheet" href="/lud/js/@material/slider/dist/mdc.slider.css" />
 
         <link href="/lud/js/font-awesome/css/font-awesome.css" rel="stylesheet" />
 
+        <link rel="stylesheet" href="/lud/media-controls.css" />
         <style>
-         body {
-             background-color: var(--pt-dark-app-background-color);
+         div#app {
+             min-height: 100vh;
+             position: relative;
+         }
+
+         :root {
+             --connected-color:     #fff;
+             --disconnected-color:  #fff;
          }
         </style>
     </head>
     <body>
+        <!-- Mobile Console -->
+        <script src="/lud/hnl.mobileConsole.js"></script>
+
         <!-- React -->
         <script src="/lud/js/react/umd/react.development.js"></script>
         <script src="/lud/js/react-dom/umd/react-dom.development.js"></script>
 
-        <!-- Blueprint -->
-        <script src="/lud/js/classnames/index.js"></script>
-        <script src="/lud/js/dom4/build/dom4.max.js"></script>
-        <script src="/lud/js/react-transition-group/dist/react-transition-group.js"></script>
+        <!-- Styled Components -->
+        <script src="/lud/js/styled-components/dist/styled-components.js"></script>
 
-<!--
-        <script src="/lud/js/popper.js/dist/popper.js"></script>
-        <script src="/lud/js/react-popper/dist/react-popper.js"></script>
--->
+        <!-- Material UI -->
+        <script src="/lud/js/@material-ui/core/umd/material-ui.development.js"></script>
+        <script src="/lud/js/@material/slider/dist/mdc.slider.js"></script>
 
-        <script src="/lud/js/@blueprintjs/core/dist/core.bundle.js"></script>
-        <script src="/lud/js/@blueprintjs/icons/dist/icons.bundle.js"></script>
+        <!-- Immutable -->
+        <script src="/lud/js/immutable/dist/immutable.js"></script>
+        <script src="/lud/js/immutable-devtools/dist/index.js"></script>
 
         <!-- Lûd -->
         <script src="/lud/js/lodash/lodash.js"></script>
-        <script src="/lud/js/immutable/dist/immutable.js"></script>
-        <script src="/lud/js/immutable-devtools/dist/index.js"></script>
         <script src="/lud/js/lunr/lunr.js"></script>
 
         <div id="app">Loading...</div>
@@ -62,10 +67,23 @@
         <script type="module">
          import * as app from '/lud/app.js';
 
-         app.start(document.querySelector("#app"));
+         const ua = navigator.userAgent.toLowerCase();
+         const isAndroid = ua.indexOf("android") > -1;
 
-         immutableDevTools(Immutable);
+         if (isAndroid) {
+             mobileConsole.init();
+
+             setTimeout(() => {
+                 app.start(document.querySelector("#app"));
+                 mobileConsole.toggle();
+             }, 1000);
+         } else {
+             app.start(document.querySelector("#app"));
+             immutableDevTools(Immutable);
+         }
+
         </script>
+        <script src="https://www.gstatic.com/cv/js/sender/v1/cast_sender.js?loadCastFramework=1"></script>
     </body>
 </html>
 

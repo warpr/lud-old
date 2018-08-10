@@ -59,16 +59,6 @@ export const firefoxTheme = {
     played: '#00b6f0',
 };
 
-export const blueprintTheme = {
-    background: window.Blueprint.Core.Colors.DARK_GRAY1,
-    foreground: window.Blueprint.Core.Colors.LIGHT_GRAY5,
-    subdued: window.Blueprint.Core.Colors.GRAY3,
-    selected: window.Blueprint.Core.Colors.BLUE5,
-    slider: window.Blueprint.Core.Colors.BLACK,
-    loaded: window.Blueprint.Core.Colors.DARK_GRAY5,
-    played: window.Blueprint.Core.Colors.BLUE5,
-};
-
 function formatTime(seconds) {
     const parts = [Math.floor((seconds / 60) % 60), Math.floor(seconds % 60)];
 
@@ -124,11 +114,11 @@ class Slider extends React.PureComponent {
     constructor(props) {
         super(props);
 
-        const self /* :any */ = this;
-        self.handleChange = this.handleChange.bind(this);
-        self.sliderRef = React.createRef();
+        this.handleChange = this.handleChange.bind(this);
+        this.sliderRef = React.createRef();
     }
 
+    /*:: handleChange: () => void */
     handleChange(event) {
         this.props.onChange(this.props.control, event.target.value);
     }
@@ -207,11 +197,7 @@ class Button extends React.PureComponent {
         };
 
         const iconOptions = { className: 'fa fa-fw fa-' + this.props.icon };
-        return e(
-            'button',
-            { style, onClick: this.handleClick },
-            e('i', iconOptions)
-        );
+        return e('button', { style, onClick: this.handleClick }, e('i', iconOptions));
     }
 }
 
@@ -431,9 +417,8 @@ export class AudioControls extends React.PureComponent {
 
         this._mounted = false;
 
-        const self /* :any */ = this;
-        self.handleChange = this.handleChange.bind(this);
-        self.handleResize = this.handleResize.bind(this);
+        this.handleChange = this.handleChange.bind(this);
+        this.handleResize = this.handleResize.bind(this);
 
         this.state = {
             configuration: 'desktop',
@@ -491,6 +476,7 @@ export class AudioControls extends React.PureComponent {
         }
     }
 
+    /*:: handleResize: () => void */
     handleResize() {
         if (window.innerWidth < forceMobile && !this.state.forceMobile) {
             this.setState({ forceMobile: true });
@@ -505,6 +491,7 @@ export class AudioControls extends React.PureComponent {
         }
     }
 
+    /*:: handleChange: () => void */
     handleChange(field /* : string */, value /* : string */) {
         const newState = {};
 
@@ -550,17 +537,6 @@ export class AudioControls extends React.PureComponent {
             configuration = buttonConfigurations.tablet;
         }
 
-        console.log(
-            'render controls',
-            window.innerWidth,
-            'mobile',
-            this.state.forceMobile,
-            'tablet',
-            this.state.forceTablet,
-            'selected configuration',
-            configuration
-        );
-
         return e(
             AudioControlsUI,
             Object.assign(
@@ -583,10 +559,6 @@ export class AudioDemo extends React.Component {
             border: 0,
         };
 
-        return e('div', { style }, [
-            e(AudioControls, { key: 'firefox', colors: firefoxTheme }),
-            e('p', { key: 'audio-demo-divider' }),
-            e(AudioControls, { key: 'blueprint', colors: blueprintTheme }),
-        ]);
+        return e('div', { style }, [e(AudioControls, { key: 'firefox', colors: firefoxTheme })]);
     }
 }
