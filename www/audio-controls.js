@@ -114,11 +114,11 @@ class Slider extends React.PureComponent {
     constructor(props) {
         super(props);
 
-        const self /* :any */ = this;
-        self.handleChange = this.handleChange.bind(this);
-        self.sliderRef = React.createRef();
+        this.handleChange = this.handleChange.bind(this);
+        this.sliderRef = React.createRef();
     }
 
+    /*:: handleChange: () => void */
     handleChange(event) {
         this.props.onChange(this.props.control, event.target.value);
     }

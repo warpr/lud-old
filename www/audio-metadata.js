@@ -44,6 +44,8 @@ export class CurrentSong {
       discNo: number
       discTitle: string
       albumArtist: Array<ArtistCredit>
+      albumTitle: string
+      releaseDate: string
 
       trackNo: number
       trackTitle: string
@@ -55,6 +57,7 @@ export class CurrentSong {
         this.discNo = 1;
         this.discTitle = '';
         this.albumArtist = [];
+        this.albumTitle = '';
         this.resetTrack();
     }
 
@@ -70,6 +73,14 @@ export class CurrentSong {
 
     getAlbumArtistName() {
         return artistName(this.albumArtist);
+    }
+
+    getFullDiscTitle() {
+        if (this.discTitle && this.discTitle !== '') {
+            return this.albumTitle + ': ' + this.discTitle;
+        } else {
+            return this.albumTitle;
+        }
     }
 
     processCueRecord(
@@ -97,6 +108,12 @@ export class CurrentSong {
                             ? trk.recording['artist-credit']
                             : [];
                     this.albumArtist = metadata['artist-credit'] ? metadata['artist-credit'] : [];
+                    this.albumTitle = metadata['title'] ? metadata['title'] : '';
+
+                    this.releaseDate = '';
+                    if (metadata['release-events'] && metadata['release-events'].length > 0) {
+                        this.releaseDate = metadata['release-events'][0].date;
+                    }
                 } else {
                     this.resetTrack();
                 }
