@@ -1,0 +1,75 @@
+<?php
+
+require(dirname(__FILE__) . '/../lib/file.php');
+
+function durationFile($filename) {
+    $pi = pathinfo($filename);
+    return $pi['dirname'] . '/' . $pi['filename'] . '.length';
+}
+
+function loadLength($filename) {
+    $body = @file_get_contents(durationFile($filename));
+    if (empty($body)) {
+        return null;
+    }
+
+    $data = json_decode($body, true);
+
+    if (is_array($data) && isset($data['duration']) && isset($data['durationDouble'])) {
+        return $data['durationDouble'];
+    }
+
+    return null;
+}
+
+function saveLength($filename, $duration) {
+    $data = [
+        'duration' => (int) $duration,
+        'durationDouble' => (double) $duration
+    ];
+
+    file_put_contents(durationFile($filename), json_encode($data, JSON_PRETTY_PRINT) . "\n");
+
+    return (double) $duration;
+}
+
+function discLength($filename) {
+    $ffprobe = `which ffprobe`;
+
+    if (empty($ffprobe)) {
+        echo "WARNING: ffprobe not installed, cannot determine duration of $filename\n";
+        return null;
+    } else {
+        $arg = escapeshellarg($filename);
+        $cmd = "ffprobe -i $arg -show_entries format=duration -v quiet";
+
+        $output = `$cmd`;
+
+        if (preg_match("/\[FORMAT\].*duration=([0-9.]*).*\[\/FORMAT\]/ms", $output, $matches)) {
+            return $matches[1];
+        }
+    }
+
+    echo "WARNING: ffprobe failed on $filename\n";
+    return null;
+}
+
+function processDisc($arg) {
+    $path = abspath($arg);
+
+    $durationDouble = loadLength($path);
+    if ($durationDouble === null) {
+        $durationDouble = saveLength($path, discLength($path));
+    }
+
+    echo "$arg duration: " . (int) $durationDouble . " seconds\n";
+}
+
+// Run this if called directly from the command-line
+if (!debug_backtrace()) {
+    array_shift($argv);
+
+    foreach ($argv as $arg) {
+        processDisc($arg);
+    }
+}
