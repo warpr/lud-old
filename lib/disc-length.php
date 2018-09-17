@@ -1,14 +1,16 @@
 <?php
 
-require_once(dirname(__FILE__) . '/../lib/file.php');
+require_once dirname(__FILE__) . '/../lib/file.php';
 
-function cueFile($filename) {
+function cueFile($filename)
+{
     $pi = pathinfo($filename);
     return $pi['dirname'] . '/' . $pi['filename'] . '.cue';
 }
 
-function loadLength($filename) {
-    $lines = @file(cueFile($filename));
+function loadLength($cueFile)
+{
+    $lines = @file($cueFile);
     if (empty($lines)) {
         return null;
     }
@@ -16,21 +18,22 @@ function loadLength($filename) {
     $durationMarker = 'REM LUD_DURATION_IN_SECONDS ';
     foreach ($lines as $line) {
         if (startsWith($line, $durationMarker)) {
-            return (double) trim(str_replace($durationMarker, '', $line));
+            return (float) trim(str_replace($durationMarker, '', $line));
         }
     }
 
     return null;
 }
 
-function saveLength($filename, $duration) {
+function saveLength($filename, $duration)
+{
     if ($duration === null) {
         return;
     }
 
     $data = [
         'duration' => (int) $duration,
-        'durationDouble' => (double) $duration
+        'durationDouble' => (float) $duration
     ];
 
     // FIXME: make constant
@@ -54,7 +57,7 @@ function saveLength($filename, $duration) {
         if (startsWith($line, $durationMarker)) {
             if ($line == $durationLine) {
                 // duration already recorded in .cue file, and unchanged
-                return (double) $duration;
+                return (float) $duration;
             }
             // remove any existing lines with a duration;
         } else {
@@ -65,10 +68,41 @@ function saveLength($filename, $duration) {
 
     file_put_contents(cueFile($filename), implode("", $output));
 
-    return (double) $duration;
+    return (float) $duration;
 }
 
-function discLength($filename) {
+function discLength($cueFile)
+{
+    $lines = @file($cueFile);
+    if (empty($lines)) {
+        return null;
+    }
+
+    $files = [];
+    foreach ($lines as $line) {
+        if (preg_match("/^FILE\s+(.*)\s+[A-Z0-9]+$/", $line, $matches)) {
+            $filename = dirname($cueFile) . '/' . trim(trim($matches[1]), '"');
+
+            if (is_readable($filename)) {
+                $files[] = $filename;
+            }
+        }
+    }
+
+    if (empty($files)) {
+        $files[] = preg_replace("/\.cue$/", ".m4a", $cueFile);
+    }
+
+    $durations = [];
+    foreach ($files as $file) {
+        $durations[] = mediaLength($file);
+    }
+
+    return array_sum($durations);
+}
+
+function mediaLength($filename)
+{
     $ffprobe = `which ffprobe`;
 
     if (empty($ffprobe)) {
@@ -89,11 +123,17 @@ function discLength($filename) {
     return null;
 }
 
-function processDisc($arg, $options = []) {
+function processDisc($arg, $options = [])
+{
     $path = abspath($arg);
 
     if (preg_match(",/\.git/,", $path)) {
         echo "Skipping files in .git folder: $path\n";
+        return;
+    }
+
+    if (!preg_match(",\.cue$,", $path)) {
+        echo "Not a .cue file: $path\n";
         return;
     }
 

@@ -6,7 +6,8 @@ function startsWith($haystack, $needle)
     return (substr($haystack, 0, $length) === $needle);
 }
 
-function abspath($filename) {
+function abspath($filename)
+{
     $fullPath = startsWith($filename, '/') ? $filename : getcwd() . '/' . $filename;
     $parts = explode("/", $fullPath);
 

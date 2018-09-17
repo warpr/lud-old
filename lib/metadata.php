@@ -1,15 +1,17 @@
 <?php
 
-require_once(dirname(__FILE__) . '/../lib/disc-length.php');
-require_once(dirname(__FILE__) . '/../lib/config.php');
+require_once dirname(__FILE__) . '/../lib/disc-length.php';
+require_once dirname(__FILE__) . '/../lib/config.php';
 
-function webUrl($filename) {
+function webUrl($filename)
+{
     $cfg = loadConfig();
 
     return str_replace(abspath($cfg['music_root']), $cfg['web_root'], abspath($filename));
 }
 
-function parseMedia($obj, $dir) {
+function parseMedia($obj, $dir)
+{
     if (empty($obj)) {
         return [];
     }
@@ -20,7 +22,7 @@ function parseMedia($obj, $dir) {
         $item = [];
 
         $idxStr = "" . ++$idx;
-        while(strlen($idxStr) < 5) {
+        while (strlen($idxStr) < 5) {
             $filename = $dir . "/disc" . $idxStr . ".m4a";
             if (is_readable($filename)) {
                 $item['filename'] = "disc" . $idxStr;
@@ -49,8 +51,8 @@ function parseMedia($obj, $dir) {
         $documentName = $obj['id'] . '-disc-' . $pos;
 
         if (!empty($filename)) {
-            $duration = processDisc($filename, [ "verbose" => false ]);
-            $item['duration'] = empty($duration) ? null : (int) $duration;;
+            $duration = processDisc($filename, ["verbose" => false]);
+            $item['duration'] = empty($duration) ? null : (int) $duration;
         } else {
             $item['duration'] = null;
         }
@@ -64,7 +66,8 @@ function parseMedia($obj, $dir) {
     return $media;
 }
 
-function parseArtist($obj) {
+function parseArtist($obj)
+{
     if (empty($obj) || empty($obj['artist-credit'])) {
         return [];
     }
@@ -91,10 +94,11 @@ function parseArtist($obj) {
         $completeName .= $credit['joinphrase'];
     }
 
-    return ['artist' => $completeName, 'credit' => $credited ];
+    return ['artist' => $completeName, 'credit' => $credited];
 }
 
-function parseRelease($obj, $dir) {
+function parseRelease($obj, $dir)
+{
     $summary = ['type' => 'release'];
 
     if (empty($obj)) {
@@ -115,7 +119,8 @@ function parseRelease($obj, $dir) {
     return $summary;
 }
 
-function parseTracks($obj) {
+function parseTracks($obj)
+{
     $tracks = [];
 
     if (empty($obj)) {
@@ -134,12 +139,12 @@ function parseTracks($obj) {
                 'length' => $trk['length'],
                 'title' => $trk['title'],
                 'discNo' => $discNo,
-                'type' => 'track',
+                'type' => 'track'
             ];
 
             if (!empty($trk['artist-credit'])) {
                 $song += parseArtist($trk);
-            } else if (!empty($trk['recording']['artist-credit'])) {
+            } elseif (!empty($trk['recording']['artist-credit'])) {
                 $song += parseArtist($trk['recording']);
             }
 
@@ -150,7 +155,8 @@ function parseTracks($obj) {
     return $tracks;
 }
 
-function loadAlbum($dir) {
+function loadAlbum($dir)
+{
     // FIXME: make robust against parse errors
     $metadata = json_decode(file_get_contents("$dir/metadata.json"), true);
 
@@ -170,7 +176,15 @@ function loadAlbum($dir) {
     $body = json_encode($release, JSON_PRETTY_PRINT) . "\n";
     file_put_contents($document, $body);
 
-    echo "Saved " . basename($document) . " (" . $release['date'] . ", " . $release['artist'] . ' - ' . $release['title'] . ")\n";
+    echo "Saved " .
+        basename($document) .
+        " (" .
+        $release['date'] .
+        ", " .
+        $release['artist'] .
+        ' - ' .
+        $release['title'] .
+        ")\n";
 
     return $release;
 }
