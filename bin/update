@@ -1,16 +1,8 @@
 #!/usr/bin/env php
 <?php
 
-$musicRoot = realpath(dirname(__FILE__) . '/../www/music/');
-$cacheDir = realpath(dirname(__FILE__) . '/../www/cache/');
-$webRoot = '/lud/music';
-
-function webUrl($filename) {
-    global $musicRoot;
-    global $webRoot;
-
-    return str_replace($musicRoot, $webRoot, $filename);
-}
+require_once(dirname(__FILE__) . '/../lib/config.php');
+require_once(dirname(__FILE__) . '/index-album');
 
 function isAlbumFolder($current, $key, $iterator) {
     // Skip hidden files and directories.
@@ -33,203 +25,30 @@ function isAlbumFolder($current, $key, $iterator) {
     }
 }
 
-function parseArtist($obj) {
-    if (empty($obj) || empty($obj['artist-credit'])) {
-        return [];
-    }
-
-    $artists = [];
-    $credited = [];
-
-    foreach ($obj['artist-credit'] as $credit) {
-        $doc = [
-            'names' => array_unique([$credit['artist']['name'], $credit['artist']['sort-name']]),
-            'type' => 'artist'
-        ];
-
-        $credited[] = [
-            'artist' => $credit['name'],
-            'id' => $credit['artist']['id'],
-            'joinphrase' => $credit['joinphrase']
-        ];
-
-        $artists[$credit['artist']['id']] = $doc;
-    }
-
-    return [$artists, $credited];
-}
-
-function parseRelease($obj) {
-    $summary = ['type' => 'release'];
-
-    if (empty($obj)) {
-        return $summary;
-    }
-
-    $fields = ['date', 'title'];
-    foreach ($fields as $f) {
-        if (!empty($obj[$f])) {
-            $summary[$f] = $obj[$f];
-        }
-    }
-
-    return $summary;
-}
-
-function parseMedia($obj, $dir) {
-    if (empty($obj)) {
-        return [];
-    }
-
-    $media = [];
-    $idx = 0;
-    foreach ($obj['media'] as $medium) {
-        $item = [];
-
-        $idxStr = "" . ++$idx;
-        while(strlen($idxStr) < 5) {
-            $filename = $dir . "/disc" . $idxStr . ".m4a";
-            if (is_readable($filename)) {
-                $item['filename'] = $filename;
-                break;
-            }
-
-            $idxStr = "0" . $idxStr;
-        }
-
-        if (!empty($medium['title'])) {
-            $item['title'] = $medium['title'];
-        }
-
-        if (!empty($item['filename'])) {
-            $item['filename'] = webUrl($item['filename']);
-            $media[] = $item;
-        }
-    }
-
-    return $media;
-}
-
-function parseTracks($obj) {
-    $tracks = [];
-
-    if (empty($obj)) {
-        return $tracks;
-    }
-
-    $allArtists = [];
-    $discNo = 0;
-    foreach ($obj['media'] as $medium) {
-        $discNo++;
-        $trackNo = 0;
-        foreach ($medium['tracks'] as $trk) {
-            $trackNo++;
-            $song = [
-                'pos' => $trackNo,
-                'length' => $trk['length'],
-                'title' => $trk['title'],
-                'discNo' => $discNo,
-                'release' => $obj['id'],
-                'type' => 'track',
-            ];
-
-            if (!empty($trk['artist-credit'])) {
-                list($artists, $credited) = parseArtist($trk);
-            } else if (!empty($trk['recording']['artist-credit'])) {
-                list($artists, $credited) = parseArtist($trk);
-            }
-            $allArtists = array_merge($allArtists, $artists);
-
-            $song['credit'] = $credited;
-            $tracks[$trk['id']] = $song;
-        }
-    }
-
-    return [$allArtists, $tracks];
-}
-
-function indexAlbum(&$db, $dir) {
-    // FIXME: make robust against parse errors
-    $metadata = json_decode(file_get_contents("$dir/metadata.json"), true);
-
-    $release = parseRelease($metadata);
-    if (empty($release)) {
-        return;
-    }
-
-    list($artists, $credited) = parseArtist($metadata);
-    $release['credit'] = $credited;
-
-    foreach ($artists as $key => $val) {
-        $db['artists'][$key] = $val;
-    }
-
-    // FIXME: add album lenghth
-
-    $media = parseMedia($metadata, $dir);
-    if (!empty($media)) {
-        $release['discs'] = $media;
-    }
-
-    $db['releases'][$metadata['id']] = $release;
-
-    echo "Indexed " . $release['title'] . "\n";
-
-    list($artists, $tracks) = parseTracks($metadata);
-    foreach ($artists as $key => $val) {
-        $db['artists'][$key] = $val;
-    }
-
-    foreach ($tracks as $key => $val) {
-        $db['tracks'][$key] = $val;
-    }
-}
-
 function main($root) {
     global $cacheDir;
-
-    $db = [
-        "artists" => [],
-        "releases" => [],
-        "tracks" => [],
-    ];
 
     $dir = new RecursiveDirectoryIterator($root);
     $filter = new RecursiveCallbackFilterIterator($dir, isAlbumFolder);
     $iterator = new RecursiveIteratorIterator($filter);
     $files = array();
     foreach ($iterator as $info) {
-        indexAlbum($db, $info->getPath());
+        loadAlbum($info->getPath());
         $files[] = $info->getPath();
     }
 
-    foreach ($db as $key => $data) {
-        $filename = $cacheDir . "/$key.json";
+    /* foreach ($db as $key => $data) { */
+    /*     $filename = $cacheDir . "/$key.json"; */
 
-        file_put_contents(
-            $filename,
-            json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
+    /*     file_put_contents( */
+    /*         $filename, */
+    /*         json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE)); */
 
-        echo "$key index saved at " . $filename . "\n";
-    }
+    /*     echo "$key index saved at " . $filename . "\n"; */
+    /* } */
 }
 
-/**
- * Current final database structure:
- *
- * {
- *   "artists": {
- *     :id => [ list, of, one, or, more, names ]
- *   }
- *   "releases": {
- *     :id => {
- *         "date" => date,
- *         "title" => title,
- *         "by" => [ list of credits, where each credit is:
- *             [ name, id ]
- *          ]
- *     }
- *   }
- * }
- */
-main($musicRoot);
+$cfg = loadConfig();
+
+main($cfg['music_root']);
+

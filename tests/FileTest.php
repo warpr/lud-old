@@ -1,6 +1,6 @@
 <?php
 
-require(dirname(__FILE__) . '/../lib/file.php');
+require_once(dirname(__FILE__) . '/../lib/file.php');
 
 use PHPUnit\Framework\TestCase;
 

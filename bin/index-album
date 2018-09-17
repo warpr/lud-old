@@ -1,0 +1,10 @@
+#!/usr/bin/env php
+<?php
+
+require_once(dirname(__FILE__) . '/../lib/metadata.php');
+
+array_shift($argv);
+
+foreach ($argv as $arg) {
+    loadAlbum($arg);
+}

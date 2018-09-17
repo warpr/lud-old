@@ -1115,8 +1115,7 @@ var mobileConsole = (function() {
                     elements.table.lastChild.firstChild.insertBefore(
                         elements.table.lastChild.countDot,
                         elements.table.lastChild.firstChild.firstChild
-                    ).innerHTML =
-                        history.output.counter;
+                    ).innerHTML = history.output.counter;
                     setLineStyle(elements.table.lastChild, method, message);
                 } else {
                     history.output.prevMsg = message;
@@ -1441,8 +1440,7 @@ var mobileConsole = (function() {
                 setCSS(hovered, {
                     color: '',
                     backgroundColor: 'rgba(0, 0, 0, 0)',
-                }).id =
-                    '';
+                }).id = '';
             }
             if (e.type === 'mouseover') {
                 status.acHovered = true;

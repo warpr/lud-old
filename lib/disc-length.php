@@ -1,6 +1,6 @@
 <?php
 
-require(dirname(__FILE__) . '/../lib/file.php');
+require_once(dirname(__FILE__) . '/../lib/file.php');
 
 function cueFile($filename) {
     $pi = pathinfo($filename);
@@ -8,7 +8,10 @@ function cueFile($filename) {
 }
 
 function loadLength($filename) {
-    $lines = file(cueFile($filename));
+    $lines = @file(cueFile($filename));
+    if (empty($lines)) {
+        return null;
+    }
 
     $durationMarker = 'REM LUD_DURATION_IN_SECONDS ';
     foreach ($lines as $line) {
@@ -33,6 +36,10 @@ function saveLength($filename, $duration) {
     // FIXME: make constant
     $durationMarker = 'REM LUD_DURATION_IN_SECONDS ';
     $durationLine = $durationMarker . $duration . "\n";
+
+    if (!is_readable(cueFile($filename))) {
+        return;
+    }
 
     $lines = file(cueFile($filename));
 
@@ -82,18 +89,25 @@ function discLength($filename) {
     return null;
 }
 
-function processDisc($arg) {
+function processDisc($arg, $options = []) {
     $path = abspath($arg);
+
+    if (preg_match(",/\.git/,", $path)) {
+        echo "Skipping files in .git folder: $path\n";
+        return;
+    }
 
     $durationDouble = loadLength($path);
     if ($durationDouble === null) {
         $durationDouble = saveLength($path, discLength($path));
     }
 
-    if ($durationDouble === null) {
-        echo "$arg duration: <unknown>\n";
-    } else {
-        echo "$arg duration: " . (int) $durationDouble . " seconds\n";
+    if (!empty($options['verbose'])) {
+        if ($durationDouble === null) {
+            echo "$arg duration: <unknown>\n";
+        } else {
+            echo "$arg duration: " . (int) $durationDouble . " seconds\n";
+        }
     }
 
     return $durationDouble;
