@@ -2,12 +2,6 @@
 
 require_once dirname(__FILE__) . '/../lib/file.php';
 
-function cueFile($filename)
-{
-    $pi = pathinfo($filename);
-    return $pi['dirname'] . '/' . $pi['filename'] . '.cue';
-}
-
 function loadLength($cueFile)
 {
     $lines = @file($cueFile);
@@ -25,7 +19,7 @@ function loadLength($cueFile)
     return null;
 }
 
-function saveLength($filename, $duration)
+function saveLength($cueFile, $duration)
 {
     if ($duration === null) {
         return;
@@ -40,11 +34,11 @@ function saveLength($filename, $duration)
     $durationMarker = 'REM LUD_DURATION_IN_SECONDS ';
     $durationLine = $durationMarker . $duration . "\n";
 
-    if (!is_readable(cueFile($filename))) {
+    if (!is_readable($cueFile)) {
         return;
     }
 
-    $lines = file(cueFile($filename));
+    $lines = file($cueFile);
 
     $output = [];
     $inserted = false;
@@ -66,7 +60,7 @@ function saveLength($filename, $duration)
         }
     }
 
-    file_put_contents(cueFile($filename), implode("", $output));
+    file_put_contents($cueFile, implode("", $output));
 
     return (float) $duration;
 }
