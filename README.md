@@ -2,6 +2,37 @@
 
 lûd is an opinionated browser based media player.
 
+# Install
+
+    wget https://deb.nodesource.com/setup_10.x
+    sudo bash ./setup_10.x
+
+    sudo apt install nodejs php-cli php-pgsql postgresql-client postgresql
+
+    # Switch to the postgres user:
+    sudo -u postgres bash
+    createuser lud
+    createdb -O lud lud
+    psql
+
+    # On the postgres prompt, change the password for user 'lud'
+    postgres=# \password lud
+    Enter new password:
+    Enter it again:
+    postgres=# \q
+
+    # Back as the user who will be running Lûd, save your password to ~/.pgpass
+    # and verify you can connect to the database
+    touch ~/.pgpass
+    chmod go-rwx ~/.pgpass
+    echo '*:*:lud:lud:lud' >> ~/.pgpass
+    psql -d lud -h 127.0.0.1 -U lud
+
+    # Algolia
+    sudo apt-get install php-curl php-mbstring php-xml
+    sudo phpenmod curl
+    sudo phpenmod mbstring
+
 # Hacking
 
 lûd doesn't use a build step, each javascript source file should be written to be
