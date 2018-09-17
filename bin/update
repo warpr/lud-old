@@ -1,54 +1,6 @@
 #!/usr/bin/env php
 <?php
 
-require_once(dirname(__FILE__) . '/../lib/config.php');
-require_once(dirname(__FILE__) . '/index-album');
+require_once(dirname(__FILE__) . '/../lib/update-index.php');
 
-function isAlbumFolder($current, $key, $iterator) {
-    // Skip hidden files and directories.
-    if ($current->getFilename()[0] === '.') {
-        return false;
-    }
-
-    if ($current->isDir()) {
-        return true;
-    }
-
-    // FIXME: something may be needed here to prevent infinite loops
-    /* if ($current->isDir()) { */
-    /*     // Only recurse into intended subdirectories. */
-    /*     return $current->getFilename() === 'wanted_dirname'; */
-    /* } */
-
-    if ($current->getFilename() === 'metadata.json') {
-        return is_readable(realpath($current->getPathname()));
-    }
-}
-
-function main($root) {
-    global $cacheDir;
-
-    $dir = new RecursiveDirectoryIterator($root);
-    $filter = new RecursiveCallbackFilterIterator($dir, isAlbumFolder);
-    $iterator = new RecursiveIteratorIterator($filter);
-    $files = array();
-    foreach ($iterator as $info) {
-        loadAlbum($info->getPath());
-        $files[] = $info->getPath();
-    }
-
-    /* foreach ($db as $key => $data) { */
-    /*     $filename = $cacheDir . "/$key.json"; */
-
-    /*     file_put_contents( */
-    /*         $filename, */
-    /*         json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE)); */
-
-    /*     echo "$key index saved at " . $filename . "\n"; */
-    /* } */
-}
-
-$cfg = loadConfig();
-
-main($cfg['music_root']);
-
+updateIndex();

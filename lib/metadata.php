@@ -23,7 +23,7 @@ function parseMedia($obj, $dir)
 
         $idxStr = "" . ++$idx;
         while (strlen($idxStr) < 5) {
-            $filename = $dir . "/disc" . $idxStr . ".m4a";
+            $filename = $dir . "/disc" . $idxStr . ".cue";
             if (is_readable($filename)) {
                 $item['filename'] = "disc" . $idxStr;
                 break;
@@ -176,11 +176,12 @@ function loadAlbum($dir)
     $body = json_encode($release, JSON_PRETTY_PRINT) . "\n";
     file_put_contents($document, $body);
 
+    $dateStr = empty($release['date']) ? '' : $release['date'] . ", ";
+
     echo "Saved " .
         basename($document) .
         " (" .
-        $release['date'] .
-        ", " .
+        $dateStr .
         $release['artist'] .
         ' - ' .
         $release['title'] .
