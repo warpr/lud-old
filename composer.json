@@ -3,6 +3,7 @@
         "robmorgan/phinx": "^0.10.5",
         "latitude/latitude": "^2.3",
         "algolia/algoliasearch-client-php": "^1.27",
-        "phpunit/phpunit": "^6.5"
+        "phpunit/phpunit": "^6.5",
+        "dnoegel/php-xdg-base-dir": "^0.1.0"
     }
 }

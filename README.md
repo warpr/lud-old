@@ -11,6 +11,7 @@ lûd is an opinionated browser based media player.
     sudo phpenmod curl
     sudo phpenmod mbstring
     sudo phpenmod xml
+    sudo phpenmod sqlite3
 
 # Hacking
 

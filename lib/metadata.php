@@ -171,21 +171,21 @@ function loadAlbum($dir)
 
     $cfg = loadConfig();
 
-    // FIXME: shouldn't save here
-    $document = $cfg['index_root'] . '/' . $release['mbid'] . '.json';
-    $body = json_encode($release, JSON_PRETTY_PRINT) . "\n";
-    file_put_contents($document, $body);
+    /* // FIXME: shouldn't save here */
+    /* $document = $cfg['index_root'] . '/' . $release['mbid'] . '.json'; */
+    /* $body = json_encode($release, JSON_PRETTY_PRINT) . "\n"; */
+    /* file_put_contents($document, $body); */
 
-    $dateStr = empty($release['date']) ? '' : $release['date'] . ", ";
+    /* $dateStr = empty($release['date']) ? '' : $release['date'] . ", "; */
 
-    echo "Saved " .
-        basename($document) .
-        " (" .
-        $dateStr .
-        $release['artist'] .
-        ' - ' .
-        $release['title'] .
-        ")\n";
+    /* echo "Saved " . */
+    /*     basename($document) . */
+    /*     " (" . */
+    /*     $dateStr . */
+    /*     $release['artist'] . */
+    /*     ' - ' . */
+    /*     $release['title'] . */
+    /*     ")\n"; */
 
     return $release;
 }

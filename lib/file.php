@@ -1,9 +1,10 @@
 <?php
 
-function startsWith($haystack, $needle)
+function mkdirIfNotExists($dir)
 {
-    $length = strlen($needle);
-    return (substr($haystack, 0, $length) === $needle);
+    if (!is_dir($dir)) {
+        mkdir($dir, 0755, true);
+    }
 }
 
 function abspath($filename)
