@@ -1,5 +1,7 @@
 <?php
 
+require_once dirname(__FILE__) . '/../lib/string.php';
+
 function mkdirIfNotExists($dir)
 {
     if (!is_dir($dir)) {

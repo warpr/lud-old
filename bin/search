@@ -1,0 +1,10 @@
+#!/usr/bin/env php
+<?php
+
+require_once(dirname(__FILE__) . '/../vendor/autoload.php');
+require_once(dirname(__FILE__) . '/../lib/search.php');
+
+$cmd = array_shift($argv);
+$results = search(implode(" ", $argv));
+
+print_r(compact('results'));

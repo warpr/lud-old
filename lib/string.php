@@ -21,3 +21,16 @@ function fixLength($str, $length)
 
     return "..." . $slice;
 }
+
+function getYear($dateStr)
+{
+    if (empty($dateStr)) {
+        return null;
+    }
+
+    if (preg_match("/([0-9]{4})-[0-9]{2}-[0-9]{2}/", $dateStr, $matches)) {
+        return $matches[1];
+    }
+
+    return null;
+}
