@@ -24,3 +24,8 @@ function getTerminalHeight()
 
     return $y;
 }
+
+function clearLine()
+{
+    echo "\033[A\r\033[2K";
+}

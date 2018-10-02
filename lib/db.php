@@ -8,7 +8,7 @@ $lud_database_connection = null;
 function __dbFilename()
 {
     $cfg = loadConfig();
-    return $cfg['data_root'] . '/index.sqlite';
+    return $cfg['index_root'] . '/index.sqlite';
 }
 
 function db()
@@ -18,7 +18,8 @@ function db()
     if (empty($lud_database_connection)) {
         $dbfile = __dbFilename();
 
-        echo "Connecting to database at $dbfile\n";
+        // FIXME: log this?
+        // echo "Connecting to database at $dbfile\n";
         $lud_database_connection = new SQLite3($dbfile);
     }
 

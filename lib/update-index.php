@@ -1,5 +1,6 @@
 <?php
 
+require_once dirname(__FILE__) . '/../lib/auto-progress.php';
 require_once dirname(__FILE__) . '/../lib/config.php';
 require_once dirname(__FILE__) . '/../lib/db.php';
 require_once dirname(__FILE__) . '/../lib/metadata.php';
@@ -52,10 +53,15 @@ function indexRelease($album)
 function indexTracks($album)
 {
     foreach ($album['tracks'] as $mbid => $track) {
-        $disc = $album['media'][$track['discNo'] - 1];
+        if (empty($album['media'][$track['discNo'] - 1])) {
+            echo "WARNING: disc not found for " . $album['path'] . "\n";
+            $url = '';
+        } else {
+            $disc = $album['media'][$track['discNo'] - 1];
+            $url = $album['path'] . '/' . $disc['filename'];
+        }
 
         $duration = empty($track['length']) ? null : $track['length'];
-        $url = $album['path'] . '/' . $disc['filename'];
 
         $query = db()->prepare(
             "INSERT INTO tracks VALUES(:title, :artist, :path, :duration, :mbid, :pos, :disc)"
@@ -129,13 +135,15 @@ function updateIndex()
 {
     $cfg = loadConfig();
 
+    $autoprogress = new AutoProgress('lud', 'index-all');
+
     // start fresh when doing a full index, as I don't know how
     // to avoid duplicates in SQLite FTS5 tables.
     deleteDatabase();
     initializeDatabase();
 
     // For debugging purposes, stop after 2 albums for now.
-    $maxAlbums = 30;
+    // $maxAlbums = 30;
 
     $root = $cfg['music_root'];
 
@@ -146,6 +154,8 @@ function updateIndex()
     $count = 0;
     $prevCategory = "";
     foreach ($iterator as $info) {
+        $autoprogress->next(true);
+
         $album = loadAlbum($info->getPath());
 
         list($category, $path) = categoryAndPath($root, $info->getPath());
@@ -165,10 +175,11 @@ function updateIndex()
         indexRelease($album);
         indexTracks($album);
 
-        if (++$count >= $maxAlbums) {
-            break;
-        }
+        /* if (++$count >= $maxAlbums) { */
+        /*     break; */
+        /* } */
     }
 
+    $autoprogress->done();
     echo "Finished indexing\n";
 }

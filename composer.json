@@ -4,6 +4,7 @@
         "latitude/latitude": "^2.3",
         "algolia/algoliasearch-client-php": "^1.27",
         "phpunit/phpunit": "^6.5",
-        "dnoegel/php-xdg-base-dir": "^0.1.0"
+        "dnoegel/php-xdg-base-dir": "^0.1.0",
+        "khill/php-duration": "^1.0"
     }
 }
