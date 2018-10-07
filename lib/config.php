@@ -7,6 +7,7 @@ require_once dirname(__FILE__) . '/../lib/file.php';
 function loadConfig()
 {
     $config = [
+        "verbose" => false,
         "music_root" => abspath(dirname(__FILE__) . '/../www/music/'),
         "index_root" => abspath(dirname(__FILE__) . '/../www/.cache'),
         "web_path" => '/lud/music'

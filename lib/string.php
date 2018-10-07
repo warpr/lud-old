@@ -1,5 +1,10 @@
 <?php
 
+function contains($haystack, $needle)
+{
+    return strpos($haystack, $needle) !== false;
+}
+
 function startsWith($haystack, $needle)
 {
     $length = strlen($needle);
@@ -33,4 +38,12 @@ function getYear($dateStr)
     }
 
     return null;
+}
+
+function slug($str)
+{
+    return trim(
+        preg_replace('/--+/', '-', preg_replace('/[^A-Za-z0-9-]+/', '-', strtolower(trim($str)))),
+        '-'
+    );
 }

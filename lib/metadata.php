@@ -7,7 +7,7 @@ function webUrl($filename)
 {
     $cfg = loadConfig();
 
-    return str_replace(abspath($cfg['music_root']), $cfg['web_root'], abspath($filename));
+    return str_replace(abspath($cfg['music_root']), $cfg['web_path'], abspath($filename));
 }
 
 function parseMedia($obj, $dir)
@@ -59,7 +59,7 @@ function parseMedia($obj, $dir)
 
         if (!empty($item['filename'])) {
             /* $item['filename'] = webUrl($item['filename']); */
-            $media[] = $item;
+            $media[$item['position'] - 1] = $item;
         }
     }
 

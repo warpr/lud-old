@@ -36,21 +36,9 @@ function initializeDatabase()
     $db = db();
 
     $ret = $db->exec(
-        "CREATE VIRTUAL TABLE IF NOT EXISTS releases USING fts5(title, artist, year, path, duration, mbid UNINDEXED)"
+        "CREATE VIRTUAL TABLE IF NOT EXISTS records USING fts5(title, artist, year, path, duration, type, mbid UNINDEXED, pos, disc)"
     );
     if (!$ret) {
-        echo "Error creating releases index in SQLite database\n";
-    }
-    $ret = $db->exec(
-        "CREATE VIRTUAL TABLE IF NOT EXISTS tracks USING fts5(title, artist, path, duration, mbid UNINDEXED, pos, disc)"
-    );
-    if (!$ret) {
-        echo "Error creating tracks index in SQLite database\n";
-    }
-    $ret = $db->exec(
-        "CREATE VIRTUAL TABLE IF NOT EXISTS discs USING fts5(title, path, duration, mbid UNINDEXED, pos UNINDEXED)"
-    );
-    if (!$ret) {
-        echo "Error creating discs index in SQLite database\n";
+        echo "Error creating records index in SQLite database\n";
     }
 }

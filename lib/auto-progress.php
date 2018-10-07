@@ -6,6 +6,11 @@ require_once dirname(__FILE__) . '/tty.php';
 
 use Khill\Duration\Duration;
 
+function statusLine($str)
+{
+    fwrite(STDERR, $str . "\n");
+}
+
 function spinner($number)
 {
     $spinner = "-\|/";
@@ -65,7 +70,12 @@ class Autoprogress
             "duration" => time() - $this->start,
             "done" => $done
         ];
-        file_put_contents($this->cacheFile, json_encode($data, JSON_PRETTY_PRINT) . "\n");
+
+        if ($done) {
+            file_put_contents($this->cacheFile, json_encode($data, JSON_PRETTY_PRINT) . "\n");
+
+            // FIXME: should clean up stale files (older than 60 days?)
+        }
     }
 
     function next($newline = false)
@@ -76,7 +86,7 @@ class Autoprogress
         if ($this->shouldUpdate()) {
             $this->save(false);
             if ($newline) {
-                echo "\n";
+                statusLine("");
             }
             $this->display();
         }
@@ -91,10 +101,8 @@ class Autoprogress
 
     function display()
     {
-        clearLine();
-
         if (empty($this->iterationEstimate) || empty($this->durationEstimate)) {
-            echo "Step " . $this->iterations . " [" . spinner($this->iterations) . "]\n";
+            statusLine("Step " . $this->iterations . " [" . spinner($this->iterations) . "]");
             return;
         }
 
@@ -124,11 +132,13 @@ class Autoprogress
         $barTotal = getTerminalWidth() - strlen($lineStart) - strlen($lineEnd) - 2;
         $barLength = (int) ($barTotal * $progress);
 
-        echo $lineStart .
+        $statusLine =
+            $lineStart .
             str_repeat("=", $barLength) .
             str_repeat(" ", $barTotal - $barLength) .
-            $lineEnd .
-            "\n";
+            $lineEnd;
+
+        statusLine($statusLine);
     }
 }
 

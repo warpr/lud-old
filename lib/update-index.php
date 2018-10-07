@@ -7,6 +7,30 @@ require_once dirname(__FILE__) . '/../lib/metadata.php';
 require_once dirname(__FILE__) . '/../lib/string.php';
 require_once dirname(__FILE__) . '/../lib/tty.php';
 
+function printDebug($line)
+{
+    // echo "$line\n";
+}
+
+function printInfo($line)
+{
+    $cfg = loadConfig();
+
+    if ($cfg['verbose']) {
+        echo "$line\n";
+    }
+}
+
+function printWarning($line)
+{
+    echo "WARNING: $line\n";
+}
+
+function printError($line)
+{
+    echo "WARNING: $line\n";
+}
+
 function indexDiscs($album)
 {
     foreach ($album['media'] as $disc) {
@@ -14,10 +38,14 @@ function indexDiscs($album)
             continue;
         }
 
+        // FIXME: include year
+
         $url = $album['path'] . '/' . $disc['filename'];
         $duration = empty($disc['duration']) ? null : $disc['duration'];
 
-        $query = db()->prepare("INSERT INTO discs VALUES(:title, :path, :duration, :mbid, :pos)");
+        $query = db()->prepare(
+            "INSERT INTO records (title, path, duration, mbid, pos) VALUES(:title, :path, :duration, :mbid, :pos)"
+        );
         $query->bindParam(':title', $disc['title']);
         $query->bindParam(':path', $url);
         $query->bindParam(':duration', $duration);
@@ -38,8 +66,10 @@ function indexRelease($album)
         }
     }
 
+    // FIXME: releases should just point to the first disc
+
     $query = db()->prepare(
-        "INSERT INTO releases VALUES(:title, :artist, :year, :path, :duration, :mbid)"
+        "INSERT INTO records (title, artist, year, path, duration, mbid) VALUES(:title, :artist, :year, :path, :duration, :mbid)"
     );
     $query->bindParam(':title', $album['title']);
     $query->bindParam(':artist', $album['artist']);
@@ -52,9 +82,12 @@ function indexRelease($album)
 
 function indexTracks($album)
 {
+    print_r($album);
+
     foreach ($album['tracks'] as $mbid => $track) {
         if (empty($album['media'][$track['discNo'] - 1])) {
-            echo "WARNING: disc not found for " . $album['path'] . "\n";
+            // FIXME: save these somewhere to easily re-index failed tracks
+            printWarning("disc not found for " . $album['path']);
             $url = '';
         } else {
             $disc = $album['media'][$track['discNo'] - 1];
@@ -63,8 +96,9 @@ function indexTracks($album)
 
         $duration = empty($track['length']) ? null : $track['length'];
 
+        // FIXME: include year
         $query = db()->prepare(
-            "INSERT INTO tracks VALUES(:title, :artist, :path, :duration, :mbid, :pos, :disc)"
+            "INSERT INTO records (title, artist, path, duration, mbid, pos, disc) VALUES(:title, :artist, :path, :duration, :mbid, :pos, :disc)"
         );
         $query->bindParam(':title', $track['title']);
         $query->bindParam(':artist', $track['artist']);
@@ -102,8 +136,8 @@ function isAlbumFolder($current, $key, $iterator)
 function printCategory($category)
 {
     $heading = "Indexing " . $category;
-    echo $heading . "\n";
-    echo str_repeat("=", strlen($heading)) . "\n";
+    printInfo($heading);
+    printInfo(str_repeat("=", strlen($heading)));
 }
 
 function printIndexed($dir, $album)
@@ -113,13 +147,9 @@ function printIndexed($dir, $album)
 
     $pathWidth = (int) (getTerminalWidth() * 0.4);
 
-    echo fixLength($dir, $pathWidth) .
-        "  " .
-        $dateStr .
-        $album['artist'] .
-        ' - ' .
-        $album['title'] .
-        "\n";
+    printInfo(
+        fixLength($dir, $pathWidth) . "  " . $dateStr . $album['artist'] . ' - ' . $album['title']
+    );
 }
 
 function categoryAndPath($root, $dir)
@@ -131,11 +161,16 @@ function categoryAndPath($root, $dir)
     return [$category, implode("/", $parts)];
 }
 
-function updateIndex()
+function updateIndex($query)
 {
     $cfg = loadConfig();
 
-    $autoprogress = new AutoProgress('lud', 'index-all');
+    if (empty($query)) {
+        $autoprogress = new AutoProgress('lud', 'index-all');
+    } else {
+        echo "Using " . slug('index-' . $query) . " as autoprogress slug\n";
+        $autoprogress = new AutoProgress('lud', slug('index-' . $query));
+    }
 
     // start fresh when doing a full index, as I don't know how
     // to avoid duplicates in SQLite FTS5 tables.
@@ -156,9 +191,16 @@ function updateIndex()
     foreach ($iterator as $info) {
         $autoprogress->next(true);
 
-        $album = loadAlbum($info->getPath());
+        $currentPath = $info->getPath();
 
-        list($category, $path) = categoryAndPath($root, $info->getPath());
+        if (!empty($query) && !contains($currentPath, $query)) {
+            printDebug("Skipping $currentPath");
+            continue;
+        }
+
+        $album = loadAlbum($currentPath);
+
+        list($category, $path) = categoryAndPath($root, $currentPath);
         if ($category !== $prevCategory) {
             printCategory($prevCategory = $category);
         }

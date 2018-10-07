@@ -4,4 +4,7 @@
 require_once(dirname(__FILE__) . '/../vendor/autoload.php');
 require_once(dirname(__FILE__) . '/../lib/update-index.php');
 
-updateIndex();
+$cmd = array_shift($argv);
+$terms = implode(" ", $argv);
+
+updateIndex($terms);
