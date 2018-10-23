@@ -44,13 +44,15 @@ function indexDiscs($album)
         $duration = empty($disc['duration']) ? null : $disc['duration'];
 
         $query = db()->prepare(
-            "INSERT INTO records (title, path, duration, mbid, pos) VALUES(:title, :path, :duration, :mbid, :pos)"
+            "INSERT INTO records (title, path, duration, mbid, pos, type) VALUES(:title, :path, :duration, :mbid, :pos, :type)"
         );
         $query->bindParam(':title', $disc['title']);
         $query->bindParam(':path', $url);
         $query->bindParam(':duration', $duration);
         $query->bindParam(':mbid', $album['mbid']);
         $query->bindParam(':pos', $disc['position']);
+        $type = 'disc';
+        $query->bindParam(':type', $type);
         $query->execute();
     }
 }
@@ -60,30 +62,33 @@ function indexRelease($album)
     $year = getYear(empty($album['date']) ? '' : $album['date']);
 
     $duration = null;
+    $firstDisc = null;
     foreach ($album['media'] as $disc) {
         if (!empty($disc['duration'])) {
             $duration += $disc['duration'];
         }
+
+        if (empty($firstDisc)) {
+            $firstDisc = $album['path'] . '/' . $disc['filename'];
+        }
     }
 
-    // FIXME: releases should just point to the first disc
-
     $query = db()->prepare(
-        "INSERT INTO records (title, artist, year, path, duration, mbid) VALUES(:title, :artist, :year, :path, :duration, :mbid)"
+        "INSERT INTO records (title, artist, year, path, duration, mbid, type) VALUES(:title, :artist, :year, :path, :duration, :mbid, :type)"
     );
     $query->bindParam(':title', $album['title']);
     $query->bindParam(':artist', $album['artist']);
     $query->bindParam(':year', $year);
-    $query->bindParam(':path', $album['path']);
+    $query->bindParam(':path', $firstDisc);
     $query->bindParam(':duration', $duration);
     $query->bindParam(':mbid', $album['mbid']);
+    $type = 'release';
+    $query->bindParam(':type', $type);
     $query->execute();
 }
 
 function indexTracks($album)
 {
-    print_r($album);
-
     foreach ($album['tracks'] as $mbid => $track) {
         if (empty($album['media'][$track['discNo'] - 1])) {
             // FIXME: save these somewhere to easily re-index failed tracks
@@ -98,7 +103,7 @@ function indexTracks($album)
 
         // FIXME: include year
         $query = db()->prepare(
-            "INSERT INTO records (title, artist, path, duration, mbid, pos, disc) VALUES(:title, :artist, :path, :duration, :mbid, :pos, :disc)"
+            "INSERT INTO records (title, artist, path, duration, mbid, pos, disc, type) VALUES(:title, :artist, :path, :duration, :mbid, :pos, :disc, :type)"
         );
         $query->bindParam(':title', $track['title']);
         $query->bindParam(':artist', $track['artist']);
@@ -107,6 +112,8 @@ function indexTracks($album)
         $query->bindParam(':mbid', $mbid);
         $query->bindParam(':pos', $track['position']);
         $query->bindParam(':disc', $track['discNo']);
+        $type = 'track';
+        $query->bindParam(':type', $type);
         $query->execute();
     }
 }
@@ -167,18 +174,19 @@ function updateIndex($query)
 
     if (empty($query)) {
         $autoprogress = new AutoProgress('lud', 'index-all');
+
+        // start fresh when doing a full index, as I don't know how
+        // to avoid duplicates in SQLite FTS5 tables.
+        deleteDatabase();
     } else {
         echo "Using " . slug('index-' . $query) . " as autoprogress slug\n";
         $autoprogress = new AutoProgress('lud', slug('index-' . $query));
+
+        // FIXME: remove this to allow incremental additions
+        deleteDatabase();
     }
 
-    // start fresh when doing a full index, as I don't know how
-    // to avoid duplicates in SQLite FTS5 tables.
-    deleteDatabase();
     initializeDatabase();
-
-    // For debugging purposes, stop after 2 albums for now.
-    // $maxAlbums = 30;
 
     $root = $cfg['music_root'];
 
@@ -216,10 +224,6 @@ function updateIndex($query)
         indexDiscs($album);
         indexRelease($album);
         indexTracks($album);
-
-        /* if (++$count >= $maxAlbums) { */
-        /*     break; */
-        /* } */
     }
 
     $autoprogress->done();

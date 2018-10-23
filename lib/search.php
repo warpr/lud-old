@@ -3,10 +3,9 @@
 require_once dirname(__FILE__) . '/../vendor/autoload.php';
 require_once dirname(__FILE__) . '/../lib/db.php';
 
-function search($type, $str)
+function search($str)
 {
-    // FIXME: assert that type is either tracks, discs or releases
-    $query = db()->prepare("SELECT * FROM " . $type . "(:query) ORDER BY rank");
+    $query = db()->prepare("SELECT * FROM records (:query) ORDER BY rank");
 
     $searchString = $str;
     $query->bindParam(':query', $searchString);
