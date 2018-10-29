@@ -33,6 +33,8 @@ function printError($line)
 
 function indexDiscs($album)
 {
+    $year = getYear(empty($album['date']) ? '' : $album['date']);
+
     foreach ($album['media'] as $disc) {
         if (empty($disc['title'])) {
             continue;
@@ -44,9 +46,13 @@ function indexDiscs($album)
         $duration = empty($disc['duration']) ? null : $disc['duration'];
 
         $query = db()->prepare(
-            "INSERT INTO records (title, path, duration, mbid, pos, type) VALUES(:title, :path, :duration, :mbid, :pos, :type)"
+            "INSERT INTO records" .
+                " (title, year, path, duration, mbid, pos, type)" .
+                " VALUES" .
+                " (:title, :year, :path, :duration, :mbid, :pos, :type)"
         );
         $query->bindParam(':title', $disc['title']);
+        $query->bindParam(':year', $year);
         $query->bindParam(':path', $url);
         $query->bindParam(':duration', $duration);
         $query->bindParam(':mbid', $album['mbid']);
@@ -74,7 +80,10 @@ function indexRelease($album)
     }
 
     $query = db()->prepare(
-        "INSERT INTO records (title, artist, year, path, duration, mbid, type) VALUES(:title, :artist, :year, :path, :duration, :mbid, :type)"
+        "INSERT INTO records" .
+            " (title, artist, year, path, duration, mbid, type)" .
+            " VALUES" .
+            " (:title, :artist, :year, :path, :duration, :mbid, :type)"
     );
     $query->bindParam(':title', $album['title']);
     $query->bindParam(':artist', $album['artist']);
@@ -89,6 +98,8 @@ function indexRelease($album)
 
 function indexTracks($album)
 {
+    $year = getYear(empty($album['date']) ? '' : $album['date']);
+
     foreach ($album['tracks'] as $mbid => $track) {
         if (empty($album['media'][$track['discNo'] - 1])) {
             // FIXME: save these somewhere to easily re-index failed tracks
@@ -103,10 +114,14 @@ function indexTracks($album)
 
         // FIXME: include year
         $query = db()->prepare(
-            "INSERT INTO records (title, artist, path, duration, mbid, pos, disc, type) VALUES(:title, :artist, :path, :duration, :mbid, :pos, :disc, :type)"
+            "INSERT INTO records" .
+                " (title, artist, year, path, duration, mbid, pos, disc, type)" .
+                " VALUES" .
+                " (:title, :artist, :year, :path, :duration, :mbid, :pos, :disc, :type)"
         );
         $query->bindParam(':title', $track['title']);
         $query->bindParam(':artist', $track['artist']);
+        $query->bindParam(':year', $year);
         $query->bindParam(':path', $url);
         $query->bindParam(':duration', $duration);
         $query->bindParam(':mbid', $mbid);

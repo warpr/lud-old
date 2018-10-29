@@ -20,7 +20,6 @@ function fixPermissions()
     $user = $userInfo['name'];
 
     system("/bin/chown -R" . " " . escapeshellarg("$user:$group") . " " . escapeshellarg($dir));
-
     system("/bin/chmod -R g+w " . escapeshellarg($dir));
 }
 
