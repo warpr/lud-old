@@ -1,10 +1,10 @@
 #!/usr/bin/env php
 <?php
-
-require_once(dirname(__FILE__) . '/../lib/disc-length.php');
+require_once dirname(__FILE__) . '/../lib/disc-length.php';
 
 array_shift($argv);
 
 foreach ($argv as $arg) {
-    processDisc($arg, [ 'verbose' => true ]);
+    processDisc($arg, ['verbose' => true]);
 }
+

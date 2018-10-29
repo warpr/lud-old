@@ -1,13 +1,15 @@
 #!/usr/bin/env php
 <?php
-
-require_once(dirname(__FILE__) . '/../vendor/autoload.php');
-require_once(dirname(__FILE__) . '/../lib/search.php');
-require_once(dirname(__FILE__) . '/../lib/config.php');
+require_once dirname(__FILE__) . '/../vendor/autoload.php';
+require_once dirname(__FILE__) . '/../lib/search.php';
+require_once dirname(__FILE__) . '/../lib/config.php';
+require_once dirname(__FILE__) . '/../lib/db.php';
 
 $cmd = array_shift($argv);
 $terms = implode(" ", $argv);
-$results = search($terms);
+$results = search($terms, 0, 25);
+$total = searchCount($terms);
+db()->close();
 
 $cfg = loadConfig();
 
@@ -15,10 +17,22 @@ foreach ($results as $row) {
     $location = str_replace($cfg['web_path'] . '/', '', $row['path']);
 
     if ($row['type'] == 'track') {
-        echo $row['artist'] . ' - ' . $row['title'] . ' (' . $location . ', ' . $row['disc'] . '-' . $row['pos'] . ")\n";
-    } else if ($row['type'] == 'disc') {
+        echo $row['artist'] .
+            ' - ' .
+            $row['title'] .
+            ' (' .
+            $location .
+            ', ' .
+            $row['disc'] .
+            '-' .
+            $row['pos'] .
+            ")\n";
+    } elseif ($row['type'] == 'disc') {
         echo $row['title'] . ' (' . $location . ")\n";
     } else {
         echo $row['artist'] . ' - ' . $row['title'] . ' (' . $location . ")\n";
     }
 }
+
+echo "Total results: $total.\n";
+

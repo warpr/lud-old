@@ -2,14 +2,8 @@
 
 require_once dirname(__FILE__) . '/../vendor/autoload.php';
 require_once dirname(__FILE__) . '/../lib/search.php';
-
-function streamResults($records)
-{
-    foreach ($records as $record) {
-        echo json_encode($record) . "\n";
-    }
-    flush();
-}
+require_once dirname(__FILE__) . '/../lib/db.php';
+require_once dirname(__FILE__) . '/../lib/config.php';
 
 function main()
 {
@@ -20,7 +14,10 @@ function main()
     }
 
     $stream = !empty($_GET['stream']);
-    $terms = $_GET['q'];
+    $terms = trim($_GET['q']);
+
+    $offset = empty($_GET['offset']) ? 0 : (int) $_GET['offset'];
+    $limit = empty($_GET['limit']) ? 10 : (int) $_GET['limit'];
 
     if ($stream) {
         header('Content-Type: application/jsonstream');
@@ -28,21 +25,27 @@ function main()
         header('Content-Type: application/json');
     }
 
-    $releases = search('releases', $terms);
-    $stream && streamResults($releases);
+    $results = search($terms, $offset, $limit);
+    $total = searchCount($terms);
 
-    $discs = search('discs', $terms);
-    $stream && streamResults($discs);
+    $cfg = loadConfig();
+    $metadata = ["total" => $total];
 
-    $tracks = search('tracks', $terms);
-    $stream && streamResults($tracks);
+    if ($offset + $limit < $total) {
+        $nextQuery = [
+            "q" => $terms,
+            "offset" => $offset + $limit,
+            "limit" => $limit
+        ];
 
-    if (!$stream) {
-        echo json_encode(
-            compact('releases', 'discs', 'tracks'),
-            JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES
-        ) . "\n";
+        $metadata["next"] = $cfg['search_root'] . '?' . http_build_query($nextQuery);
     }
+
+    $response = compact('results', 'metadata');
+
+    echo json_encode($response, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . "\n";
 }
 
 main();
+
+db()->close();

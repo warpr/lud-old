@@ -9,8 +9,11 @@ function loadConfig()
     $config = [
         "verbose" => false,
         "music_root" => abspath(dirname(__FILE__) . '/../www/music/'),
-        "index_root" => abspath(dirname(__FILE__) . '/../www/.cache'),
-        "web_path" => '/lud/music'
+        "index_root" => abspath(dirname(__FILE__) . '/../www/cache/'),
+        "search_root" => '/lud/search.php',
+        "web_path" => '/lud/music',
+        "www_user" => 'www-data',
+        "www_group" => 'www-data'
     ];
 
     mkdirIfNotExists($config['index_root']);

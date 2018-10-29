@@ -16,10 +16,11 @@
             "prettier --write",
             "git add"
         ],
-        "*.php": [
-            "prettier --write",
-            "git add"
-        ]
+        "*.php": ["prettier --write", "git add"],
+        "bin/disc-length": ["prettier --parser=php --write", "git add"],
+        "bin/search": ["prettier --parser=php --write", "git add"],
+        "bin/sql": ["prettier --parser=php --write", "git add"],
+        "bin/update": ["prettier --parser=php --write", "git add"]
     },
     "author": "Kuno Woudt <kuno@frob.nl>",
     "license": "copyleft-next-0.3.1",

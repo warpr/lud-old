@@ -21,6 +21,8 @@ function db()
         // FIXME: log this?
         // echo "Connecting to database at $dbfile\n";
         $lud_database_connection = new SQLite3($dbfile);
+        $lud_database_connection->busyTimeout(1000);
+        $lud_database_connection->exec('PRAGMA journal_mode = wal;');
     }
 
     return $lud_database_connection;
