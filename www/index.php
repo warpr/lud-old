@@ -54,6 +54,9 @@
         <script src="/lud/js/@material-ui/core/umd/material-ui.development.js"></script>
         <script src="/lud/js/@material/slider/dist/mdc.slider.js"></script>
 
+        <!-- ReactiveX -->
+        <script src="/lud/js/@reactivex/rxjs/dist/global/rxjs.umd.js"></script>
+
         <!-- Immutable -->
         <script src="/lud/js/immutable/dist/immutable.js"></script>
         <script src="/lud/js/immutable-devtools/dist/index.js"></script>

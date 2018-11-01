@@ -14,7 +14,7 @@ const e = React.createElement;
 
 // import { Album } from '/lud/album.js';
 import { AudioGlue } from '/lud/audio-glue.js';
-import * as db from '/lud/db.js';
+// import * as db from '/lud/db.js';
 // import { Library } from '/lud/library.js';
 import { MainMenu } from '/lud/main-menu.js';
 import { keys } from '/lud/misc.js';
@@ -28,7 +28,7 @@ window.lûd = {
     glue: new AudioGlue(),
 };
 
-db.bootstrap(window.lûd);
+// db.bootstrap(window.lûd);
 
 function throttleEvent(type, name) {
     var running = false;
@@ -126,8 +126,8 @@ class Sections extends React.Component {
 }
 
 export function start(app_div /* : HTMLElement */) {
-    window.lûd.db.loadIndex();
-
+    /* window.lûd.db.loadIndex();
+     */
     const theme = M.createMuiTheme({
         palette: {
             type: 'dark',
