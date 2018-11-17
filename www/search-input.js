@@ -8,18 +8,14 @@
  *   @flow
  */
 
-const rxjs = window.rxjs;
-
 const React = window.React;
 const e = React.createElement;
 const M = window['material-ui'];
 const _ = window._;
 
-import { searchRest } from '/lud/search-rest.js';
-
 /*::
 type SearchInputProps = {
-    style: object | string,
+    style: Object | string,
 }
 */
 
@@ -29,28 +25,24 @@ export class SearchInput extends React.Component {
 
         this.state = { query: '' };
         this.handleChange = this.handleChange.bind(this);
-        this.handleSearchResult = this.handleSearchResult.bind(this);
 
-        this.search = _.debounce(value => this.handleSearchResult(searchRest(value)), 300, {
+        this.search = _.debounce(value => window.lûd.search.query(value), 300, {
             maxWait: 1000,
         });
 
         setTimeout(() => {
-            searchRest('souls');
+            const v = 'souls';
+            this.setState({ query: v });
+            this.search(v);
         }, 2000);
     }
 
     /*:: handleChange: Function */
-    handleChange(event /*: SyntheticEvent<HTMLInputElement>*/) {
+    handleChange(event /*: SyntheticInputEvent<HTMLInputElement>*/) {
         const value = event.target.value;
 
         this.setState({ query: value });
         this.search(value);
-    }
-
-    /*:: handleSearchResult: Function */
-    handleSearchResult(result /*: rxjs.Observable<SearchResultItem> */) {
-        //        window.lûd.searchResults(result);
     }
 
     render() {

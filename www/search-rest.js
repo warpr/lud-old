@@ -14,7 +14,21 @@ const rxjs = window.rxjs;
 export type SearchResultItem = {
     title: string,
     artist: string,
-    year: string,
+    year: string | null,
+    path: string,
+    cover: string,
+    cueFile: string,
+    duration: number,
+    type: string,
+    mbid: string,
+    pos: number | null,
+    disc: number | null,
+}
+
+type ServerResultItem = {
+    title: string,
+    artist: string,
+    year: string | null,
     path: string,
     duration: string,
     type: string,
@@ -22,12 +36,37 @@ export type SearchResultItem = {
     pos: string | null,
     disc: string | null,
 }
+
+type ServerResponse = {
+   results: Array<ServerResultItem>,
+   metadata: {
+       next?: string,
+       prev?: string,
+       total: number,
+   }
+}
 */
+
+function normalizeSearchResult(item /*: ServerResultItem */) /*: SearchResultItem */ {
+    return {
+        title: item.title,
+        artist: item.artist,
+        year: item.year,
+        path: item.path,
+        cover: item.path.replace(/\disc[0-9]+/, 'cover.jpg'),
+        cueFile: item.path + '.cue',
+        duration: parseInt(item.duration, 10),
+        type: item.type,
+        mbid: item.mbid,
+        pos: item.pos === null ? null : parseInt(item.pos, 10),
+        disc: item.disc === null ? null : parseInt(item.disc, 10),
+    };
+}
 
 function fetchPage(url /*: string */) {
     return rxjs.ajax.ajax(url).pipe(
         rxjs.operators.map(response => ({
-            items: response.response.results,
+            items: response.response.results.map(normalizeSearchResult),
             nextPage: response.response.metadata.next,
             total: response.response.metadata.total,
         }))
@@ -44,10 +83,28 @@ function getItems(url /*: string */) {
     );
 }
 
-export function searchRest(term /*: string */) {
+function searchRestOld(term /*: string */) {
     // FIXME: urlencode the term?
 
-    getItems('/lud/search.php?q=' + term + '&limit=3')
-        .pipe(rxjs.operators.take(8))
-        .subscribe(e => console.log(e));
+    return getItems('/lud/search.php?q=' + term + '&limit=3');
+}
+
+export function searchRest(term /*: string */, signal /*: AbortSignal */) {
+    return fetch('/lud/search.php?q=' + term + '&limit=3', { method: 'GET', signal: signal })
+        .then(response => response.json())
+        .then((data /*: ServerResponse */) => {
+            let normalized /*: Array<SearchResultItem> */ = [];
+            if (data.results) {
+                normalized = data.results.map(normalizeSearchResult);
+            }
+
+            return {
+                metadata: data.metadata ? data.metadata : { total: 0 },
+                results: normalized,
+            };
+        })
+        .catch(error => {
+            console.log('ERROR', error);
+            return { results: [], metadata: { total: 0 } };
+        });
 }

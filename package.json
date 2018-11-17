@@ -6,6 +6,7 @@
     "scripts": {
         "flow": "flow",
         "flow:watch": "flow-watch",
+        "sync:peach": "lsyncd -log all -nodaemon -rsync . peach:code/lud-sync",
         "install-flow-types": "flow-typed install",
         "precommit": "lint-staged",
         "test": "bin/test"

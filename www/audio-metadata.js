@@ -124,34 +124,35 @@ export class CurrentSong {
 
 export class AudioMetadata {
     /*::
-      filename: ?string
+      cueFile: ?string
       position: ?number
       metadata: Object
       cueData: Array<CueRecord>
       cueIndex: Array<number>
-      ready: Promise<void>
+      ready: Promise<string|null>
       currentTrackNo: number
       currentSong: CurrentSong
     */
 
-    constructor(filename /*: ?string */, position /*: ?number */) {
-        this.filename = filename;
+    constructor(cueFile /*: ?string */, position /*: ?number */) {
+        this.cueFile = cueFile;
         this.position = position ? position : 0;
         this.metadata = {};
         this.cueData = [];
         this.cueIndex = [];
-        this.ready = Promise.resolve();
+        this.ready = Promise.resolve(null);
         this.currentTrackNo = 0;
         this.currentSong = new CurrentSong();
 
-        if (!filename) {
+        console.log('creating metadata', cueFile, position);
+
+        if (!cueFile) {
             return;
         }
 
-        this.currentSong.coverArt = dirname(filename) + '/cover.jpg';
+        this.currentSong.coverArt = dirname(cueFile) + '/cover.jpg';
 
-        const cueFile = basename(filename) + '.cue';
-        const metadataFile = dirname(filename) + '/metadata.json';
+        const metadataFile = dirname(cueFile) + '/metadata.json';
 
         const matches = cueFile.match(/\/disc([0-9]+)\.cue$/);
         if (matches) {
@@ -163,15 +164,23 @@ export class AudioMetadata {
             .then(body => {
                 this.cueData = parseCue(body);
                 this.cueIndex = indexCue(this.cueData);
+
+                if (cueFile && this.cueData.length > 0) {
+                    const audioFile = this.cueData[0].filename;
+                    return audioFile ? dirname(cueFile) + '/' + audioFile : null;
+                } else {
+                    return null;
+                }
             });
 
         const metaPromise = fetch(metadataFile)
             .then(response => response.json())
             .then(data => {
                 this.metadata = data;
+                return this.metadata;
             });
 
-        this.ready = Promise.all([cuePromise, metaPromise]).then(_ => undefined);
+        this.ready = Promise.all([cuePromise, metaPromise]).then(resolved => resolved[0]);
         this.setPosition(position ? position : 0);
     }
 

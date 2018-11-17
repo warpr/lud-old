@@ -8,94 +8,120 @@
  *   @flow
  */
 
-import { Artist, Release, Track } from '/lud/db.js';
-import { keys } from '/lud/misc.js';
+/*::
+import { type SearchResultItem } from '/lud/search-rest.js';
+*/
+import { searchRest } from '/lud/search-rest.js';
 
 const React = window.React;
 const e = React.createElement;
 const M = window['material-ui'];
 
-function artistCredit(credit) {
-    return credit.reduce((memo, val) => {
-        return memo + val.get('artist') + val.get('joinphrase');
-    }, '');
-}
+export class Search {
+    /*:: query: (string) => void */
 
-function searchResultClicked(mbid) {
-    const item = window.lûd.db.lookup(mbid);
-    console.log('search result item', item);
-
-    let disc = null;
-    let track = 1;
-    if (item.has('discs')) {
-        disc = item.discs.get(0);
-    } else if (item.has('release')) {
-        const release = window.lûd.db.lookup(item.release);
-        disc = release.discs.get(item.discNo - 1);
-        track = item.pos;
-    } else {
-        console.log('no playable item found for', mbid);
-        return;
+    constructor() {
+        this.query = () => {};
     }
 
-    window.lûd.glue.loadMedia(disc.filename);
-    window.lûd.glue.play(track);
+    connectResults(callback /*: Function */) {
+        this.query = callback;
+    }
+
+    disconnectResults() {
+        this.query = () => {};
+    }
 }
 
-function searchResultCard(mbid, type, title, body) {
+function searchResultClicked(cueFile, type, trackNo) {
+    if (type === 'release') {
+        window.lûd.glue.loadMedia(cueFile, 0).then(() => {
+            window.lûd.glue.play(0);
+        });
+    } else {
+        window.lûd.glue.loadMedia(cueFile, trackNo).then(() => {
+            window.lûd.glue.play(trackNo);
+        });
+    }
+}
+
+function searchResultCard(result) {
+    const { artist, cueFile, mbid, pos, title, type } = result;
+    const body = 'by ' + artist;
+
     return e(
         M.ListItem,
-        { button: true, key: mbid, onClick: e => searchResultClicked(mbid) },
-        keys([
-            e(M.ListItemAvatar, {}, e(M.Avatar, {}, e(M.Icon, {}, 'folder'))),
-            e(M.ListItemText, { primary: title, secondary: body }),
-            e(M.ListItemSecondaryAction, {}, e(M.IconButton, {}, e(M.Icon, {}, 'delete'))),
-        ])
+        { button: true, key: mbid, onClick: e => searchResultClicked(cueFile, type, pos) },
+        e(M.ListItemAvatar, {}, e(M.Avatar, {}, e(M.Icon, {}, 'folder'))),
+        e(M.ListItemText, { primary: title, secondary: body }),
+        e(M.ListItemSecondaryAction, {}, e(M.IconButton, {}, e(M.Icon, {}, 'delete')))
     );
 }
 
-const cards = {
-    artist: record => searchResultCard(record.id, record.type, record.names.first(), ''),
-    release: record =>
-        searchResultCard(record.id, record.type, record.title, 'by ' + artistCredit(record.credit)),
-    track: record =>
-        searchResultCard(record.id, record.type, record.title, [
-            'from ',
-            record.release.get('title'),
-            ' by ',
-            artistCredit(record.credit),
-        ]),
-};
-
 /*::
-type SearchResult = Artist|Release|Track;
-
 type SearchResultsState = {
     expanded: boolean,
-    results: Array<SearchResult>,
+    isLoading: boolean,
+    nextPage: string | null,
+    prevPage: string | null,
+    query: string,
+    results: Array<SearchResultItem>,
 };
 */
-export class SearchResults extends React.Component {
+export class SearchResults extends React.Component /* <{}, SearchResultsState> */ {
     constructor(props /*: {} */) {
         super(props);
 
-        this.state = { results: [], expanded: false };
+        this.state = {
+            expanded: false,
+            isLoading: false,
+            nextPage: null,
+            prevPage: null,
+            query: '',
+            total: 0,
+            results: [],
+        };
+        this._abortController = new AbortController();
         this.handleChange = this.handleChange.bind(this);
+        this.newSearch = this.newSearch.bind(this);
     }
 
     componentWillMount() {
-        // FIXME: don't hardcode "window.lûd" here.
-        window.lûd.searchResults = results => this.setState({ expanded: true, results: results });
+        window.lûd.search.connectResults(this.newSearch);
     }
 
     componentWillUnmount() {
-        window.lûd.searchResults = () => {};
+        window.lûd.search.disconnectResults();
     }
 
-    /*:: handleChange: () => void */
-    handleChange(event /*: SyntheticEvent<HTMLElement>*/) {
+    /*:: handleChange: Function */
+    handleChange(event /*: SyntheticEvent<HTMLElement>*/) /*: void */ {
         console.log('handleChange', event, 'old expanded', this.state.expanded);
         this.setState({ expanded: !this.state.expanded });
+    }
+
+    /*:: newSearch: Function */
+    newSearch(term /*: string */) /*: void */ {
+        console.log('newSearch', term);
+        this.setState({
+            isLoading: true,
+            nextPage: null,
+            prevPage: null,
+            query: term,
+            total: 0,
+        });
+
+        this._abortController.abort();
+        this._abortController = new window.AbortController();
+
+        searchRest(term, this._abortController.signal).then(response => {
+            this.setState({
+                nextPage: response.metadata.next ? response.metadata.next : null,
+                prevPage: response.metadata.prev ? response.metadata.prev : null,
+                results: response.results,
+                total: response.metadata.total,
+            });
+        });
     }
 
     render() {
@@ -105,22 +131,20 @@ export class SearchResults extends React.Component {
                 expanded: this.state.expanded,
                 onChange: this.handleChange,
             },
-            keys([
+            e(
+                M.ExpansionPanelSummary,
+                { expandIcon: e(M.Icon, {}, 'expand_more') },
+                e(M.Typography, {}, 'Search results')
+            ),
+            e(
+                M.ExpansionPanelDetails,
+                {},
                 e(
-                    M.ExpansionPanelSummary,
-                    { expandIcon: e(M.Icon, {}, 'expand_more') },
-                    e(M.Typography, {}, 'Search results')
-                ),
-                e(
-                    M.ExpansionPanelDetails,
-                    {},
-                    e(
-                        M.Grid,
-                        { item: true, xs: 12, md: 6 },
-                        e(M.List, { dense: false }, this.state.results.map(r => cards[r.type](r)))
-                    )
-                ),
-            ])
+                    M.Grid,
+                    { item: true, xs: 12, md: 6 },
+                    e(M.List, { dense: false }, this.state.results.map(r => searchResultCard(r)))
+                )
+            )
         );
     }
 }

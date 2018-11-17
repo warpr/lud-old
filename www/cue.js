@@ -87,6 +87,7 @@ function parseCommand(command, args, track) {
             }
 
             return { start: { 'minutes-seconds-frames': startTime, seconds } };
+        case 'ISRC':
         case '':
             return {};
         default:

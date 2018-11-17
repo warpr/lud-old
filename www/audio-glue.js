@@ -76,11 +76,16 @@ export class AudioGlue {
             });
     }
 
-    loadMedia(file /*: string */, position /*: ?number */) {
+    loadMedia(file /*: string */, position /*: ?number */) /*: Promise<void> */ {
+        console.log('glue.loadMedia', file, position);
         this.metadata = new AudioMetadata(file, position);
 
-        this.metadata.ready.then(() => {
-            this.outputs.map(output => output.loadMedia(file, position, this.metadata.currentSong));
+        return this.metadata.ready.then(audioFile => {
+            if (audioFile) {
+                this.outputs.map(output =>
+                    output.loadMedia(audioFile, position, this.metadata.currentSong)
+                );
+            }
         });
     }
 

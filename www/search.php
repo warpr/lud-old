@@ -31,6 +31,17 @@ function main()
     $cfg = loadConfig();
     $metadata = ["total" => $total];
 
+    if ($offset > 0) {
+        $newOffset = $offset - $limit;
+        $prevQuery = [
+            "q" => $terms,
+            "offset" => ($newOffset < 0) ? 0 : $newOffset,
+            "limit" => $limit
+        ];
+
+        $metadata["prev"] = $cfg['search_root'] . '?' . http_build_query($prevQuery);
+    }
+
     if ($offset + $limit < $total) {
         $nextQuery = [
             "q" => $terms,

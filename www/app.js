@@ -20,12 +20,13 @@ import { MainMenu } from '/lud/main-menu.js';
 import { keys } from '/lud/misc.js';
 import { NowPlaying } from '/lud/now-playing.js';
 import { PlayPauseFab } from '/lud/play-pause-fab.js';
-import { SearchResults } from '/lud/search-results.js';
+import { Search, SearchResults } from '/lud/search-results.js';
 
 // FIXME: should probably use a React context for this.  For now this will do.
 window.lûd = {
     verbose: true,
     glue: new AudioGlue(),
+    search: new Search(),
 };
 
 // db.bootstrap(window.lûd);
