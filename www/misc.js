@@ -43,14 +43,6 @@ export function throttleOnAnimationFrame(callback /* : Function */) {
     };
 }
 
-/*
- * Silence React's warning about missing keys, this is only for prototyping,
- * don't use in production code.
- */
-export function keys(arr /*: React.Node[] */) /*: React.Node[] */ {
-    return arr.map(element => React.cloneElement(element, { key: _.uniqueId() }));
-}
-
 export const controls = {
     REWIND: '\u23e9',
     FFWD: '\u23ea',

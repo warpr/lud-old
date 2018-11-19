@@ -17,9 +17,9 @@ import { AudioGlue } from '/lud/audio-glue.js';
 // import * as db from '/lud/db.js';
 // import { Library } from '/lud/library.js';
 import { MainMenu } from '/lud/main-menu.js';
-import { keys } from '/lud/misc.js';
 import { NowPlaying } from '/lud/now-playing.js';
 import { PlayPauseFab } from '/lud/play-pause-fab.js';
+import { Releases } from '/lud/releases.js';
 import { Search, SearchResults } from '/lud/search-results.js';
 
 // FIXME: should probably use a React context for this.  For now this will do.
@@ -53,76 +53,7 @@ class Sections extends React.Component {
         // FIXME: use vertical stepper for tracklist (for now?)
         // https://material-ui.com/demos/steppers/
 
-        return e(
-            'div',
-            { style: { width: '100%' } },
-            keys([
-                e(SearchResults),
-                e(
-                    M.ExpansionPanel,
-                    {},
-                    keys([
-                        e(
-                            M.ExpansionPanelSummary,
-                            { expandIcon: e(M.Icon, {}, 'expand_more') },
-                            e(M.Typography, {}, 'Expansion Panel 1')
-                        ),
-                        e(
-                            M.ExpansionPanelDetails,
-                            {},
-                            e(
-                                M.Typography,
-                                {},
-                                'Lorem ipsum dolor sit amet, consectetur adipiscing elit.' +
-                                    ' Suspendisse malesuada lacus ex, sit amet blandit leo lobortis eget.'
-                            )
-                        ),
-                    ])
-                ),
-                e(
-                    M.ExpansionPanel,
-                    {},
-                    keys([
-                        e(
-                            M.ExpansionPanelSummary,
-                            { expandIcon: e(M.Icon, {}, 'expand_more') },
-                            e(M.Typography, {}, 'Expansion Panel 2')
-                        ),
-                        e(
-                            M.ExpansionPanelDetails,
-                            {},
-                            e(
-                                M.Typography,
-                                {},
-                                'Lorem ipsum dolor sit amet, consectetur adipiscing elit.' +
-                                    ' Suspendisse malesuada lacus ex, sit amet blandit leo lobortis eget.'
-                            )
-                        ),
-                    ])
-                ),
-                e(
-                    M.ExpansionPanel,
-                    {},
-                    keys([
-                        e(
-                            M.ExpansionPanelSummary,
-                            { expandIcon: e(M.Icon, {}, 'expand_more') },
-                            e(M.Typography, {}, 'Expansion Panel 3')
-                        ),
-                        e(
-                            M.ExpansionPanelDetails,
-                            {},
-                            e(
-                                M.Typography,
-                                {},
-                                'Lorem ipsum dolor sit amet, consectetur adipiscing elit.' +
-                                    ' Suspendisse malesuada lacus ex, sit amet blandit leo lobortis eget.'
-                            )
-                        ),
-                    ])
-                ),
-            ])
-        );
+        return e('div', { style: { width: '100%' } }, e(SearchResults), e(Releases));
     }
 }
 

@@ -96,7 +96,6 @@ export class SearchResults extends React.Component /* <{}, SearchResultsState> *
 
     /*:: handleChange: Function */
     handleChange(event /*: SyntheticEvent<HTMLElement>*/) /*: void */ {
-        console.log('handleChange', event, 'old expanded', this.state.expanded);
         this.setState({ expanded: !this.state.expanded });
     }
 

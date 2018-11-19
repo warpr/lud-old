@@ -43,6 +43,9 @@
         <!-- Mobile Console -->
         <script src="/lud/hnl.mobileConsole.js"></script>
 
+        <!-- polyfills -->
+        <script src="/lud/js/abortcontroller-polyfill/dist/umd-polyfill.js"></script>
+
         <!-- React -->
         <script src="/lud/js/react/umd/react.development.js"></script>
         <script src="/lud/js/react-dom/umd/react-dom.development.js"></script>
@@ -55,7 +58,9 @@
         <script src="/lud/js/@material/slider/dist/mdc.slider.js"></script>
 
         <!-- ReactiveX -->
+        <!-- Not currently used.
         <script src="/lud/js/@reactivex/rxjs/dist/global/rxjs.umd.js"></script>
+        -->
 
         <!-- Immutable -->
         <script src="/lud/js/immutable/dist/immutable.js"></script>

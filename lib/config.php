@@ -10,7 +10,7 @@ function loadConfig()
         "verbose" => false,
         "music_root" => abspath(dirname(__FILE__) . '/../www/music/'),
         "index_root" => abspath(dirname(__FILE__) . '/../www/cache/'),
-        "search_root" => '/lud/search.php',
+        "search_root" => '/lud/search/',
         "web_path" => '/lud/music',
         "www_user" => 'www-data',
         "www_group" => 'www-data'

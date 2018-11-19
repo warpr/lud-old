@@ -39,3 +39,35 @@ function searchCount($str)
 
     return $row[0];
 }
+
+function filter($type, $offset = 0, $limit = 100)
+{
+    $query = db()->prepare(
+        "SELECT * FROM records WHERE type = :type ORDER BY year DESC LIMIT :limit OFFSET :offset"
+    );
+
+    $query->bindParam(':type', $type);
+    $query->bindValue(':offset', $offset, SQLITE3_INTEGER);
+    $query->bindValue(':limit', $limit, SQLITE3_INTEGER);
+    $result = $query->execute();
+
+    $ret = [];
+    while ($row = $result->fetchArray(SQLITE3_ASSOC)) {
+        $ret[] = $row;
+    }
+
+    return $ret;
+}
+
+function filterCount($type)
+{
+    $query = db()->prepare("SELECT count(*) FROM records WHERE type = :type");
+
+    $query->bindParam(':type', $type);
+
+    $result = $query->execute();
+
+    $row = $result->fetchArray(SQLITE3_NUM);
+
+    return $row[0];
+}
