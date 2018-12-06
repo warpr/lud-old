@@ -16,11 +16,26 @@
             "prettier --write",
             "git add"
         ],
-        "*.php": ["prettier --write", "git add"],
-        "bin/disc-length": ["prettier --parser=php --write", "git add"],
-        "bin/search": ["prettier --parser=php --write", "git add"],
-        "bin/sql": ["prettier --parser=php --write", "git add"],
-        "bin/update": ["prettier --parser=php --write", "git add"]
+        "*.php": [
+            "prettier --write",
+            "git add"
+        ],
+        "bin/disc-length": [
+            "prettier --parser=php --write",
+            "git add"
+        ],
+        "bin/search": [
+            "prettier --parser=php --write",
+            "git add"
+        ],
+        "bin/sql": [
+            "prettier --parser=php --write",
+            "git add"
+        ],
+        "bin/update": [
+            "prettier --parser=php --write",
+            "git add"
+        ]
     },
     "author": "Kuno Woudt <kuno@frob.nl>",
     "license": "copyleft-next-0.3.1",
@@ -48,8 +63,8 @@
         "immutable": "^3.8.2",
         "lodash": "^4.17.10",
         "lunr": "^2.2.1",
-        "react": "^16.4.0",
-        "react-dom": "^16.4.0",
+        "react": "^16.7.0-alpha.2",
+        "react-dom": "^16.7.0-alpha.2",
         "react-transition-group": "^2.3.1",
         "styled-components": "^3.3.3",
         "underscore.string": "^3.3.4"
