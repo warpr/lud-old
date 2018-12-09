@@ -2,7 +2,6 @@
     "name": "lud",
     "version": "0.0.1",
     "description": "lûd - an opinionated browser based media player",
-    "main": "lib/lûd.js",
     "scripts": {
         "flow": "flow",
         "flow:watch": "flow-watch",
@@ -61,6 +60,7 @@
         "@material/slider": "^0.36.0",
         "font-awesome": "^4.7.0",
         "immutable": "^3.8.2",
+        "live-server": "^1.2.1",
         "lodash": "^4.17.10",
         "lunr": "^2.2.1",
         "react": "^16.7.0-alpha.2",
