@@ -1,4 +1,13 @@
 <?php
+/**
+ *   This file is part of lûd, an opinionated browser based media player.
+ *   Copyright (C) 2018  Kuno Woudt <kuno@frob.nl>
+ *
+ *   This program is free software: you can redistribute it and/or modify
+ *   it under the terms of copyleft-next 0.3.1.  See copyleft-next-0.3.1.txt.
+ */
+
+declare(strict_types=1);
 
 require_once dirname(__FILE__) . '/../vendor/autoload.php';
 require_once dirname(__FILE__) . '/file.php';
@@ -46,7 +55,7 @@ class Autoprogress
 
     function shouldUpdate()
     {
-        if ((time() - $this->lastUpdate) >= 1) {
+        if (time() - $this->lastUpdate >= 1) {
             $this->lastUpdate = time();
             return true;
         }
@@ -124,7 +133,7 @@ class Autoprogress
         $totalDuration = new Duration($this->durationEstimate);
         $time = $currentDuration->humanize() . " of " . $totalDuration->humanize();
 
-        $percentage = (int) ($progress * 100) . "%";
+        $percentage = (int) $progress * 100 . "%";
 
         $lineStart = $steps . " (" . $percentage . ") [";
         $lineEnd = "] " . $time;

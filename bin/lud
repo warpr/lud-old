@@ -1,0 +1,37 @@
+#!/usr/bin/env php
+<?php
+/**
+ *   This file is part of lûd, an opinionated browser based media player.
+ *   Copyright (C) 2018  Kuno Woudt <kuno@frob.nl>
+ *
+ *   This program is free software: you can redistribute it and/or modify
+ *   it under the terms of copyleft-next 0.3.1.  See copyleft-next-0.3.1.txt.
+ */
+
+declare(strict_types=1);
+
+require_once dirname(__FILE__) . '/../lib/db.php';
+require_once dirname(__FILE__) . '/../lib/help.php';
+
+$script = array_shift($argv);
+if (empty($argv)) {
+    return help();
+}
+
+$command = array_shift($argv);
+if (empty($command)) {
+    return help();
+}
+
+if (!databaseExists('playlist')) {
+    initializeDatabase('playlist');
+}
+
+switch ($command) {
+case "add-last":
+    ludAddLast($argv);
+    break;
+default:
+    help();
+}
+
