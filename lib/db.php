@@ -12,7 +12,7 @@ declare(strict_types=1);
 require_once dirname(__FILE__) . '/../vendor/autoload.php';
 require_once dirname(__FILE__) . '/../lib/config.php';
 
-$lud_database_connection = null;
+$lud_database_connection = [];
 
 function __dbFilename(string $name)
 {
@@ -24,17 +24,17 @@ function db(string $name)
 {
     global $lud_database_connection;
 
-    if (empty($lud_database_connection)) {
+    if (empty($lud_database_connection[$name])) {
         $dbfile = __dbFilename($name);
 
         // FIXME: log this?
         // echo "Connecting to database at $dbfile\n";
-        $lud_database_connection = new SQLite3($dbfile);
-        $lud_database_connection->busyTimeout(1000);
-        $lud_database_connection->exec('PRAGMA journal_mode = wal;');
+        $lud_database_connection[$name] = new SQLite3($dbfile);
+        $lud_database_connection[$name]->busyTimeout(1000);
+        $lud_database_connection[$name]->exec('PRAGMA journal_mode = wal;');
     }
 
-    return $lud_database_connection;
+    return $lud_database_connection[$name];
 }
 
 function deleteDatabase(string $name)
@@ -47,8 +47,10 @@ function databaseExists(string $name)
     return is_readable(__dbFilename($name));
 }
 
-function createIndex($db)
+function createIndex()
 {
+    $db = db('index');
+
     $ret = $db->exec(
         "CREATE VIRTUAL TABLE IF NOT EXISTS records USING fts5(title, artist, year, path, duration, type, mbid UNINDEXED, pos, disc)"
     );
@@ -57,10 +59,12 @@ function createIndex($db)
     }
 }
 
-function createPlaylist($db)
+function createPlaylist()
 {
+    $db = db('playlist');
+
     $sql = [
-        "CREATE TABLE playlist (id INTEGER PRIMARY KEY, path TEXT, mbid TEXT, ranges TEXT)",
+        "CREATE TABLE playlist (id INTEGER PRIMARY KEY, path TEXT, mbid TEXT, artist TEXT, title TEXT, duration INTEGER, ranges TEXT)",
         // device 0 is master entry
         "CREATE TABLE devices (id INTEGER PRIMARY KEY, playlist_id INTEGER, device TEXT, pos INTEGER, paused INTEGER)"
     ];
@@ -73,15 +77,19 @@ function createPlaylist($db)
     }
 }
 
+function resetDatabases()
+{
+    deleteDatabase('playlist');
+    createPlaylist();
+}
+
 function initializeDatabase(string $name)
 {
-    $db = db($name);
-
     if ($name == 'index') {
-        return createIndex($db);
+        return createIndex();
     }
 
     if ($name == 'playlist') {
-        return createPlaylist($db);
+        return createPlaylist();
     }
 }

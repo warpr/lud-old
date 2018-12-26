@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 require_once dirname(__FILE__) . '/../lib/db.php';
 require_once dirname(__FILE__) . '/../lib/help.php';
+require_once dirname(__FILE__) . '/../lib/playlist.php';
 
 $script = array_shift($argv);
 if (empty($argv)) {
@@ -30,6 +31,15 @@ if (!databaseExists('playlist')) {
 switch ($command) {
 case "add-last":
     ludAddLast($argv);
+    break;
+case "list":
+    listPlaylist();
+    break;
+case "reset-databases":
+    resetDatabases();
+    break;
+case "clear":
+    clearPlaylist();
     break;
 default:
     help();

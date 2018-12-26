@@ -12,6 +12,18 @@ declare(strict_types=1);
 require_once dirname(__FILE__) . '/../lib/string.php';
 require_once dirname(__FILE__) . '/../lib/config.php';
 
+function search($root, $filename)
+{
+    $results = new RegexIterator(
+        new RecursiveIteratorIterator(new RecursiveDirectoryIterator($root)),
+        ',/' . preg_quote($filename) . '$,',
+        RecursiveRegexIterator::GET_MATCH
+    );
+    foreach ($results as $fullPath => $filename) {
+        yield dirname(abspath($fullPath));
+    }
+}
+
 function mkdirIfNotExists($dir)
 {
     if (!is_dir($dir)) {
