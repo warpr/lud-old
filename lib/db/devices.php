@@ -22,7 +22,9 @@ class Devices
             CREATE TABLE devices (
                 id INTEGER PRIMARY KEY,
                 playlist_id INTEGER,
-                device TEXT, pos INTEGER,
+                device TEXT,
+                pos INTEGER,
+                updated_at INTEGER,
                 paused INTEGER
             )
         ");
