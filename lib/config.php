@@ -9,16 +9,16 @@
 
 declare(strict_types=1);
 
-require_once dirname(__FILE__) . '/../vendor/autoload.php';
-require_once dirname(__FILE__) . '/../lib/file.php';
+require_once __DIR__ . '/../vendor/autoload.php';
+require_once __DIR__ . '/../lib/file.php';
 
 // FIXME: read from config file
 function loadConfig()
 {
     $config = [
         "verbose" => false,
-        "music_root" => abspath(dirname(__FILE__) . '/../www/music/'),
-        "index_root" => abspath(dirname(__FILE__) . '/../www/cache/'),
+        "music_root" => abspath(__DIR__ . '/../www/music/'),
+        "index_root" => abspath(__DIR__ . '/../www/cache/'),
         "search_root" => '/lud/search.php',
         "web_path" => '/lud/music',
         "www_user" => 'www-data',

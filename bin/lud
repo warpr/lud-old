@@ -10,38 +10,6 @@
 
 declare(strict_types=1);
 
-require_once dirname(__FILE__) . '/../lib/db.php';
-require_once dirname(__FILE__) . '/../lib/help.php';
-require_once dirname(__FILE__) . '/../lib/playlist.php';
+require_once __DIR__ . '/../lib/cli.php';
 
-$script = array_shift($argv);
-if (empty($argv)) {
-    return help();
-}
-
-$command = array_shift($argv);
-if (empty($command)) {
-    return help();
-}
-
-if (!databaseExists('playlist')) {
-    initializeDatabase('playlist');
-}
-
-switch ($command) {
-case "add-last":
-    ludAddLast($argv);
-    break;
-case "list":
-    listPlaylist();
-    break;
-case "reset-databases":
-    resetDatabases();
-    break;
-case "clear":
-    clearPlaylist();
-    break;
-default:
-    help();
-}
-
+main($argv);

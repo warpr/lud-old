@@ -8,6 +8,6 @@
  *   it under the terms of copyleft-next 0.3.1.  See copyleft-next-0.3.1.txt.
  */
 
-require_once(dirname(__FILE__) . '/../lib/db.php');
+require_once(dirname(__FILE__) . '/../lib/db/index.php');
 
-echo "/usr/bin/env sqlite3 " . __dbFilename('index') . "\n";
+echo "/usr/bin/env sqlite3 " . Index::_filename() . "\n";

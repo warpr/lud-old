@@ -67,6 +67,8 @@ Commands:
     list                       Display current playlist
 
     clear                      Clear the playlist
+
+    index                      Rebuild the search index
 ";
 }
 

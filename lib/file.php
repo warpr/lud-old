@@ -9,10 +9,10 @@
 
 declare(strict_types=1);
 
-require_once dirname(__FILE__) . '/../lib/string.php';
-require_once dirname(__FILE__) . '/../lib/config.php';
+require_once __DIR__ . '/../lib/string.php';
+require_once __DIR__ . '/../lib/config.php';
 
-function search($root, $filename)
+function searchFile($root, $filename)
 {
     $results = new RegexIterator(
         new RecursiveIteratorIterator(new RecursiveDirectoryIterator($root)),
@@ -41,7 +41,7 @@ function fixPermissions()
     $user = $userInfo['name'];
 
     system("/bin/chown -R" . " " . escapeshellarg("$user:$group") . " " . escapeshellarg($dir));
-    system("/bin/chmod -R g+w " . escapeshellarg($dir));
+    system("/bin/chmod -R g+ws " . escapeshellarg($dir));
 }
 
 function abspath($filename)

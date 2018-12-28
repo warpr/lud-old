@@ -9,12 +9,12 @@
 
 declare(strict_types=1);
 
-require_once dirname(__FILE__) . '/../lib/db.php';
-require_once dirname(__FILE__) . '/../lib/metadata.php';
+require_once __DIR__ . '/../lib/metadata.php';
+require_once __DIR__ . '/../lib/db/playlist.php';
 
 function findMedia($path)
 {
-    foreach (search($path, "metadata.json") as $albumPath) {
+    foreach (searchFile($path, "metadata.json") as $albumPath) {
         $metadata = loadAlbum($albumPath);
         yield $metadata;
     }
@@ -34,7 +34,7 @@ function insertItem($release)
 {
     $duration = releaseDuration($release);
 
-    $query = db('playlist')->prepare(
+    $query = Playlist::connect()->prepare(
         "INSERT INTO playlist (path, mbid, artist, title, duration) VALUES (:path, :mbid, :artist, :title, :duration)"
     );
     $query->bindParam(':path', $release['path']);
@@ -73,7 +73,7 @@ function formatPlaylistItem($artist, $title, $duration)
 
 function listPlaylist()
 {
-    $query = db('playlist')->prepare("SELECT * FROM playlist");
+    $query = Playlist::connect()->prepare("SELECT * FROM playlist");
     $result = $query->execute();
 
     $pos = 1;
@@ -93,7 +93,7 @@ function listPlaylist()
 
 function clearPlaylist()
 {
-    $query = db('playlist')->prepare("DELETE FROM playlist");
+    $query = Playlist::connect()->prepare("DELETE FROM playlist");
     $query->execute();
 }
 

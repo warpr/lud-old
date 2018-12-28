@@ -9,8 +9,8 @@
 
 declare(strict_types=1);
 
-require_once dirname(__FILE__) . '/../vendor/autoload.php';
-require_once dirname(__FILE__) . '/../lib/db.php';
+require_once __DIR__ . '/../vendor/autoload.php';
+require_once __DIR__ . '/../lib/db/index.php';
 
 function search($str, $offset = 0, $limit = 100)
 {
@@ -18,7 +18,7 @@ function search($str, $offset = 0, $limit = 100)
         return [];
     }
 
-    $query = db('index')->prepare(
+    $query = Index::connect()->prepare(
         "SELECT * FROM records (:query) ORDER BY rank" . " LIMIT :limit OFFSET :offset"
     );
 
@@ -38,7 +38,7 @@ function search($str, $offset = 0, $limit = 100)
 
 function searchCount($str)
 {
-    $query = db('index')->prepare("SELECT count(*) FROM records (:query)");
+    $query = Index::connect()->prepare("SELECT count(*) FROM records (:query)");
 
     $searchString = $str;
     $query->bindParam(':query', $searchString);

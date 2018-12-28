@@ -9,8 +9,8 @@
 
 declare(strict_types=1);
 
-require_once dirname(__FILE__) . '/../lib/disc-length.php';
-require_once dirname(__FILE__) . '/../lib/config.php';
+require_once __DIR__ . '/../lib/disc-length.php';
+require_once __DIR__ . '/../lib/config.php';
 
 function webUrl($filename)
 {

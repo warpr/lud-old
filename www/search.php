@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-require_once dirname(__FILE__) . '/../vendor/autoload.php';
-require_once dirname(__FILE__) . '/../lib/search.php';
-require_once dirname(__FILE__) . '/../lib/db.php';
-require_once dirname(__FILE__) . '/../lib/config.php';
+require_once __DIR__ . '/../vendor/autoload.php';
+require_once __DIR__ . '/../lib/search.php';
+require_once __DIR__ . '/../lib/db/index.php';
+require_once __DIR__ . '/../lib/config.php';
 
 function main()
 {
@@ -50,4 +50,4 @@ function main()
 
 main();
 
-db('index')->close();
+Index::connect()->close();
