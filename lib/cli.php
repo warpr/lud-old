@@ -14,6 +14,7 @@ require_once __DIR__ . '/../lib/db/index.php';
 require_once __DIR__ . '/../lib/db/playlist.php';
 require_once __DIR__ . '/../lib/help.php';
 require_once __DIR__ . '/../lib/playlist.php';
+require_once __DIR__ . '/../lib/playback.php';
 require_once __DIR__ . '/../lib/update-index.php';
 require_once __DIR__ . '/../lib/search-command.php';
 
@@ -70,6 +71,16 @@ function main($argv)
             break;
         case "clear":
             clearPlaylist();
+            break;
+        case "np":
+        case "now-playing":
+            nowPlayingCommand();
+            break;
+        case "pause":
+            pauseCommand();
+            break;
+        case "play":
+            playCommand();
             break;
         case "search":
             searchCommand($argv);

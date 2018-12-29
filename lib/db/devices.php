@@ -21,12 +21,17 @@ class Devices
         static::_createTable("
             CREATE TABLE devices (
                 id INTEGER PRIMARY KEY,
-                playlist_id INTEGER,
                 device TEXT,
+                playlist_id INTEGER,
                 pos INTEGER,
                 updated_at INTEGER,
                 paused INTEGER
             )
         ");
+
+        $query = static::connect()->prepare(
+            "INSERT INTO devices VALUES (0, 'master', NULL, 0, 0, 1)"
+        );
+        $query->execute();
     }
 }

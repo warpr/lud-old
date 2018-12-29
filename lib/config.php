@@ -18,7 +18,7 @@ function loadConfig()
     $config = [
         "verbose" => false,
         "music_root" => abspath(__DIR__ . '/../www/music/'),
-        "index_root" => abspath(__DIR__ . '/../www/cache/'),
+        "index_root" => abspath(__DIR__ . '/../data/'),
         "search_root" => '/lud/search.php',
         "web_path" => '/lud/music',
         "www_user" => 'www-data',

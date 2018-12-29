@@ -12,6 +12,12 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/../config.php';
 
+function database_filename($name)
+{
+    $cfg = loadConfig();
+    return $cfg['index_root'] . "/$name.sqlite";
+}
+
 trait Model
 {
     /**
@@ -72,8 +78,7 @@ trait Model
         $mirror = new \ReflectionClass(__CLASS__);
         $name = strtolower($mirror->getShortName());
 
-        $cfg = loadConfig();
-        return $cfg['index_root'] . "/$name.sqlite";
+        return database_filename($name);
     }
 
     /**
