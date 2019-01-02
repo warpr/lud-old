@@ -55,29 +55,37 @@ function playCommand()
     $query->execute();
 }
 
-function nowPlaying()
+function nowPlaying($options = [])
 {
     $query = Devices::connect()->prepare("SELECT * FROM devices WHERE id = 0");
     $result = $query->execute();
 
     $row = $result->fetchArray(SQLITE3_ASSOC);
+
+    if (empty($row) || empty($row['playlist_id']) || empty($options['details'])) {
+        return $row;
+    }
+
+    $query = Playlist::connect()->prepare("SELECT * FROM playlist WHERE id = :playlist");
+    $query->bindParam(':playlist', $row['playlist_id']);
+    $result = $query->execute();
+
+    $row['playlist'] = $result->fetchArray(SQLITE3_ASSOC);
+
     return $row;
 }
 
 function nowPlayingCommand()
 {
-    $np = nowPlaying();
+    $np = nowPlaying(['details' => true]);
 
     if (empty($np) || empty($np['playlist_id'])) {
         echo "Not playing anything.\n";
         return;
     }
 
-    $query = Playlist::connect()->prepare("SELECT * FROM playlist WHERE id = :playlist");
-    $query->bindParam(':playlist', $np['playlist_id']);
-    $result = $query->execute();
+    $item = $np['playlist'];
 
-    $item = $result->fetchArray(SQLITE3_ASSOC);
     echo "Now " .
         ($np['paused'] ? "paused" : "playing") .
         ": " .

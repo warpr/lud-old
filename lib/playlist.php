@@ -9,14 +9,18 @@
 
 declare(strict_types=1);
 
-require_once __DIR__ . '/../lib/metadata.php';
 require_once __DIR__ . '/../lib/db/playlist.php';
+require_once __DIR__ . '/../lib/file.php';
+require_once __DIR__ . '/../lib/metadata.php';
 
 function findMedia($path)
 {
     foreach (searchFile($path, "metadata.json") as $albumPath) {
-        $metadata = loadAlbum($albumPath);
-        yield $metadata;
+        $webPath = findWebAccessiblePath($albumPath);
+        if ($webPath) {
+            $metadata = loadAlbum($webPath);
+            yield $metadata;
+        }
     }
 }
 

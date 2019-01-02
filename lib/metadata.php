@@ -9,14 +9,41 @@
 
 declare(strict_types=1);
 
-require_once __DIR__ . '/../lib/disc-length.php';
 require_once __DIR__ . '/../lib/config.php';
+require_once __DIR__ . '/../lib/disc-length.php';
+require_once __DIR__ . '/../lib/string.php';
 
 function webUrl($filename)
 {
     $cfg = loadConfig();
 
     return str_replace(abspath($cfg['music_root']), $cfg['web_path'], abspath($filename));
+}
+
+function findWebAccessiblePath($albumPath)
+{
+    $cfg = loadConfig();
+
+    $path = abspath($albumPath);
+
+    if (startsWith($path, $cfg['music_root'])) {
+        return $path;
+    }
+
+    while (true) {
+        $parts = explode("/", $path);
+        array_shift($parts);
+        $path = implode("/", $parts);
+        if (empty($path) || $path === '/') {
+            echo "WARNING: " . $albumPath . " not found under " . $cfg['music_root'] . "\n";
+            return false;
+        }
+
+        $maybeAlbumPath = $cfg['music_root'] . "/" . $path;
+        if (is_dir($maybeAlbumPath) && is_readable($maybeAlbumPath . "/metadata.json")) {
+            return $maybeAlbumPath;
+        }
+    }
 }
 
 function parseMedia($obj, $dir)
