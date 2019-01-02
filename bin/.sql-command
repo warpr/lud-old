@@ -11,3 +11,4 @@
 require_once __DIR__ . '/../lib/db/model.php';
 
 echo "/usr/bin/env sqlite3 " . database_filename($argv[1]) . "\n";
+

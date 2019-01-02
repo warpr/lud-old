@@ -10,7 +10,7 @@
 
 declare(strict_types=1);
 
-require_once dirname(__FILE__) . '/../lib/disc-length.php';
+require_once __DIR__ . '/../lib/disc-length.php';
 
 array_shift($argv);
 

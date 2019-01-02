@@ -25,15 +25,15 @@
             "prettier --parser=php --write",
             "git add"
         ],
-        "bin/search": [
+        "bin/lud": [
             "prettier --parser=php --write",
             "git add"
         ],
-        "bin/sql": [
+        "bin/.sql-command": [
             "prettier --parser=php --write",
             "git add"
         ],
-        "bin/update": [
+        "bin/index-album": [
             "prettier --parser=php --write",
             "git add"
         ]
