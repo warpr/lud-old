@@ -9,10 +9,10 @@
 
 declare(strict_types=1);
 
-require_once __DIR__ . '/../vendor/autoload.php';
-require_once __DIR__ . '/../lib/search.php';
-require_once __DIR__ . '/../lib/db/index.php';
-require_once __DIR__ . '/../lib/config.php';
+require_once __DIR__ . '/../../lib/config.php';
+require_once __DIR__ . '/../../lib/db/index.php';
+require_once __DIR__ . '/../../lib/search.php';
+require_once __DIR__ . '/../../vendor/autoload.php';
 
 function searchRequest($q, $offset, $limit)
 {

@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-require_once __DIR__ . '/../lib/db/devices.php';
-require_once __DIR__ . '/../lib/db/playlist.php';
-require_once __DIR__ . '/../lib/metadata.php';
-require_once __DIR__ . '/../lib/playback.php';
-require_once __DIR__ . '/../vendor/autoload.php';
+require_once __DIR__ . '/../../lib/db/devices.php';
+require_once __DIR__ . '/../../lib/db/playlist.php';
+require_once __DIR__ . '/../../lib/metadata.php';
+require_once __DIR__ . '/../../lib/playback.php';
+require_once __DIR__ . '/../../vendor/autoload.php';
 
 /**
  * JSON expected in a POST request to now-playing.php:
