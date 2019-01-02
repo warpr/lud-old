@@ -1,11 +1,20 @@
 <?php
+/**
+ *   This file is part of lûd, an opinionated browser based media player.
+ *   Copyright (C) 2018  Kuno Woudt <kuno@frob.nl>
+ *
+ *   This program is free software: you can redistribute it and/or modify
+ *   it under the terms of copyleft-next 0.3.1.  See copyleft-next-0.3.1.txt.
+ */
 
-require_once dirname(__FILE__) . '/../lib/auto-progress.php';
-require_once dirname(__FILE__) . '/../lib/config.php';
-require_once dirname(__FILE__) . '/../lib/db.php';
-require_once dirname(__FILE__) . '/../lib/metadata.php';
-require_once dirname(__FILE__) . '/../lib/string.php';
-require_once dirname(__FILE__) . '/../lib/tty.php';
+declare(strict_types=1);
+
+require_once __DIR__ . '/../lib/auto-progress.php';
+require_once __DIR__ . '/../lib/config.php';
+require_once __DIR__ . '/../lib/db/index.php';
+require_once __DIR__ . '/../lib/metadata.php';
+require_once __DIR__ . '/../lib/string.php';
+require_once __DIR__ . '/../lib/tty.php';
 
 function printDebug($line)
 {
@@ -45,7 +54,7 @@ function indexDiscs($album)
         $url = $album['path'] . '/' . $disc['filename'];
         $duration = empty($disc['duration']) ? null : $disc['duration'];
 
-        $query = db()->prepare(
+        $query = Index::connect()->prepare(
             "INSERT INTO records" .
                 " (title, year, path, duration, mbid, pos, type)" .
                 " VALUES" .
@@ -79,7 +88,7 @@ function indexRelease($album)
         }
     }
 
-    $query = db()->prepare(
+    $query = Index::connect()->prepare(
         "INSERT INTO records" .
             " (title, artist, year, path, duration, mbid, type)" .
             " VALUES" .
@@ -113,7 +122,7 @@ function indexTracks($album)
         $duration = empty($track['length']) ? null : $track['length'];
 
         // FIXME: include year
-        $query = db()->prepare(
+        $query = Index::connect()->prepare(
             "INSERT INTO records" .
                 " (title, artist, year, path, duration, mbid, pos, disc, type)" .
                 " VALUES" .
@@ -165,7 +174,7 @@ function printCategory($category)
 function printIndexed($dir, $album)
 {
     $year = getYear(empty($album['date']) ? '' : $album['date']);
-    $dateStr = $year ? ($year . ', ') : '';
+    $dateStr = $year ? $year . ', ' : '';
 
     $pathWidth = (int) (getTerminalWidth() * 0.4);
 
@@ -192,16 +201,16 @@ function updateIndex($query)
 
         // start fresh when doing a full index, as I don't know how
         // to avoid duplicates in SQLite FTS5 tables.
-        deleteDatabase();
+        Index::delete();
     } else {
         echo "Using " . slug('index-' . $query) . " as autoprogress slug\n";
         $autoprogress = new AutoProgress('lud', slug('index-' . $query));
 
         // FIXME: remove this to allow incremental additions
-        deleteDatabase();
+        Index::delete();
     }
 
-    initializeDatabase();
+    Index::create();
 
     $root = $cfg['music_root'];
 
@@ -225,7 +234,7 @@ function updateIndex($query)
 
         list($category, $path) = categoryAndPath($root, $currentPath);
         if ($category !== $prevCategory) {
-            printCategory($prevCategory = $category);
+            printCategory(($prevCategory = $category));
         }
         printIndexed($path, $album);
 

@@ -6,12 +6,12 @@
 /node_modules/
 /js/
 /.myth-css/
-/www/cache/
 /www/music
 /color-aliases/node_modules/
 /package-lock.json
 /flow-typed/
-/vendor
+/vendor/
 /composer.lock
 /.cache
 /www/.cache
+/data/

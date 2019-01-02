@@ -1,9 +1,11 @@
 <?php
 
-require_once dirname(__FILE__) . '/../../vendor/autoload.php';
-require_once dirname(__FILE__) . '/../../lib/search.php';
-require_once dirname(__FILE__) . '/../../lib/db.php';
-require_once dirname(__FILE__) . '/../../lib/config.php';
+declare(strict_types=1);
+
+require_once __DIR__ . '/../vendor/autoload.php';
+require_once __DIR__ . '/../lib/search.php';
+require_once __DIR__ . '/../lib/db/index.php';
+require_once __DIR__ . '/../lib/config.php';
 
 function searchRequest($q, $offset, $limit)
 {
@@ -19,7 +21,7 @@ function searchRequest($q, $offset, $limit)
         $newOffset = $offset - $limit;
         $prevQuery = [
             "q" => $terms,
-            "offset" => ($newOffset < 0) ? 0 : $newOffset,
+            "offset" => $newOffset < 0 ? 0 : $newOffset,
             "limit" => $limit
         ];
 
@@ -55,7 +57,7 @@ function filterRequest($type, $offset, $limit)
         $newOffset = $offset - $limit;
         $prevQuery = [
             "type" => $type,
-            "offset" => ($newOffset < 0) ? 0 : $newOffset,
+            "offset" => $newOffset < 0 ? 0 : $newOffset,
             "limit" => $limit
         ];
 
@@ -99,4 +101,4 @@ function main()
 
 main();
 
-db()->close();
+Index::connect()->close();

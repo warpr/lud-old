@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta http-equiv="Accept-CH" content="Device-Memory">
+        <title>Player demo... | Lûd</title>
+
+        <!-- Material UI -->
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500" />
+        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+        <link rel="stylesheet" href="../js/@material/slider/dist/mdc.slider.css" />
+
+        <style>
+         * {
+             box-sizing: border-box;
+         }
+
+         html { width: 100%; height: 100%; }
+
+         body {
+             min-height: 100%;
+             background: #222;
+             color: white;
+             font-family: Helvetica, Arial, sans-serif;
+             margin: 0;
+             padding: 0;
+             border: 0;
+         }
+
+         .lud-player-iphone,
+         .lud-player-ipad {
+             display: block;
+             background: black;
+             float: left;
+             border: 2px solid #444;
+             margin: 1em 0 0 1em;
+         }
+
+         .lud-player-iphone {
+             height: 667px;
+             width: 375px;
+         }
+
+         .lud-player-ipad {
+             height: 1024px;
+             width: 768px;
+         }
+
+        </style>
+    </head>
+    <body>
+        <!-- Mobile Console -->
+        <script src="../hnl.mobileConsole.js"></script>
+
+        <!-- React -->
+        <script src="../js/react/umd/react.development.js"></script>
+        <script src="../js/react-dom/umd/react-dom.development.js"></script>
+
+        <!-- Material UI -->
+        <script src="../js/@material-ui/core/umd/material-ui.development.js"></script>
+        <script src="../js/@material/slider/dist/mdc.slider.js"></script>
+
+        <div id="app">
+            Loading...
+        </div>
+
+        <script type="module">
+         import { Player } from './player.js';
+
+         function scrollbarWidth() {
+             return window.innerWidth - document.documentElement.clientWidth;
+         }
+
+         const e = React.createElement;
+
+         const app = e(
+             'div', {},
+             e('div', { className: "lud-player-iphone" }, e(Player, {})),
+             e('div', { className: "lud-player-ipad" }, e(Player, {}))
+         );
+
+         ReactDOM.render(app, document.querySelector("#app"));
+        </script>
+    </body>
+</html>
+

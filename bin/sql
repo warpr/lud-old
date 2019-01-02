@@ -1,4 +1,5 @@
 #!/bin/sh
 
-CMD=`bin/.sql-command`
+CMD=`bin/.sql-command "$@"`
+echo "Running: $CMD"
 $CMD

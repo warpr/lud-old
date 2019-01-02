@@ -1,4 +1,13 @@
 <?php
+/**
+ *   This file is part of lûd, an opinionated browser based media player.
+ *   Copyright (C) 2018  Kuno Woudt <kuno@frob.nl>
+ *
+ *   This program is free software: you can redistribute it and/or modify
+ *   it under the terms of copyleft-next 0.3.1.  See copyleft-next-0.3.1.txt.
+ */
+
+declare(strict_types=1);
 
 function contains($haystack, $needle)
 {
@@ -8,7 +17,7 @@ function contains($haystack, $needle)
 function startsWith($haystack, $needle)
 {
     $length = strlen($needle);
-    return (substr($haystack, 0, $length) === $needle);
+    return substr($haystack, 0, $length) === $needle;
 }
 
 function fixLength($str, $length)

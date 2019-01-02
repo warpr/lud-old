@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta http-equiv="Accept-CH" content="Device-Memory">
+        <title>Columns demo... | Lûd</title>
+        <style>
+         * {
+             box-sizing: border-box;
+         }
+
+         :root {
+             --column-width: 512px;
+             --column-count: 4;
+             --scrollbar-width: 0px;
+         }
+
+         html { width: 100%; height: 100%; }
+
+         body {
+             min-height: 100%;
+             background: black;
+             /* width: calc(var(--column-width) * var(--column-count)); */
+             color: white;
+             font-family: Helvetica, Arial, sans-serif;
+             margin: 0;
+             padding: 0;
+             border: 0;
+             scrollbar-width: none;
+         }
+
+         #main-menu {
+             background: darkred;
+             color: white;
+             margin: 0;
+             padding: 1em;
+             border: 0;
+             height: 54px;
+             width: 100%;
+         }
+
+         #main-menu > span { padding-right: 1em; }
+
+         div {
+             margin: 0;
+             border: 0;
+             padding: 0;
+         }
+
+         .lud-ColumnLayout-HeaderContainer { width: 100%; }
+
+         .lud-ColumnLayout-Header {
+             height: 108px;
+             position: sticky;
+             left: 0;
+             top: 0;
+             width: calc(100vw - var(--scrollbar-width));
+         }
+
+         .lud-ColumnLayout-TitleBar {
+             padding: 0;
+             margin: 0;
+             width: 100%;
+             height: 54px;
+         }
+
+         .lud-ColumnLayout-Column { background: olive; }
+         .lud-ColumnLayout-Column:nth-child(2) { background: olivedrab; }
+         .lud-ColumnLayout-Column:nth-child(3) { background: yellowgreen; }
+
+         .lud-ColumnLayout-Title { background: blueviolet; }
+         .lud-ColumnLayout-Title:nth-child(3) { background: darkviolet; }
+         .lud-ColumnLayout-Title:nth-child(4) { background: darkorchid; }
+
+         .lud-ColumnLayout-Title {
+             padding: 1em;
+         }
+
+         .lud-ColumnLayout-TitleBarButton {
+             background: lightslategray;
+             padding: 1em;
+         }
+
+         .lud-ColumnLayout-Column {
+             padding: 1em;
+             width: var(--column-width);
+         }
+
+         .lud-ColumnLayout-TitleBar {
+             width: calc(100vw - var(--scrollbar-width));
+             flex-flow: row nowrap;
+             display: flex;
+             justify-content: center;
+             align-items: stretch;
+         }
+
+         .lud-ColumnLayout-Content {
+             flex-flow: row nowrap;
+             display: flex;
+             justify-content: center;
+             align-items: stretch;
+         }
+
+         .lud-ColumnLayout-Content {
+             min-height: 100%;
+         }
+
+         body {
+             width: calc(var(--column-width) * var(--column-count));
+         }
+
+         .lud-ColumnLayout-TitleBarButton {
+             flex: 0 0 auto;
+         }
+         .lud-ColumnLayout-Title {
+             flex: 1 0 auto;
+         }
+
+         /* .lud-ColumnLayout-Column {
+            width: var(--column-width);
+            flex: 0 0 auto;
+            }
+          */
+        </style>
+    </head>
+    <body>
+        <!-- Mobile Console -->
+        <script src="../hnl.mobileConsole.js"></script>
+
+        <!-- React -->
+        <script src="../js/react/umd/react.development.js"></script>
+        <script src="../js/react-dom/umd/react-dom.development.js"></script>
+
+        <div id="app">
+            Loading...
+        </div>
+
+        <script type="module">
+         import { ColumnLayout, Column } from './column-layout.js';
+
+         function scrollbarWidth() {
+             return window.innerWidth - document.documentElement.clientWidth;
+         }
+
+         const e = React.createElement;
+
+         const app = e(
+             ColumnLayout, { maxWidth: 300 },
+             e(Column, { title: "Column 1" }, "The first column goes here"),
+             e(Column, { title: "Column 2" }, "The second column goes here"),
+             e(Column, { title: "Column 3" }, "The third column goes here"),
+             e('span', {}, 'Some stray other element which is ignored'),
+             e(Column, { title: "Column 4" }, "The fourth column goes here"),
+             /* e(Column, { title: "Column 5" }, "The fifth column goes here"), */
+         );
+
+         ReactDOM.render(app, document.querySelector("#app"));
+
+         // Show window size in top-right corner
+         function handleResize() {
+             const sizeText = window.innerWidth + 'x' + window.innerHeight +
+                               (scrollbarWidth() > 0 ? ' [⬍' + scrollbarWidth() + ']' : '');
+
+             document.getElementById("size").innerText = sizeText;
+             document.documentElement.style.setProperty('--scrollbar-width', scrollbarWidth() + 'px');
+         }
+         window.addEventListener("resize", handleResize);
+         handleResize();
+        </script>
+    </body>
+</html>
