@@ -45,20 +45,17 @@ function processPost()
 {
 }
 
-function formatPlaylist($playlist)
-{
-    $playlist['path'] = webUrl($playlist['path']);
-
-    return $playlist;
-}
-
 function formatNowPlaying($np)
 {
+    $playlist = $np['playlist'];
+
+    $cueFile = webUrl($playlist['path']) . '/' . $np['disc'];
+
     return [
         "pos" => $np['pos'],
         "updated_at" => $np['updated_at'],
         "paused" => (bool) $np['paused'],
-        "playlist" => formatPlaylist($np['playlist'])
+        "cue_file" => $cueFile
     ];
 }
 

@@ -17,20 +17,26 @@ class Devices
 
     public static function create()
     {
-        // device 0 is master entry
+        // NOTE: pos and updated_at store their times in milliseconds, to
+        // allow multiple devices to sync up their playback fairly accurately.
+        //
+        // disc is text, so that we can distinguish between "disc2.cue" and
+        // "disc02.cue".  The value stored is the disc basename, e.g. "disc2".
         static::_createTable("
             CREATE TABLE devices (
                 id INTEGER PRIMARY KEY,
                 device TEXT,
                 playlist_id INTEGER,
                 pos INTEGER,
+                disc TEXT,
                 updated_at INTEGER,
                 paused INTEGER
             )
         ");
 
+        // device 0 is master entry
         $query = static::connect()->prepare(
-            "INSERT INTO devices VALUES (0, 'master', NULL, 0, 0, 1)"
+            "INSERT INTO devices VALUES (0, 'master', NULL, 0, NULL, 0, 1)"
         );
         $query->execute();
     }

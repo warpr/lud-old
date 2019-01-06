@@ -14,6 +14,6 @@ const M = window['material-ui'];
 
 // FIXME: mock audio-metadata?
 
-export function Player(props) {
+export function Player(props /*: Object */) {
     return e('h1', {}, 'Player goes here');
 }

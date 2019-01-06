@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta http-equiv="Accept-CH" content="Device-Memory" />
+        <meta http-equiv="refresh" content="100" />
+        <title>Playback demo... | Lûd</title>
+
+        <style>
+         body {
+             background: #222;
+             color: white;
+             font-family: Helvetica, Arial, sans-serif;
+             margin: 0;
+             padding: 0;
+             border: 0;
+         }
+
+         #html5-audio {
+             width: 32em;
+         }
+        </style>
+    </head>
+    <body>
+        <!-- Mobile Console -->
+        <script src="/lud/hnl.mobileConsole.js"></script>
+
+        <!-- Immutable -->
+        <script src="/lud/js/immutable/dist/immutable.js"></script>
+        <script src="/lud/js/immutable-devtools/dist/index.js"></script>
+
+        <!-- misc -->
+        <script src="/lud/js/lodash/lodash.js"></script>
+
+        <h1>Now Playing</h1>
+        <pre id="now-playing">
+        </pre>
+
+        <audio controls id="html5-audio"></audio>
+        <p>
+            <button id="html5-audio-resume">Resume playback</button>
+        </p>
+
+        <script type="module">
+         import { initPlayback, resumePlayback } from './playback.js';
+
+         initPlayback();
+
+         const resumeButton = document.getElementById('html5-audio-resume');
+         resumeButton.addEventListener('click', (event) => { resumePlayback(); });
+        </script>
+    </body>
+</html>
+

@@ -11,7 +11,7 @@
 /*::
 import { type CueRecord } from '/lud/cue.js';
 */
-import { indexCue, parseCue } from '/lud/cue.js';
+import { addTrackLengths, indexCue, parseCue } from '/lud/cue.js';
 
 const lodash = window._;
 
@@ -50,6 +50,7 @@ export class CurrentSong {
       trackNo: number
       trackTitle: string
       trackArtist: Array<ArtistCredit>
+      trackLength: ?number
     */
 
     constructor() {
@@ -65,6 +66,7 @@ export class CurrentSong {
         this.trackNo = 1;
         this.trackTitle = '';
         this.trackArtist = [];
+        this.trackLength = null;
     }
 
     getTrackArtistName() {
@@ -90,6 +92,11 @@ export class CurrentSong {
     ) {
         const discIdx = this.discNo - 1;
         const trackIdx = trackNo - 1;
+
+        if (cueData[trackNo] && cueData[trackNo].duration) {
+            this.trackLength = cueData[trackNo].duration;
+        }
+
         if (metadata.media.length > discIdx) {
             const medium = metadata.media[discIdx];
             if (medium.tracks.length > trackIdx) {
@@ -100,13 +107,13 @@ export class CurrentSong {
                     this.trackTitle = trk.title
                         ? trk.title
                         : trk.recording && trk.recording.title
-                            ? trk.recording.title
-                            : '<unknown track>';
+                        ? trk.recording.title
+                        : '<unknown track>';
                     this.trackArtist = trk['artist-credit']
                         ? trk['artist-credit']
                         : trk.recording['artist-credit']
-                            ? trk.recording['artist-credit']
-                            : [];
+                        ? trk.recording['artist-credit']
+                        : [];
                     this.albumArtist = metadata['artist-credit'] ? metadata['artist-credit'] : [];
                     this.albumTitle = metadata['title'] ? metadata['title'] : '';
 
@@ -125,7 +132,9 @@ export class CurrentSong {
 export class AudioMetadata {
     /*::
       cueFile: ?string
+      audioFile: ?string
       position: ?number
+      duration: ?number
       metadata: Object
       cueData: Array<CueRecord>
       cueIndex: Array<number>
@@ -136,6 +145,7 @@ export class AudioMetadata {
 
     constructor(cueFile /*: ?string */, position /*: ?number */) {
         this.cueFile = cueFile;
+        this.audioFile = null;
         this.position = position ? position : 0;
         this.metadata = {};
         this.cueData = [];
@@ -162,10 +172,14 @@ export class AudioMetadata {
         const cuePromise = fetch(cueFile)
             .then(response => response.text())
             .then(body => {
-                this.cueData = parseCue(body);
+                this.cueData = addTrackLengths(parseCue(body));
                 this.cueIndex = indexCue(this.cueData);
 
                 if (cueFile && this.cueData.length > 0) {
+                    if (this.cueData[0].duration) {
+                        this.duration = this.cueData[0].duration;
+                    }
+
                     const audioFile = this.cueData[0].filename;
                     return audioFile ? dirname(cueFile) + '/' + audioFile : null;
                 } else {
@@ -185,6 +199,8 @@ export class AudioMetadata {
     }
 
     setPosition(position /*: number */) {
+        this.position = position;
+
         return this.ready.then(_ => {
             // add a tiny value to make sure floating point rounding errors don't result in
             // the previous track being returned if we _just_ started playing a track.
@@ -207,5 +223,20 @@ export class AudioMetadata {
                 return 0;
             }
         });
+    }
+
+    getAudioFile() {
+        if (!this.cueFile || this.cueData.length === 0) {
+            return null;
+        }
+
+        const cueDataZero = this.cueData[0];
+        const filename = cueDataZero.filename;
+
+        if (filename) {
+            return dirname(this.cueFile) + '/' + filename;
+        }
+
+        return null;
     }
 }

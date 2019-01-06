@@ -1,7 +1,8 @@
 [ignore]
-./www/cache/
-./www/music/
 .*/annex/.*/\.git/
+<PROJECT_ROOT>/node_modules/bcryptjs/
+<PROJECT_ROOT>/www/cache/
+<PROJECT_ROOT>/www/music/
 
 [include]
 

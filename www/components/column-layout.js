@@ -62,7 +62,13 @@ function TitleBar(props) {
     return e('div', { className: 'lud-ColumnLayout-TitleBar' }, parts);
 }
 
-export function ColumnLayout(props) {
+/*::
+type columnLayoutProps = {
+    children: React.Node,
+    maxWidth: number,
+}
+*/
+export function ColumnLayout(props /*: columnLayoutProps */) {
     const children = React.Children.toArray(props.children).filter(child => {
         if (child.type == Column) {
             return true;
@@ -75,7 +81,9 @@ export function ColumnLayout(props) {
         }
     });
 
-    document.documentElement.style.setProperty('--column-count', children.length);
+    document.documentElement &&
+        document.documentElement.style &&
+        document.documentElement.style.setProperty('--column-count', children.length);
 
     return e(
         'div',
@@ -94,7 +102,13 @@ export function ColumnLayout(props) {
     );
 }
 
-export function Column(props) {
+/*::
+type columnProps = {
+    children: React.Node,
+    title: string,
+}
+*/
+export function Column(props /*: columnProps */) {
     const children = React.Children.toArray(props.children);
     return e(
         'div',

@@ -12,6 +12,7 @@ declare(strict_types=1);
 require_once __DIR__ . '/../lib/db/devices.php';
 require_once __DIR__ . '/../lib/db/playlist.php';
 require_once __DIR__ . '/../lib/playlist.php';
+require_once __DIR__ . '/../lib/release.php';
 
 function pauseCommand()
 {
@@ -33,10 +34,10 @@ function playCommand()
 {
     $nowPlaying = nowPlaying();
     if (!empty($nowPlaying['playlist_id'])) {
-        return resumeCommand();
+        /* return resumeCommand(); */
     }
 
-    $query = Playlist::connect()->prepare("SELECT id FROM playlist ORDER BY id LIMIT 1");
+    $query = Playlist::connect()->prepare("SELECT * FROM playlist ORDER BY id LIMIT 1");
     $result = $query->execute();
 
     $row = $result->fetchArray(SQLITE3_ASSOC);
@@ -47,11 +48,13 @@ function playCommand()
     }
 
     $playlistId = $row['id'];
+    $firstDisc = firstDisc($row['path']);
 
     $query = Devices::connect()->prepare(
-        "UPDATE devices SET paused = 0, updated_at = strftime('%s', 'now'), playlist_id = :playlist, pos = 0 WHERE id = 0"
+        "UPDATE devices SET paused = 0, updated_at = strftime('%s', 'now'), playlist_id = :playlist, disc = :disc, pos = 0 WHERE id = 0"
     );
     $query->bindParam(':playlist', $playlistId);
+    $query->bindParam(':disc', $firstDisc);
     $query->execute();
 }
 

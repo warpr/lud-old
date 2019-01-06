@@ -28,6 +28,7 @@ type AudioEventNames = 'configuration'
 type AudioControlNames = 'prevAlbum'
      | 'prevTrack'
      | 'pause'
+     | 'play'
      | 'pausePlay'
      | 'nextTrack'
      | 'nextAlbum'
@@ -59,7 +60,7 @@ export const firefoxTheme = {
     played: '#00b6f0',
 };
 
-function formatTime(seconds) {
+function formatTime(seconds /*: number */) {
     const parts = [Math.floor((seconds / 60) % 60), Math.floor(seconds % 60)];
 
     const hours = Math.floor(seconds / 60 / 60);
@@ -190,8 +191,8 @@ class Button extends React.PureComponent {
             color: this.props.selected
                 ? colors.selected
                 : this.props.disabled
-                    ? colors.subdued
-                    : colors.foreground,
+                ? colors.subdued
+                : colors.foreground,
             display: 'block',
             flex: '0 0 auto',
         };

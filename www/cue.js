@@ -50,6 +50,11 @@ function parseCommand(command, args, track) {
                 return { comments: comments };
             }
 
+            if (args[0] == 'LUD_DURATION_IN_SECONDS') {
+                const duration = parseFloat(args[1]);
+                return { duration: Number.isNaN(duration) ? null : duration };
+            }
+
             console.log('Skipping unrecognized REM line', command, args);
             return {};
         case 'CATALOG':
@@ -109,6 +114,7 @@ export type CueRecord = {
     filename: ?string,
     format: ?string,
     mbid: string,
+    duration: ?number,
     pos: number,
     start: ?CueTrackStart,
     title: string,
@@ -156,4 +162,47 @@ export function indexCue(records /* : Array<CueRecord> */) /* : Array<number> */
     });
 
     return error ? [] : ret;
+}
+
+export function addTrackLengths(records /*: Array<CueRecord> */) /*: Array<CueRecord> */ {
+    if (records.length < 2) {
+        return records; // no tracks.
+    }
+
+    const lastIdx = records.length - 1;
+    const discLength = records[0].duration;
+    if (!discLength) {
+        if (window.lûd.verbose) {
+            console.log(
+                'ERROR: disc length unknown for [' +
+                    (records[0].artist || '') +
+                    ' - ' +
+                    (records[0].title || '')
+            );
+        }
+        return records; // disc length unknown.
+    }
+
+    return records.map((record, idx) => {
+        if (idx === 0 || record.duration) {
+            return record;
+        }
+
+        if (!record.start) {
+            return record;
+        }
+
+        if (idx == lastIdx) {
+            record.duration = discLength - record.start.seconds;
+        } else {
+            const nextRecord = records[idx + 1];
+            if (!nextRecord.start) {
+                return record;
+            }
+
+            record.duration = nextRecord.start.seconds - record.start.seconds;
+        }
+
+        return record;
+    });
 }
