@@ -13,6 +13,11 @@ lûd is an opinionated browser based media player.
     sudo phpenmod xml
     sudo phpenmod sqlite3
 
+# Optional
+
+    python3 -m venv ve
+    ve/bin/pip install litecli
+
 # Hacking
 
 lûd doesn't use a build step, each javascript source file should be written to be
