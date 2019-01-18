@@ -41,17 +41,6 @@ export function formatTime(seconds /*: number */) {
     return parts.join(':').replace(/:(\d)\b/g, ':0$1');
 }
 
-function nowPlaying() {
-    return Promise.resolve(
-        Immutable.fromJS({
-            pos: 0,
-            updated_at: 1546445588,
-            paused: false,
-            cue_file: '/lud/music/artists/farruko/2010.el-talento-del-bloque/disc1.cue',
-        })
-    );
-}
-
 function formatStatus(status) {
     const currentPos = status.get('pos');
     const duration = status.get('duration');
@@ -100,8 +89,6 @@ async function printStatusStep() {
             el.innerHTML = formatStatus(newStatus);
         }
     }
-
-    //    window.requestAnimationFrame(printStatusStep);
 }
 
 export async function initPlayback() {
@@ -114,14 +101,10 @@ export async function initPlayback() {
     printStatusStep();
 
     audioElement.addEventListener('timeupdate', event => {
-        console.log('time update', event);
-        window.lûd.audioMetadata.setPosition(audioElement.currentTime).then(() => {
-            console.log('setPosition resolved');
-            printStatusStep();
-        });
+        printStatusStep();
     });
 
-    loadCurrentSong(np.get('pos') / 1000);
+    loadCurrentSong(np.pos / 1000);
 }
 
 async function loadCurrentSong(position /*: number */) {
@@ -142,6 +125,7 @@ async function loadCurrentSong(position /*: number */) {
 
             audioElement.removeEventListener('canplaythrough', canPlayThrough);
             audioElement.currentTime = position;
+            window.lûd.audioMetadata.setPosition(position);
 
             resolve(audioElement);
         };
@@ -158,22 +142,25 @@ export async function resumePlayback() {
         return;
     }
 
-    const np = await nowPlaying();
+    const np = await window.lûd.controlChannel.updateFromServer();
+
     console.log('resumePlayback called, paused [', audioElement.paused, '] ', audioElement);
 
     if (audioElement.paused) {
-        if (!np.get('paused')) {
-            audioElement
-                .play()
-                .then(() => {
-                    console.log('playback started');
-                    resumeButton.disabled = true;
-                })
-                .catch(error => {
-                    console.log('playback error?', error.code, error.message);
-                    resumeButton.disabled = false;
-                });
-        }
+        const offset = new Date().getTime() - np.updated_at;
+        console.log('offset is', offset, 'pos', np.pos, ' with offset ', np.pos + offset);
+
+        audioElement.currentTime = (np.pos + offset) / 1000;
+        audioElement
+            .play()
+            .then(() => {
+                console.log('playback started');
+                resumeButton.disabled = true;
+            })
+            .catch(error => {
+                console.log('playback error?', error.code, error.message);
+                resumeButton.disabled = false;
+            });
     } else {
         console.log('already playing...');
     }

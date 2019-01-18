@@ -76,6 +76,9 @@ function main($argv)
         case "now-playing":
             nowPlayingCommand();
             break;
+        case "status":
+            statusCommand();
+            break;
         case "pause":
             pauseCommand();
             break;

@@ -49,6 +49,14 @@ function insertItem($release)
     $query->execute();
 }
 
+function formatDurationMilliseconds($duration)
+{
+    $seconds = floor($duration / 1000);
+    $milliseconds = $duration % 1000;
+
+    return formatDuration($seconds) . " " . $milliseconds . "ms";
+}
+
 function formatDuration($str)
 {
     $zero = new \DateTime('@0');

@@ -48,13 +48,16 @@ function playCommand()
     }
 
     $playlistId = $row['id'];
-    $firstDisc = firstDisc($row['path']);
+    $firstDisc = basename(firstDisc($row['path']), '.cue');
+
+    $now = "" . floor(microtime(true) * 1000);
 
     $query = Devices::connect()->prepare(
-        "UPDATE devices SET paused = 0, updated_at = strftime('%s', 'now'), playlist_id = :playlist, disc = :disc, pos = 0 WHERE id = 0"
+        "UPDATE devices SET paused = 0, updated_at = :now, playlist_id = :playlist, disc = :disc, pos = 0 WHERE id = 0"
     );
     $query->bindParam(':playlist', $playlistId);
     $query->bindParam(':disc', $firstDisc);
+    $query->bindParam(':now', $now);
     $query->execute();
 }
 
@@ -94,4 +97,39 @@ function nowPlayingCommand()
         ": " .
         formatPlaylistItem($item['artist'], $item['title'], $item['duration']) .
         "\n";
+}
+
+function status($options = [])
+{
+    $query = Devices::connect()->prepare("SELECT * FROM devices ORDER BY id");
+    $result = $query->execute();
+
+    while (($row = $result->fetchArray(SQLITE3_ASSOC))) {
+        yield $row;
+    }
+
+    /* } */
+
+    /* $query = Playlist::connect()->prepare("SELECT * FROM playlist WHERE id = :playlist"); */
+    /* $query->bindParam(':playlist', $row['playlist_id']); */
+    /* $result = $query->execute(); */
+
+    /* $row['playlist'] = $result->fetchArray(SQLITE3_ASSOC); */
+
+    /* return $row; */
+}
+
+function statusCommand()
+{
+    $devices = status();
+
+    foreach ($devices as $device) {
+        printf(
+            "%4d. [%16s] %s %s\n",
+            $device['id'],
+            formatDurationMilliseconds($device['pos']),
+            $device['paused'] ? "⏸ " : "▶️ ",
+            $device['device']
+        );
+    }
 }
