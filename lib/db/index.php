@@ -17,9 +17,10 @@ class Index
 
     public static function create()
     {
-        // device 0 is master entry
-        static::_createTable("
-            CREATE VIRTUAL TABLE IF NOT EXISTS records USING fts5(
+        $db = static::connect();
+
+        $db->query("
+            CREATE VIRTUAL TABLE IF NOT EXISTS `index` USING fts5(
                 title,
                 artist,
                 year,

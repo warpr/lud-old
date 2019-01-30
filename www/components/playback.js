@@ -66,7 +66,6 @@ function formatStatus(status) {
 let __prevStatus = null;
 async function printStatusStep() {
     if (!window.lûd.audioMetadata) {
-        console.log('no audio metadata');
         return;
     }
 
@@ -121,8 +120,6 @@ async function loadCurrentSong(position /*: number */) {
 
     return new Promise((resolve, reject) => {
         const canPlayThrough = event => {
-            console.log('file loaded!');
-
             audioElement.removeEventListener('canplaythrough', canPlayThrough);
             audioElement.currentTime = position;
             window.lûd.audioMetadata.setPosition(position);

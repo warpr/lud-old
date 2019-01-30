@@ -85,12 +85,14 @@ function formatPlaylistItem($artist, $title, $duration)
 
 function listPlaylist()
 {
-    $query = Playlist::connect()->prepare("SELECT * FROM playlist");
-    $result = $query->execute();
+    $builder = Playlist::builder();
+
+    $query = $builder->select('*')->from('playlist');
+    $rows = Playlist::run($query);
 
     $pos = 1;
     $totalDuration = 0;
-    while (($row = $result->fetchArray(SQLITE3_ASSOC))) {
+    foreach ($rows as $row) {
         $totalDuration += $row['duration'];
         printf(
             "%3d. %s\n",
@@ -105,8 +107,7 @@ function listPlaylist()
 
 function clearPlaylist()
 {
-    $query = Playlist::connect()->prepare("DELETE FROM playlist");
-    $query->execute();
+    Playlist::connect()->query("DELETE FROM playlist");
 }
 
 function ludAddLast($args)

@@ -10,12 +10,12 @@
 
 require_once __DIR__ . '/../lib/db/model.php';
 
-$database = empty($argv[1]) ? "index" : $argv[1];
+$database = "index";
 
 $litecliPath = dirname(__DIR__) . '/ve/bin/litecli';
 if (is_executable($litecliPath)) {
-    echo $litecliPath . " " . database_filename($argv[1]) . "\n";
+    echo $litecliPath . " " . database_filename($database) . "\n";
 } else {
-    echo "/usr/bin/env sqlite3 " . database_filename($argv[1]) . "\n";
+    echo "/usr/bin/env sqlite3 " . database_filename($database) . "\n";
 }
 

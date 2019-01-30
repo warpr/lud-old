@@ -17,8 +17,9 @@ class Playlist
 
     public static function create()
     {
-        // device 0 is master entry
-        static::_createTable("
+        $db = static::connect();
+
+        $db->query("
             CREATE TABLE playlist (
                 id INTEGER PRIMARY KEY,
                 path TEXT,

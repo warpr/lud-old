@@ -54,21 +54,15 @@ function indexDiscs($album)
         $url = $album['path'] . '/' . $disc['filename'];
         $duration = empty($disc['duration']) ? null : $disc['duration'];
 
-        $query = Index::connect()->prepare(
-            "INSERT INTO records" .
-                " (title, year, path, duration, mbid, pos, type)" .
-                " VALUES" .
-                " (:title, :year, :path, :duration, :mbid, :pos, :type)"
-        );
-        $query->bindParam(':title', $disc['title']);
-        $query->bindParam(':year', $year);
-        $query->bindParam(':path', $url);
-        $query->bindParam(':duration', $duration);
-        $query->bindParam(':mbid', $album['mbid']);
-        $query->bindParam(':pos', $disc['position']);
-        $type = 'disc';
-        $query->bindParam(':type', $type);
-        $query->execute();
+        Index::insert([
+            'title' => $disc['title'],
+            'year' => $year,
+            'path' => $url,
+            'duration' => $duration,
+            'mbid' => $album['mbid'],
+            'pos' => $disc['position'],
+            'type' => 'disc'
+        ]);
     }
 }
 
@@ -88,21 +82,15 @@ function indexRelease($album)
         }
     }
 
-    $query = Index::connect()->prepare(
-        "INSERT INTO records" .
-            " (title, artist, year, path, duration, mbid, type)" .
-            " VALUES" .
-            " (:title, :artist, :year, :path, :duration, :mbid, :type)"
-    );
-    $query->bindParam(':title', $album['title']);
-    $query->bindParam(':artist', $album['artist']);
-    $query->bindParam(':year', $year);
-    $query->bindParam(':path', $firstDisc);
-    $query->bindParam(':duration', $duration);
-    $query->bindParam(':mbid', $album['mbid']);
-    $type = 'release';
-    $query->bindParam(':type', $type);
-    $query->execute();
+    Index::insert([
+        'title' => $album['title'],
+        'artist' => $album['artist'],
+        'year' => $year,
+        'path' => $firstDisc,
+        'duration' => $duration,
+        'mbid' => $album['mbid'],
+        'type' => 'release'
+    ]);
 }
 
 function indexTracks($album)
@@ -121,24 +109,17 @@ function indexTracks($album)
 
         $duration = empty($track['length']) ? null : $track['length'];
 
-        // FIXME: include year
-        $query = Index::connect()->prepare(
-            "INSERT INTO records" .
-                " (title, artist, year, path, duration, mbid, pos, disc, type)" .
-                " VALUES" .
-                " (:title, :artist, :year, :path, :duration, :mbid, :pos, :disc, :type)"
-        );
-        $query->bindParam(':title', $track['title']);
-        $query->bindParam(':artist', $track['artist']);
-        $query->bindParam(':year', $year);
-        $query->bindParam(':path', $url);
-        $query->bindParam(':duration', $duration);
-        $query->bindParam(':mbid', $mbid);
-        $query->bindParam(':pos', $track['position']);
-        $query->bindParam(':disc', $track['discNo']);
-        $type = 'track';
-        $query->bindParam(':type', $type);
-        $query->execute();
+        Index::insert([
+            'title' => $track['title'],
+            'artist' => $track['artist'],
+            'year' => $year,
+            'path' => $url,
+            'duration' => $duration,
+            'mbid' => $mbid,
+            'pos' => $track['position'],
+            'disc' => $track['discNo'],
+            'type' => 'track'
+        ]);
     }
 }
 

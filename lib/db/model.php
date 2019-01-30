@@ -10,12 +10,13 @@
 
 declare(strict_types=1);
 
+require_once __DIR__ . '/../../vendor/autoload.php';
 require_once __DIR__ . '/../config.php';
 
 function database_filename($name)
 {
     $cfg = loadConfig();
-    return $cfg['index_root'] . "/$name.sqlite";
+    return $cfg['index_root'] . "/lud.sqlite";
 }
 
 trait Model
@@ -36,12 +37,49 @@ trait Model
     public static function connect()
     {
         if (empty(static::$_connection)) {
-            static::$_connection = new SQLite3(static::_filename());
-            static::$_connection->busyTimeout(1000);
-            static::$_connection->exec('PRAGMA journal_mode = wal;');
+            $config = new \Doctrine\DBAL\Configuration();
+
+            $params = [
+                "url" => "sqlite3:///" . static::_filename(),
+                "driverOptions" => [PDO::ATTR_TIMEOUT => 1000]
+            ];
+
+            static::$_connection = \Doctrine\DBAL\DriverManager::getConnection($params, $config);
+            $stmt = static::$_connection->query('PRAGMA journal_mode = wal;');
+
+            $row = $stmt->fetch();
+            if ($row['journal_mode'] != 'wal') {
+                echo "ERROR: unable to connect to database\n";
+                die();
+            }
         }
 
         return static::$_connection;
+    }
+
+    /**
+     * Return a direct SQLite3 connection instance.
+     */
+    public static function _directConnect()
+    {
+        $connection = new SQLite3(static::_filename());
+        $connection->busyTimeout(1000);
+        $connection->exec('PRAGMA journal_mode = wal;');
+
+        return $connection;
+    }
+
+    /**
+     * Disconnects a database.
+     */
+    public static function disconnect()
+    {
+        if (empty(static::$_connection)) {
+            return;
+        }
+
+        static::$_connection->close();
+        static::$_connection = null;
     }
 
     /**
@@ -49,8 +87,11 @@ trait Model
      */
     public static function delete()
     {
-        unlink(static::_filename());
-        static::$_connection = null;
+        // FIXME: do this with DBAL?
+        $db = static::_directConnect();
+        $db->query('DROP TABLE IF EXISTS `' . static::_tablename() . '`');
+
+        static::disconnect();
     }
 
     /**
@@ -58,7 +99,9 @@ trait Model
      */
     public static function exists()
     {
-        return is_readable(static::_filename());
+        $conn = static::connect();
+        $sm = $conn->getSchemaManager();
+        return $sm->tablesExist(static::_tablename());
     }
 
     /**
@@ -82,20 +125,53 @@ trait Model
     }
 
     /**
-     * Help create the database tables.
+     * Get the table name..
      */
-    public static function _createTable(string $sql)
+    public static function _tablename()
+    {
+        $mirror = new \ReflectionClass(__CLASS__);
+        $name = strtolower($mirror->getShortName());
+
+        return $name;
+    }
+
+    /**
+     * Create a query builder
+     */
+    public static function builder()
     {
         $db = static::connect();
+        return $db->createQueryBuilder();
+    }
 
-        // NOTE: currently this creates each table in its own SQLite file,
-        // which is fine for now... but will prevent us from using JOINs.
+    /**
+     * Run a query created with the query builder.
+     */
+    public static function run($builder)
+    {
+        $stmt = $builder->execute();
 
-        $ret = $db->exec($sql);
-        if (!$ret) {
-            echo "Error creating " . static::_filename() . " database.\n";
-        } else {
-            $perms = fileperms(static::_filename());
+        while (($row = $stmt->fetch())) {
+            yield $row;
         }
+    }
+
+    /**
+     * Construct a simple insert.
+     */
+    public static function insert($values)
+    {
+        $db = static::connect();
+        $sql = $db->createQueryBuilder();
+        $insert = $sql->insert($db->quoteIdentifier(static::_tablename()));
+
+        $idx = 0;
+        foreach ($values as $name => $value) {
+            $insert->setValue($name, '?')->setParameter($idx++, $value);
+        }
+
+        $insert->execute();
+
+        return $db->lastInsertId();
     }
 }

@@ -173,5 +173,4 @@ function main()
 
 main();
 
-Devices::connect()->close();
-Playlist::connect()->close();
+Devices::disconnect();
