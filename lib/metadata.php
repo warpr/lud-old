@@ -191,10 +191,44 @@ function parseTracks($obj)
     return $tracks;
 }
 
+function isRelevantFile($filename)
+{
+    return $filename === "metadata.json" ||
+        $filename === "cover.jpg" ||
+        preg_match('/disc[0-9]\.(cue|mp4|mp3|m4a)/', $filename);
+}
+
 function loadAlbum($dir)
 {
-    // FIXME: make robust against parse errors
+    foreach (new DirectoryIterator($dir) as $fileInfo) {
+        if ($fileInfo->isDot()) {
+            continue;
+        }
+
+        if (!isRelevantFile($fileInfo->getFilename())) {
+            continue;
+        }
+
+        if ($fileInfo->isReadable()) {
+            continue;
+        }
+
+        if ($fileInfo->isLink()) {
+            // broken link, probably a partial git annex checkout
+            // ignore this album folder
+            return;
+        }
+
+        // file is unreadable for unknown reasons
+        echo "WARNING: unable to read " . $fileInfo->getPathname() . "\n";
+        return;
+    }
+
+    // FIXME: make robust  against / warn about parse errors
     $metadata = json_decode(file_get_contents("$dir/metadata.json"), true);
+    if (empty($metadata)) {
+        return;
+    }
 
     $release = parseRelease($metadata, $dir);
     if (empty($release)) {

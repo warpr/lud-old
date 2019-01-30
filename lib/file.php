@@ -40,8 +40,11 @@ function fixPermissions()
     $userInfo = posix_getpwuid(posix_getuid());
     $user = $userInfo['name'];
 
-    system("/bin/chown -R" . " " . escapeshellarg("$user:$group") . " " . escapeshellarg($dir));
-    system("/bin/chmod -R g+ws " . escapeshellarg($dir));
+    // FIXME: do this the PHP native way
+    if (is_executable("/bin/chown")) {
+        system("/bin/chown -R" . " " . escapeshellarg("$user:$group") . " " . escapeshellarg($dir));
+        system("/bin/chmod -R g+ws " . escapeshellarg($dir));
+    }
 }
 
 function abspath($filename)

@@ -13,6 +13,9 @@ lûd is an opinionated browser based media player.
     sudo phpenmod xml
     sudo phpenmod sqlite3
 
+    bin/composer install
+    npm install
+
 # Optional
 
     python3 -m venv ve

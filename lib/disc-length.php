@@ -116,6 +116,11 @@ function mediaLength($filename)
         $cmd = "ffprobe -i $arg -show_entries format=duration -v quiet";
 
         $output = `$cmd`;
+        if (empty($output)) {
+            echo "ERROR: ffprobe failed.\n";
+            echo "command: $cmd\n";
+            die();
+        }
 
         if (preg_match("/\[FORMAT\].*duration=([0-9.]*).*\[\/FORMAT\]/ms", $output, $matches)) {
             return $matches[1];

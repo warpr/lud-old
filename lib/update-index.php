@@ -212,6 +212,9 @@ function updateIndex($query)
         }
 
         $album = loadAlbum($currentPath);
+        if (empty($album)) {
+            continue;
+        }
 
         list($category, $path) = categoryAndPath($root, $currentPath);
         if ($category !== $prevCategory) {
