@@ -99,7 +99,7 @@ export async function initPlayback() {
 
     printStatusStep();
 
-    audioElement.addEventListener('timeupdate', event => {
+    audioElement.addEventListener('timeupdate', () => {
         printStatusStep();
     });
 
@@ -119,7 +119,7 @@ async function loadCurrentSong(position /*: number */) {
     audioElement.load();
 
     return new Promise((resolve, reject) => {
-        const canPlayThrough = event => {
+        const canPlayThrough = () => {
             audioElement.removeEventListener('canplaythrough', canPlayThrough);
             audioElement.currentTime = position;
             window.lûd.audioMetadata.setPosition(position);

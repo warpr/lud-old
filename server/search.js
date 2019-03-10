@@ -61,14 +61,14 @@ async function main(config, term) {
     const offset = 0;
     const limit = 10;
 
-    await knex
+    const tmp = await knex
         .select()
         .from('index')
         .where('index', '=', term)
         .limit(limit)
-        .offset(offset)
-        .map(renderItem)
-        .map(console.log);
+        .offset(offset);
+
+    tmp.map(renderItem).map(console.log);
 
     const { total } = await knex('index')
         .count('* as total')

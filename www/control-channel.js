@@ -61,13 +61,15 @@ export class ControlChannel {
         this.throttledSendDataToServer = lodash.throttle(
             () => {
                 const myPostData = this.getPostData();
-                sendDataToServer(myPostData);
+                if (myPostData) {
+                    sendDataToServer(myPostData);
+                }
             },
             10000,
-            { leading: true, trailing: true }
+            { leading: true, trailing: true },
         );
 
-        audioElement.addEventListener('timeupdate', event => {
+        audioElement.addEventListener('timeupdate', () => {
             this.updateToServer();
         });
     }

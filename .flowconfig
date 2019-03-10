@@ -1,6 +1,7 @@
 [ignore]
 .*/annex/.*/\.git/
 <PROJECT_ROOT>/node_modules/bcryptjs/
+<PROJECT_ROOT>/flow-typed/npm/@material-ui/core_v1.x.x.js
 <PROJECT_ROOT>/www/cache/
 <PROJECT_ROOT>/www/music/
 
