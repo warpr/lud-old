@@ -7,13 +7,17 @@
         "flow": "flow",
         "flow:watch": "flow-watch",
         "live": "live-server --no-browser .",
-        "sync:peach": "lsyncd -log all -nodaemon -rsync . peach:code/lud-sync",
         "install-flow-types": "flow-typed install",
         "precommit": "lint-staged",
         "test": "bin/test"
     },
     "lint-staged": {
         "*.js": [
+            "import-sort --write",
+            "prettier --write",
+            "git add"
+        ],
+        "*.mjs": [
             "import-sort --write",
             "prettier --write",
             "git add"

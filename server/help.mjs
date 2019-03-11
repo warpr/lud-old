@@ -15,12 +15,12 @@ export function version() {
 }
 
 export function copyright() {
-    console.log("lûd v" + version());
-    console.log("Copyright 2019  Kuno Woudt <kuno@frob.nl>");
-    console.log("");
-    console.log("This program is free software: you can redistribute it and/or modify");
-    console.log("it under the terms of copyleft-next 0.3.1.  See copyleft-next-0.3.1.txt.");
-    console.log("");
+    console.log('lûd v' + version());
+    console.log('Copyright 2019  Kuno Woudt <kuno@frob.nl>');
+    console.log('');
+    console.log('This program is free software: you can redistribute it and/or modify');
+    console.log('it under the terms of copyleft-next 0.3.1.  See copyleft-next-0.3.1.txt.');
+    console.log('');
 }
 
 export function help() {
@@ -29,9 +29,8 @@ export function help() {
     usage();
 }
 
-export function usage()
-{
-    console.log("Usage: lud <command> [arguments]");
+export function usage() {
+    console.log('Usage: lud <command> [arguments]');
     console.log(`
 Arguments:
 
@@ -60,7 +59,6 @@ Commands:
     index                      Rebuild the search index
                 `);
 }
-
 
 /**
 commands:

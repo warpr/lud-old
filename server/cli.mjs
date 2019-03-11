@@ -8,35 +8,33 @@
  * @flow
  */
 
-
 // 7PPB241
 
-import { help } from './help.mjs';
 import { db } from './db.mjs';
+import { help } from './help.mjs';
 
-function init()
-{
+function init() {
     const knex = db();
 
-//     $createdDatabase = false;
-//     if (!Devices::exists()) {
-//         Devices::create();
-//         $createdDatabase = true;
-//     }
+    //     $createdDatabase = false;
+    //     if (!Devices::exists()) {
+    //         Devices::create();
+    //         $createdDatabase = true;
+    //     }
 
-//     if (!Index::exists()) {
-//         Index::create();
-//         $createdDatabase = true;
-//     }
+    //     if (!Index::exists()) {
+    //         Index::create();
+    //         $createdDatabase = true;
+    //     }
 
-//     if (!Playlist::exists()) {
-//         Playlist::create();
-//         $createdDatabase = true;
-//     }
+    //     if (!Playlist::exists()) {
+    //         Playlist::create();
+    //         $createdDatabase = true;
+    //     }
 
-//     if ($createdDatabase) {
-//         fixPermissions();
-//     }
+    //     if ($createdDatabase) {
+    //         fixPermissions();
+    //     }
 }
 
 export function main(project_root /*: string */, argv /*: Array<string> */) {
@@ -50,7 +48,7 @@ export function main(project_root /*: string */, argv /*: Array<string> */) {
 
     const action = argv.shift();
 
-    if ([ '--help', '-h', 'help' ].includes(action)) {
+    if (['--help', '-h', 'help'].includes(action)) {
         console.log('help action yeah');
         help();
         return;
@@ -58,7 +56,7 @@ export function main(project_root /*: string */, argv /*: Array<string> */) {
 
     init();
 
-    console.log("Unknown command:", action, argv.join(" "));
+    console.log('Unknown command:', action, argv.join(' '));
 }
 
 // function main($argv)
@@ -109,4 +107,3 @@ export function main(project_root /*: string */, argv /*: Array<string> */) {
 //             help();
 //     }
 // }
-

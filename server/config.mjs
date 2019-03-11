@@ -14,4 +14,3 @@ export function config() {
 
     return { project_root, database_filename };
 }
-

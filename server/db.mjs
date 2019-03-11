@@ -8,8 +8,8 @@
  * @flow
  */
 
-import knex from 'knex';
 import { config } from './config.mjs';
+import knex from 'knex';
 
 export function db() {
     const cfg = config();
@@ -18,7 +18,7 @@ export function db() {
     return knex({
         client: 'sqlite3',
         connection: {
-            filename: cfg.database_filename
+            filename: cfg.database_filename,
         },
         useNullAsDefault: true,
     });
