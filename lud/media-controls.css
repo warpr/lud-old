@@ -1,0 +1,13 @@
+:root {
+    --mdc-theme-primary:      #f44336; /* theme.palette.primary.main */
+    --mdc-theme-secondary:    #f50057; /* theme.palette.secondary.main */
+    --mdc-theme-background:   #424242; /* theme.palette.background.paper */
+    --mdc-theme-surface:      #303030; /* theme.palette.background.default */
+    --mdc-theme-on-primary:   #ffffff; /* theme.palette.primary.contrastText */
+    --mdc-theme-on-secondary: #ffffff; /* theme.palette.secondary.contrastText */
+    --mdc-theme-on-surface:   #ffffff; /* theme.palette.text.primary */
+}
+
+.mdc-slider:not(.mdc-slider--disabled) .mdc-slider__track-container {
+    background-color: rgba(255, 255, 255, 0.26);
+}

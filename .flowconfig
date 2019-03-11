@@ -2,8 +2,8 @@
 .*/annex/.*/\.git/
 <PROJECT_ROOT>/node_modules/bcryptjs/
 <PROJECT_ROOT>/flow-typed/npm/@material-ui/core_v1.x.x.js
-<PROJECT_ROOT>/www/cache/
-<PROJECT_ROOT>/www/music/
+<PROJECT_ROOT>/www/
+<PROJECT_ROOT>/lud/music/
 
 [include]
 
@@ -12,6 +12,6 @@
 [lints]
 
 [options]
-module.name_mapper='^/lud/\(.*\)$' -> '<PROJECT_ROOT>/www/\1'
+module.name_mapper='^/lud/\(.*\)$' -> '<PROJECT_ROOT>/lud/\1'
 
 [strict]
