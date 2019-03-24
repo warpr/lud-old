@@ -1,0 +1,19 @@
+{
+    "position": {
+        "idx": 0,
+        "disc": 0,
+        "seek": 1400,
+        "file": "/lud/music/artists/lijkenpikkers/2006.mag-dat/disc01a.m4a"
+    },
+    "playlist": [
+        {
+            "title": "Mag dat?",
+            "artist": "Lijkenpikkers",
+            "folder": "/lud/music/artists/lijkenpikkers/2006.mag-dat/",
+            "discs": [
+                { "cue": "disc01.cue", "file": "disc01a.m4a", "length": 1492.02 },
+                { "cue": "disc01.cue", "file": "disc01b.m4a", "length": 1338.63 }
+            ]
+        }
+    ]
+}

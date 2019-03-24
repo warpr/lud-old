@@ -1,0 +1,18 @@
+{
+    "position": {
+        "idx": 0,
+        "disc": 0,
+        "seek": 120,
+        "file": "/lud/music/artists/la-style/2010.james-brown-is-dead/disc1.m4a"
+    },
+    "playlist": [
+        {
+            "title": "James Brow is Dead",
+            "artist": "L.A. Style",
+            "folder": "/lud/music/artists/la-style/2010.james-brown-is-dead/",
+            "discs": [
+                { "cue": "disc1.cue", "file": "disc1.m4a", "length": 344.468027 }
+            ]
+        }
+    ]
+}
