@@ -10,11 +10,15 @@
 
 // 7PPB241
 
+import { commandChannel, initPusher } from './command-channel.mjs';
+
 import { db } from './db.mjs';
 import { help } from './help.mjs';
 
 function init() {
     const knex = db();
+
+    initPusher();
 
     //     $createdDatabase = false;
     //     if (!Devices::exists()) {
@@ -49,12 +53,19 @@ export function main(project_root /*: string */, argv /*: Array<string> */) {
     const action = argv.shift();
 
     if (['--help', '-h', 'help'].includes(action)) {
-        console.log('help action yeah');
         help();
         return;
     }
 
-    init();
+    if (['--refresh-clients'].includes(action)) {
+        commandChannel('refresh-clients');
+        return;
+    }
+
+    if (['--init', 'init'].includes(action)) {
+        init();
+        return;
+    }
 
     console.log('Unknown command:', action, argv.join(' '));
 }

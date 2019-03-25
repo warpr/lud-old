@@ -1,1 +1,19 @@
-rollcage-stage-2.json
+{
+    "position": {
+        "idx": 0,
+        "disc": 0,
+        "seek": 4590,
+        "file": "/lud/music/soundtracks/rollcage/2000.rollcage-stage-2/disc1.m4a"
+    },
+    "playlist": [
+        {
+            "title": "Rollcage Stage II",
+            "artist": "Various Artist",
+            "folder": "/lud/music/soundtracks/rollcage/2000.rollcage-stage-2/",
+            "discs": [
+                { "cue": "disc1.cue", "file": "disc1.m4a", "length": 4600.237000 },
+                { "cue": "disc2.cue", "file": "disc2.m4a", "length": 3092.024000 }
+            ]
+        }
+    ]
+}

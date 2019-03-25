@@ -12,8 +12,13 @@
 const path = require('path');
 
 async function lud() {
-    const cli = await import('../server/cli.mjs');
+    try {
+        const cli = await import('../server/cli.mjs');
 
-    cli.main(path.normalize(__dirname + '/../'), process.argv);
+        cli.main(path.normalize(__dirname + '/../'), process.argv);
+    } catch (err) {
+        console.log('ERROR:', err);
+    }
 }
+
 lud();

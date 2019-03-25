@@ -2,25 +2,17 @@
     "position": {
         "idx": 0,
         "disc": 0,
-        "seek": 334,
-        "file": "/lud/music/artists/la-style/2010.james-brown-is-dead/disc1.m4a"
+        "seek": 4158.44,
+        "file": "/lud/music/soundtracks/rollcage/2000.rollcage-stage-2/disc1.m4a"
     },
     "playlist": [
         {
-            "title": "James Brow is Dead",
-            "artist": "L.A. Style",
-            "folder": "/lud/music/artists/la-style/2010.james-brown-is-dead/",
+            "title": "Rollcage Stage II",
+            "artist": "Various Artist",
+            "folder": "/lud/music/soundtracks/rollcage/2000.rollcage-stage-2/",
             "discs": [
-                { "cue": "disc1.cue", "file": "disc1.m4a", "length": 344.468027 }
-            ]
-        },
-        {
-            "title": "Mag dat?",
-            "artist": "Lijkenpikkers",
-            "folder": "/lud/music/artists/lijkenpikkers/2006.mag-dat/",
-            "discs": [
-                { "cue": "disc01.cue", "file": "disc01a.m4a", "length": 1492.02 },
-                { "cue": "disc01.cue", "file": "disc01b.m4a", "length": 1338.63 }
+                { "cue": "disc1.cue", "file": "disc1.m4a", "length": 4600.237000 },
+                { "cue": "disc2.cue", "file": "disc2.m4a", "length": 3092.024000 }
             ]
         }
     ]

@@ -17,3 +17,5 @@
 /vendor/
 /www/.cache
 /www/music
+/lud/config.js
+/etc/server.json

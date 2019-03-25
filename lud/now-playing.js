@@ -12,6 +12,8 @@ const React = window.React;
 const e = React.createElement;
 const { Media, Player, controls, withMediaProps } = window.ReactMediaPlayer;
 
+import { getCommandChannel } from '/lud/pusher.js';
+
 /*::
 type Position = {
     idx: number,
@@ -55,10 +57,6 @@ type MediaControlsProps = {
     media: Media,
 }
 */
-
-async function loadNowPlaying() {
-    return fetch('/lud/now-playing/index.json').then(response => response.json());
-}
 
 const Resume = withMediaProps(function(props /*: MediaPlayerProps & MediaControlsProps */) {
     const [prevSrc, setPrevSrc] = React.useState(props.src);
@@ -181,9 +179,32 @@ function ffwd(data /*: NowPlayingData */) {
     return { position, playlist };
 }
 
+async function loadNowPlaying() {
+    return fetch('/lud/now-playing/index.json').then(response => response.json());
+}
+
+function reloadPlaylistEffect(callback) {
+    const reloadPlaylist = data => {
+        console.log('Received refresh command');
+        loadNowPlaying().then(callback);
+    };
+
+    const channel = getCommandChannel();
+
+    console.log('binding command channel');
+    channel.bind('refresh-playlist', reloadPlaylist);
+
+    return () => {
+        console.log('unbinding command channel');
+        channel.unbind('refresh-playlist', reloadPlaylist);
+    };
+}
+
 export function NowPlaying() {
     const [data, setData] = React.useState(null);
     const [request, setRequest] = React.useState(loadNowPlaying());
+
+    React.useEffect(reloadPlaylistEffect(data => setData(data)), []);
 
     if (!data) {
         request.then(setData);
