@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta http-equiv="Accept-CH" content="Device-Memory">
+        <title>design test</title>
+    </head>
+    <style>
+     * {
+         box-sizing: border-box;
+         margin: 0;
+         border: 0;
+         padding: 0;
+     }
+
+     body {
+         background: url(images/dark_mosaic.png);
+         color: #fff;
+         display: flex;
+         flex-flow: row nowrap;
+         justify-content: space-between;
+         width: 100vw;
+         height: 100vh;
+     }
+
+     div {
+         flex: 1 1 auto;
+         height: 100vh;
+         padding: 20px;
+     }
+
+     iframe {
+         border: 1px solid #666;
+         height: 100%;
+         width: 100%;
+     }
+    </style>
+    <body>
+        <script>
+         function kuno(target, theme) {
+             target.contentDocument.querySelector('html').classList.add(theme);
+         }
+        </script>
+        <div>
+            <iframe src="index.html" onload="kuno(this, 'theme-force-light')"></iframe>
+        </div>
+        <div>
+            <iframe src="index.html"></iframe>
+        </div>
+        <div>
+            <iframe src="index.html" onload="kuno(this, 'theme-force-dark')"></iframe>
+        </div>
+    </body>
+</html>
