@@ -16,6 +16,20 @@ require_once __DIR__ . '/common.php';
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta http-equiv="Accept-CH" content="Device-Memory">
         <title>Lûd</title>
+
+        <!-- favicon, see /icons/README.md -->
+        <link rel="apple-touch-icon" sizes="180x180" href="/app-icons/apple-touch-icon.png" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/app-icons/favicon-32x32.png" />
+        <link rel="icon" type="image/png" sizes="16x16" href="/app-icons/favicon-16x16.png" />
+        <link rel="manifest" href="/app-icons/site.webmanifest" />
+        <link rel="mask-icon" href="/app-icons/safari-pinned-tab.svg" color="#c04848" />
+        <link rel="shortcut icon" href="/app-icons/favicon.ico" />
+        <meta name="apple-mobile-web-app-title" content="L&ucirc;d" />
+        <meta name="application-name" content="L&ucirc;d" />
+        <meta name="msapplication-TileColor" content="#c04848" />
+        <meta name="msapplication-config" content="/app-icons/browserconfig.xml" />
+        <meta name="theme-color" content="#dedede" />
+
         <link rel="stylesheet" href="js/@fortawesome/fontawesome-free/css/all.css" />
         <link rel="stylesheet" href="js/normalize.css/normalize.css" />
         <link rel="stylesheet" href="material-colors.css" />
@@ -415,7 +429,6 @@ require_once __DIR__ . '/common.php';
          }
 
          function closeDrawer(event) {
-             event.preventDefault();
              delete document.querySelector('body').dataset.openDrawer;
          }
 
@@ -447,7 +460,6 @@ require_once __DIR__ . '/common.php';
 
          window.addEventListener("resize", handleResize);
          handleResize();
-
 
         </script>
     </body>

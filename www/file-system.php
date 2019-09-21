@@ -122,9 +122,10 @@ function loadMetadata($dir, $actualFile)
     $ret = ['@id' => 'mb-release:' . $metadata['id']];
     if (!empty($metadata['date'])) {
         $ret['dc:date'] = $metadata['date'];
-        $ret['schema:creditedTo'] = parseArtist($metadata);
     }
 
+    $ret['dc:title'] = $metadata['title'];
+    $ret['schema:creditedTo'] = parseArtist($metadata);
     $ret['mo:record'] = parseMedia($metadata, $dir);
 
     return $ret;
@@ -149,11 +150,17 @@ $response['@context'] = [
 ];
 
 $response['@id'] = webPath('');
+$response['lud:isRelease'] = false;
 $response['@reverse']['nfo:belongsToContainer'] = [];
 
 $files = scandir($dir);
+$includeFiles = false;
+if (in_array('metadata.json', $files)) {
+    $includeFiles = true;
+}
+
 foreach ($files as $file) {
-    if (startsWith('.', $file)) {
+    if (startsWith($file, '.')) {
         continue;
     }
 
@@ -161,6 +168,10 @@ foreach ($files as $file) {
 
     $type = filetype($actualFile);
     if (!in_array($type, ['dir', 'file'])) {
+        continue;
+    }
+
+    if (!$includeFiles && $type == 'file') {
         continue;
     }
 
