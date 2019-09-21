@@ -38,18 +38,18 @@
     </style>
     <body>
         <script>
-         function kuno(target, theme) {
+         function setTheme(target, theme) {
              target.contentDocument.querySelector('html').classList.add(theme);
          }
         </script>
         <div>
-            <iframe src="index.html" onload="kuno(this, 'theme-force-light')"></iframe>
+            <iframe src="/" onload="setTheme(this, 'theme-force-light')"></iframe>
         </div>
         <div>
-            <iframe src="index.html"></iframe>
+            <iframe src="/"></iframe>
         </div>
         <div>
-            <iframe src="index.html" onload="kuno(this, 'theme-force-dark')"></iframe>
+            <iframe src="/" onload="setTheme(this, 'theme-force-dark')"></iframe>
         </div>
     </body>
 </html>

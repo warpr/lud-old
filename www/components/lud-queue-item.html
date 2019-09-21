@@ -1,0 +1,49 @@
+<template id="lud-queue-item">
+  <style>
+        li {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .album {
+            display: flex;
+            flex-flow: row nowrap;
+            padding: 0.5em 0;
+        }
+
+        .album-cover {
+            width: 4rem;
+            height: 4rem;
+        }
+        .album-cover img {
+            width: 4rem;
+            height: 4rem;
+        }
+
+        .album-cover,
+        .album-duration {
+            flex: 0 0 auto;
+            text-align: right;
+        }
+
+        .album-stuff {
+            padding: 0 0.5em;
+            flex: 1 1 auto;
+        }
+    </style>
+    <li>
+        <div class="album">
+            <div class="album-cover">
+                <img class="cover" data-lud-attributes="src" />
+            </div>
+            <div class="album-stuff">
+                <span class="album-title"> <slot name="title">Track title</slot> </span><br />
+                <span class="album-artist">
+                    <slot name="artist">Artist</slot>
+                </span>
+            </div>
+            <div class="album-duration"><slot name="duration">59:23</slot></div>
+        </div>
+    </li>
+</template>

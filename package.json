@@ -53,7 +53,11 @@
     },
     "dependencies": {
         "@fortawesome/fontawesome-free": "^5.10.2",
-        "normalize.css": "^8.0.1"
+        "@warpr/vocab": "^2.0.1",
+        "jsonld-cli": "^0.3.0",
+        "normalize.css": "^8.0.1",
+        "react": "^16.9.0",
+        "react-dom": "^16.9.0"
     },
     "husky": {
         "hooks": {

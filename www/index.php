@@ -1,135 +1,38 @@
+<?php declare(strict_types=1);
+/**
+ *   This file is part of lûd, an opinionated browser based media player.
+ *   Copyright (C) 2019  Kuno Woudt <kuno@frob.nl>
+ *
+ *   This program is free software: you can redistribute it and/or modify
+ *   it under the terms of copyleft-next 0.3.1.  See copyleft-next-0.3.1.txt.
+ */
+
+require_once __DIR__ . '/common.php';
+?>
 <!DOCTYPE html>
 <html>
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta http-equiv="Accept-CH" content="Device-Memory">
-        <title>snap test</title>
+        <title>Lûd</title>
         <link rel="stylesheet" href="js/@fortawesome/fontawesome-free/css/all.css" />
         <link rel="stylesheet" href="js/normalize.css/normalize.css" />
         <link rel="stylesheet" href="material-colors.css" />
-        <style class="theme">
-         /*
-            Light theme
-            ===========
+        <link rel="stylesheet" href="theme.php" />
 
-            See: https://material.io/design/color/dark-theme.html#ui-application
-
-            A primary color is the color displayed most frequently across
-            your app’s screens and components.
-
-            A secondary color provides more ways to accent and distinguish your
-            product. Having a secondary color is optional, and should be applied
-            sparingly to accent select parts of your UI.
-
-            Secondary colors are best for:
-
-            - Floating action buttons
-            - Selection controls, like sliders and switches
-            - Highlighting selected text
-            - Progress bars
-            - Links and headlines
-
-            Surface, background, and error colors typically don’t represent brand:
-
-            Surface colors affect surfaces of components, such as cards, sheets, and menus.
-            The background color appears behind scrollable content.
-            Error color indicates errors in components.
-
-            Dark theme
-            ==========
-
-            The baseline Material Design dark theme uses the 200 tone of the
-            primary color.
-
-            When displaying elevated surfaces, consult
-            https://material.io/design/color/dark-theme.html#properties
-
-          */
-
-         html {
-             --theme-background: white;
-             --theme-on-background: black;
-             --theme-surface: white;
-             --theme-on-surface: black;
-
-             --theme-surface-00dp: white;
-             --theme-surface-01dp: white;
-             --theme-surface-02dp: white;
-             --theme-surface-03dp: white;
-             --theme-surface-04dp: white;
-             --theme-surface-06dp: white;
-             --theme-surface-08dp: white;
-             --theme-surface-12dp: white;
-             --theme-surface-16dp: white;
-             --theme-surface-24dp: white;
-
-             --theme-primary: var(--color-red-500);
-             --theme-on-primary: white;
-
-             --theme-menu-bar: var(--theme-primary);
-             --theme-on-menu-bar: var(--theme-on-primary);
-         }
-
-         html.theme-force-dark {
-             --theme-background: black;
-             --theme-on-background: white;
-             --theme-surface: #121212;
-             --theme-on-surface: white;
-
-             --theme-surface-00dp: #121212;
-             --theme-surface-01dp: #1e1e1e;
-             --theme-surface-02dp: #232323;
-             --theme-surface-03dp: #252525;
-             --theme-surface-04dp: #272727;
-             --theme-surface-06dp: #2c2c2c;
-             --theme-surface-08dp: #2f2f2f;
-             --theme-surface-12dp: #333333;
-             --theme-surface-16dp: #353535;
-             --theme-surface-24dp: #383838;
-
-             --theme-primary: var(--color-red-200);
-             --theme-on-primary: black;
-
-             --theme-menu-bar: var(--theme-surface-06dp);
-             --theme-on-menu-bar: var(--theme-on-surface);
-         }
-
-         @media screen and (prefers-color-scheme: dark) {
-             html:not(.theme-force-light) {
-                 --theme-background: black;
-                 --theme-on-background: white;
-                 --theme-surface: #121212;
-                 --theme-on-surface: white;
-
-                 --theme-surface-00dp: #121212;
-                 --theme-surface-01dp: #1e1e1e;
-                 --theme-surface-02dp: #232323;
-                 --theme-surface-03dp: #252525;
-                 --theme-surface-04dp: #272727;
-                 --theme-surface-06dp: #2c2c2c;
-                 --theme-surface-08dp: #2f2f2f;
-                 --theme-surface-12dp: #333333;
-                 --theme-surface-16dp: #353535;
-                 --theme-surface-24dp: #383838;
-
-                 --theme-primary: var(--color-red-200);
-                 --theme-on-primary: black;
-
-                 --theme-menu-bar: var(--theme-surface-06dp);
-                 --theme-on-menu-bar: var(--theme-on-surface);
-             }
-         }
-
-         a { color: inherit; }
-        </style>
-
+        <script src="js/react/umd/react.development.js"></script>
+        <script src="js/react-dom/umd/react-dom.development.js"></script>
+        <?php
+        loadComponent('lud-queue-item');
+        loadComponent('lud-browse-library');
+        ?>
         <style>
          * { box-sizing: border-box; }
 
          :root {
 /* try this?
-screen width - column widths
+54screen width - column widths
 < 800px        100vw
 < 1200px       50vw
 < 1600px       calc(100vw / 3)
@@ -294,6 +197,8 @@ screen width - column widths
              width: 100%;
          }
 
+         #lud-queue ul { margin: 0; }
+
          #lud-tracklist ul,
          #lud-tracklist li {
              list-style-type: none;
@@ -327,33 +232,6 @@ screen width - column widths
          }
 
          #lud-library h2.browse-menu { margin-bottom: 0; }
-
-         #lud-queue ul,
-         #lud-queue li {
-             list-style-type: none;
-             margin: 0;
-             padding: 0;
-         }
-
-         #lud-queue .album {
-             display: flex;
-             flex-flow: row nowrap;
-             padding: 0.5em 0;
-         }
-
-         #lud-queue .album-cover { width: 4rem;  height: 4rem; }
-         #lud-queue .album-cover img { width: 4rem;  height: 4rem; }
-
-         #lud-queue .album-cover,
-         #lud-queue .album-duration {
-             flex: 0 0 auto;
-             text-align: right;
-         }
-
-         #lud-queue .album-stuff {
-             padding: 0 0.5em;
-             flex: 1 1 auto;
-         }
         </style>
     </head>
     <body class="drawer-is-open">
@@ -465,48 +343,31 @@ screen width - column widths
             </section>
             <section class='kolom-column'>
                 <div id="lud-queue">
-                    <ul>
-                        <li>
-                            <div class="album">
-                                <div class="album-cover"><img class="cover" src="images/cover.jpg" /></div>
-                                <div class="album-stuff">
-                                    <span class="album-title">Album Title</span><br />
-                                    <span class="album-artist">Artist</span>
-                                </div>
-                                <div class="album-duration">59:23</div>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="album">
-                                <div class="album-cover"><img class="cover" src="https://kuno.app/lud/music/labels/id-t/2002.shockers/cover.jpg" /></div>
-                                <div class="album-stuff">
-                                    <span class="album-title">Shockers</span><br />
-                                    <span class="album-artist">Various Artists</span><br />
-                                    <span class="album-metadata">
-                                        2002 &mdash; ID&T
-                                    </span>
-                                </div>
-                                <div class="album-duration">2:27:22</div>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="album">
-                                <div class="album-cover"><img class="cover" src="images/cover.jpg" /></div>
-                                <div class="album-stuff">
-                                    <span class="album-title">Album Title</span><br />
-                                    <span class="album-artist">Artist</span>
-                                </div>
-                                <div class="album-duration">59:23</div>
-                            </div>
-                        </li>
-                    </ul>
+                  <ul>
+                    <lud-queue-item src="images/cover.jpg">
+                      <span slot="title">Album Title</span>
+                      <span slot="artist">Artist</span>
+                      <span slot="duration">59:23</span>
+                    </lud-queue-item>
+                    <lud-queue-item src="/music/labels/id-t/2002.shockers/cover.jpg">
+                      <span slot="title">Shockers</span>
+                      <span slot="artist">Various Artists</span>
+                      <span slot="duration">2:27:22</span>
+                    </lud-queue-item>
+                    <lud-queue-item src="images/cover.jpg">
+                      <span slot="title">Album Title</span>
+                      <span slot="artist">Artist</span>
+                      <span slot="duration">59:23</span>
+                    </lud-queue-item>
+                  <ul>
                 </div>
             </section>
             <section class='kolom-column'>
+                <lud-browse-library />
                 <div id="lud-library">
                     <h1>Library</h1>
                     <h2 class="browse-menu">Browse</h2>
-                    <a href="#">by Artist</a> | <a href="#">by Genre</a> | <a href="#">by Year</a>
+                    <a href="#">by Artist</a> | <a href="#">by Genre</a> | <a href="#">by Year</a> | <a href="#">file system</a>
                     <h2>Search</h2>
                     <h2>Recently added</h2>
                     <h2>History</h2>
