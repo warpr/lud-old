@@ -43,7 +43,8 @@ function saveLength($cueFile, $duration)
     $durationMarker = 'REM LUD_DURATION_IN_SECONDS ';
     $durationLine = $durationMarker . $duration . "\n";
 
-    if (!is_readable($cueFile)) {
+    if (!is_writable($cueFile)) {
+        // FIXME: log not being able to update the .cue file
         return;
     }
 
@@ -69,7 +70,7 @@ function saveLength($cueFile, $duration)
         }
     }
 
-    file_put_contents($cueFile, implode("", $output));
+    file_put_contents($cueFile, implode('', $output));
 
     return (float) $duration;
 }
@@ -93,7 +94,7 @@ function discLength($cueFile)
     }
 
     if (empty($files)) {
-        $files[] = preg_replace("/\.cue$/", ".m4a", $cueFile);
+        $files[] = preg_replace("/\.cue$/", '.m4a', $cueFile);
     }
 
     $durations = [];
@@ -122,7 +123,7 @@ function mediaLength($filename)
             die();
         }
 
-        if (preg_match("/\[FORMAT\].*duration=([0-9.]*).*\[\/FORMAT\]/ms", $output, $matches)) {
+        if (preg_match('/\[FORMAT\].*duration=([0-9.]*).*\[\/FORMAT\]/ms', $output, $matches)) {
             return $matches[1];
         }
     }
@@ -135,7 +136,7 @@ function processDisc($arg, $options = [])
 {
     $path = abspath($arg);
 
-    if (preg_match(",/\.git/,", $path)) {
+    if (preg_match(',/\.git/,', $path)) {
         echo "Skipping files in .git folder: $path\n";
         return;
     }

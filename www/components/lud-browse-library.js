@@ -18,16 +18,33 @@ function useFetch(url) {
     return [data, loading];
 }
 
+function playNow(release) {
+    console.log('play now', release);
+    document.dispatchEvent(new CustomEvent('lud.play-now', { detail: { release } }));
+}
+
 function ShowRelease(props) {
     const metadata = props.data['foaf:primaryTopic'];
     const mbid = metadata['@id'].replace('mb-release:', 'https://musicbrainz.org/release/');
+    const cover = props.data['@id'] + '/cover.jpg';
 
     return e(
-        'h1',
+        React.Fragment,
         {},
-        e('a', { href: mbid, target: '_blank' }, metadata['dc:title']),
-        ' by ',
-        metadata['schema:creditedTo'],
+        e(
+            'h3',
+            {},
+            e('a', { href: mbid, target: '_blank' }, metadata['dc:title']),
+            ' by ',
+            metadata['schema:creditedTo'],
+        ),
+        e(
+            'p',
+            {},
+            e('img', { width: '300px', src: cover }),
+            e('br'),
+            e('button', { onClick: () => playNow(props.data) }, 'Play now'),
+        ),
     );
 }
 
