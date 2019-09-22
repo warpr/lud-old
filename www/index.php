@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php declare(strict_types=1)
 /**
  *   This file is part of lûd, an opinionated browser based media player.
  *   Copyright (C) 2019  Kuno Woudt <kuno@frob.nl>
@@ -6,8 +6,6 @@
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of copyleft-next 0.3.1.  See copyleft-next-0.3.1.txt.
  */
-
-require_once __DIR__ . '/common.php';
 ?>
 <!DOCTYPE html>
 <html>
@@ -37,10 +35,12 @@ require_once __DIR__ . '/common.php';
 
         <script src="js/react/umd/react.development.js"></script>
         <script src="js/react-dom/umd/react-dom.development.js"></script>
-        <?php
-        loadComponent('lud-queue-item');
-        loadComponent('lud-browse-library');
-        ?>
+        <script src="js/jss/dist/jss.js"></script>
+        <script src="js/jss-preset-default/dist/jss-preset-default.js"></script>
+        <script>jss.default.setup(jssPreset.default());</script>
+        <script src="js/react-jss/dist/react-jss.js"></script>
+        <script type="module" src="components/lud-queue.js"></script>
+        <script type="module" src="components/lud-browse-library.js"></script>
         <style>
          * { box-sizing: border-box; }
 
@@ -356,28 +356,10 @@ require_once __DIR__ . '/common.php';
                 </div>
             </section>
             <section class='kolom-column'>
-                <div id="lud-queue">
-                  <ul>
-                    <lud-queue-item src="images/cover.jpg">
-                      <span slot="title">Album Title</span>
-                      <span slot="artist">Artist</span>
-                      <span slot="duration">59:23</span>
-                    </lud-queue-item>
-                    <lud-queue-item src="/music/labels/id-t/2002.shockers/cover.jpg">
-                      <span slot="title">Shockers</span>
-                      <span slot="artist">Various Artists</span>
-                      <span slot="duration">2:27:22</span>
-                    </lud-queue-item>
-                    <lud-queue-item src="images/cover.jpg">
-                      <span slot="title">Album Title</span>
-                      <span slot="artist">Artist</span>
-                      <span slot="duration">59:23</span>
-                    </lud-queue-item>
-                  <ul>
-                </div>
+                <lud-queue></lud-queue>
             </section>
             <section class='kolom-column'>
-                <lud-browse-library />
+                <lud-browse-library></lud-browse-library>
                 <div id="lud-library">
                     <h1>Library</h1>
                     <h2 class="browse-menu">Browse</h2>

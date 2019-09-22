@@ -1,3 +1,11 @@
+/**
+ * This file is part of lûd, an opinionated browser based media player.
+ * Copyright 2019 Kuno Woudt <kuno@frob.nl>
+ * SPDX-License-Identifier: copyleft-next-0.3.1
+ */
+
+import { registerComponent } from './common.js';
+
 const e = React.createElement;
 
 function useFetch(url) {
@@ -97,14 +105,4 @@ function BrowseLibrary(props) {
     );
 }
 
-customElements.define(
-    'lud-browse-library',
-    class extends HTMLElement {
-        connectedCallback() {
-            const mountPoint = document.createElement('span');
-            this.appendChild(mountPoint);
-
-            ReactDOM.render(e(BrowseLibrary), mountPoint);
-        }
-    },
-);
+registerComponent('lud-browse-library', BrowseLibrary);

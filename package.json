@@ -55,9 +55,12 @@
         "@fortawesome/fontawesome-free": "^5.10.2",
         "@warpr/vocab": "^2.0.1",
         "jsonld-cli": "^0.3.0",
+        "jss": "^9.8.7",
+        "jss-preset-default": "^4.5.0",
         "normalize.css": "^8.0.1",
         "react": "^16.9.0",
-        "react-dom": "^16.9.0"
+        "react-dom": "^16.9.0",
+        "react-jss": "^8.6.1"
     },
     "husky": {
         "hooks": {
