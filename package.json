@@ -49,11 +49,14 @@
         "import-sort-parser-babylon": "^6.0.0",
         "import-sort-style-module": "^6.0.0",
         "lint-staged": "^8.1.5",
+        "nodemon": "^2.0.2",
         "prettier": "^1.16.4"
     },
     "dependencies": {
         "@fortawesome/fontawesome-free": "^5.10.2",
         "@warpr/vocab": "^2.0.1",
+        "classnames": "^2.2.6",
+        "ducktype": "^1.2.2",
         "jsonld-cli": "^0.3.0",
         "jss": "^9.8.7",
         "jss-preset-default": "^4.5.0",

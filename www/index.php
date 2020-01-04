@@ -41,6 +41,8 @@
         <script src="js/react-jss/dist/react-jss.js"></script>
         <script type="module" src="components/lud-queue.js"></script>
         <script type="module" src="components/lud-browse-library.js"></script>
+        <script type="module" src="components/lud-now-playing.js"></script>
+        <script type="module" src="components/lud-tracklist.js"></script>
         <style>
          * { box-sizing: border-box; }
 
@@ -205,45 +207,7 @@
 
          .kolom-tab { background: var(--theme-surface-01dp); padding: 1em; }
 
-         #lud-now-playing .cover {
-             display: block;
-             padding: 1em;
-             width: 100%;
-         }
-
          #lud-queue ul { margin: 0; }
-
-         #lud-tracklist ul,
-         #lud-tracklist li {
-             list-style-type: none;
-             margin: 0;
-             padding: 0;
-         }
-
-         #lud-tracklist .track {
-             display: flex;
-             flex-flow: row nowrap;
-             padding: 0.5em 0;
-         }
-
-         #lud-tracklist .track-no {
-             min-width: 3ch;
-             font-size: 2rem;
-         }
-
-         #lud-tracklist .track-subindex {
-             font-size: 1rem;
-         }
-
-         #lud-tracklist .track-no,
-         #lud-tracklist .track-duration {
-             flex: 0 0 auto;
-         }
-
-         #lud-tracklist .track .track-stuff {
-             padding: 0 0.5em;
-             flex: 1 1 auto;
-         }
 
          #lud-library h2.browse-menu { margin-bottom: 0; }
         </style>
@@ -290,71 +254,13 @@
 
         <div id='main-sections' class="kolom-body">
             <section class='kolom-column'>
-                <div id="lud-now-playing">
-                    <img class="cover" src="images/cover.jpg" />
-
-                    <hr class="track-posititon"/>
-                    <span class="track-title">Track title</span><br />
-                    <span class="artist-name">Artist</span>
-                    &mdash; <span class="album-title">Album title</span>
-                    <hr class="volume-slider"/>
-                    <button class="pause-button"><i class="fas fa-pause" alt="pause"></i></button>
-                    <button class="play-button"><i class="fas fa-play" alt="play"></i></button>
-                </div>
+              <lud-now-playing></lud-now-playing>
             </section>
 
             <section class='kolom-column'>
-                <div id="lud-tracklist">
-                    <div class="disc">
-                        <span class="disc-title"><i class="fas fa-caret-square-down"></i> Disc 1: Techno</span>
-                        <ul>
-                            <li>
-                                <div class="track">
-                                    <div class="track-no">1</div>
-                                    <div class="track-stuff">
-                                        <span class="track-title">Track Title</span><br />
-                                        <span class="track-artist">Artist</span>
-                                    </div>
-                                    <div class="track-duration">2:23</div>
-                                </div>
-                            </li>
-                            <li>
-                                <div class="track">
-                                    <div class="track-no">2<span class="track-subindex">.1</span></div>
-                                    <div class="track-stuff">
-                                        <span class="track-title">Track Title</span><br />
-                                        <span class="track-artist">Artist</span>
-                                    </div>
-                                    <div class="track-duration">3:44</div>
-                                </div>
-                            </li>
-                            <li>
-                                <div class="track">
-                                    <div class="track-no">2<span class="track-subindex">.2</span></div>
-                                    <div class="track-stuff">
-                                        <span class="track-title">Track Title</span><br />
-                                        <span class="track-artist">Artist feat. Someone else</span>
-                                    </div>
-                                    <div class="track-duration">1:59</div>
-                                </div>
-                            </li>
-                            <li>
-                                <div class="track">
-                                    <div class="track-no">3</div>
-                                    <div class="track-stuff">
-                                        <span class="track-title">Track Title</span><br />
-                                        <span class="track-artist">Artist</span>
-                                    </div>
-                                    <div class="track-duration">8:03</div>
-                                </div>
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="disc">
-                        <span class="disc-title"><i class="fas fa-caret-square-right"></i> Disc 2: Hardstyle</span>
-                    </div>
-                </div>
+              <lud-tracklist></lud-tracklist>
             </section>
+
             <section class='kolom-column'>
                 <lud-queue></lud-queue>
             </section>

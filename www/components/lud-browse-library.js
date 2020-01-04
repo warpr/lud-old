@@ -27,7 +27,6 @@ function useFetch(url) {
 }
 
 function playNow(release) {
-    console.log('play now', release);
     document.dispatchEvent(new CustomEvent('lud.play-now', { detail: { release } }));
 }
 
@@ -89,7 +88,7 @@ function Breadcrumbs(props) {
 
 function BrowseLibrary(props) {
     const [path, setPath] = React.useState('/music');
-    const [data, loading] = useFetch('https://lûd.com/file-system.php/' + path);
+    const [data, loading] = useFetch('https://lûd.app/file-system.php/' + path);
 
     if (loading) {
         return e(Loading);
