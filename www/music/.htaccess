@@ -1,0 +1,8 @@
+
+IndexOptions Charset=UTF-8 FancyIndexing HTMLTable
+
+IndexHeadInsert "<meta http-equiv='refresh' content='100'><meta name='viewport' content='width=device-width, initial-scale=1'>"
+IndexStyleSheet /apache/style.css
+HeaderName /apache/header.html
+ReadmeName /apache/footer.html
+

@@ -1,0 +1,104 @@
+<script>
+  function loadDiscMyMPD(cueFile) {
+      // NOTE: this requires [myMPD](https://github.com/jcorporation/mympd)
+      // running on the specified URL.
+
+      const url = window.location.href + cueFile;
+
+      const command = {
+          jsonrpc: "2.0",
+          id: 0,
+          method: "MPD_API_QUEUE_ADD_PLAYLIST",
+          params: { plist: url }
+      };
+
+      console.log('play something', url);
+
+      return fetch('http://10.237.0.81:8080/api', {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(command),
+      }).then(response => {
+          console.log('response', response);
+      }).catch(error => {
+          console.log('ERROR:', error);
+      });
+  }
+
+ function loadDiscs(cueFiles) {
+      // NOTE: this requires [myMPD](https://github.com/jcorporation/mympd)
+      // running on the specified URL.
+
+      const urls = cueFiles.map(f => window.location.href + f);
+
+     return fetch('/mpd-proxy.php', {
+         method: 'POST',
+         headers: {
+             'Content-Type': 'application/json',
+         },
+         body: JSON.stringify({ command: 'load', values: urls }),
+     })
+         .then(response => response.json())
+         .then(response => console.log('response', response))
+         .catch(error => console.log('ERROR:', error));
+  }
+
+  function addPlayButton(cueFiles) {
+      const el = document.getElementById('play');
+      el.style.display = 'block';
+      el.addEventListener('click', event => loadDiscs(cueFiles));
+  }
+
+  function addCoverArt() {
+      const el = document.getElementById('cover');
+      el.style.display = 'block';
+      el.innerHTML = '<img width="100%" src="cover.jpg" />';
+  }
+
+  function setPageTitle() {
+      const parts = window.location.pathname.split('/');
+      parts.pop();
+      const title = parts.pop();
+      const pwd = parts.join("/");
+
+      document.getElementById('pwd').innerText = pwd;
+      document.getElementById('title').innerText = title;
+  }
+
+  function getFiles() {
+      return Array.from(document.querySelectorAll('td.indexcolname a')).map(el => {
+          const parts = el.href.split('/');
+          const filename = parts.pop();
+          return filename ? filename : null;
+      }).filter(x => x);
+  }
+
+  function hasFile(files, regex) {
+      for (let i = 0; i < files.length; i++) {
+          if (regex.exec(files[i])) {
+              return true;
+          }
+      };
+
+      return false;
+  }
+
+  // currently Lûd mandates a .jpg file as cover image
+  const hasCoverFile = files => hasFile(files, /^cover.jpg$/);
+
+  setPageTitle();
+
+  const files = getFiles();
+  const cueFiles = files.filter(f => /.cue$/.exec(f));
+  if (cueFiles.length > 0) {
+      addPlayButton(cueFiles);
+  }
+
+  if (hasCoverFile(files)) {
+      addCoverArt();
+  }
+</script>
+
+
